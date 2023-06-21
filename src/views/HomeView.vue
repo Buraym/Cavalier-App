@@ -17,7 +17,8 @@ const listHeaderTopics: any[] = [
   },
   {
     label: "Veiculo",
-    name: "veiculo_nome"
+    name: "veiculo_nome",
+    is_link: true
   },
   {
     label: "Hora entrada",
@@ -160,47 +161,9 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="col">
-        <div class="card">
-          <div class="card-header">
-            <a href="/condutor/asdasdasd" class="list-group-item list-group-item-action">
-              Nome do condutor
-            </a>
-          </div>
-          <div class="list-group m-3">
-            <a href="/veiculo/asdasdasd" class="list-group-item list-group-item-action">
-              <div class="d-flex w-100 justify-content-between align-items-start">
-                <p class="mb-1 text-left">Veiculo</p>
-                <small>Tempo desconto</small>
-              </div>
-              <p class="mb-1">Modelo - Ano | Cor</p>
-              <small>Placa</small>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <div class="card">
-          <div class="card-header">
-            <a href="/condutor/asdasdasd" class="list-group-item list-group-item-action">
-              Nome do condutor
-            </a>
-          </div>
-          <div class="list-group m-3">
-            <a href="/veiculo/asdasdasd" class="list-group-item list-group-item-action">
-              <div class="d-flex w-100 justify-content-between align-items-start">
-                <p class="mb-1 text-left">Veiculo</p>
-                <small>Tempo desconto</small>
-              </div>
-              <p class="mb-1">Modelo - Ano | Cor</p>
-              <small>Placa</small>
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="container py-3 my-3">
-      <Table :columns="columns" :data="data" :title="'Movimentações'" />
+      <Table :columns="columns" :data="data" :title="'Entrada e Saída de condutores'" />
     </div>
   </div>
 </template>

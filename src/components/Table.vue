@@ -3,9 +3,11 @@ import { defineComponent, PropType } from 'vue';
 export interface ITableColumn {
     field: String,
     label: String,
-    width?: String | Number,
     numeric?: boolean,
-    centered?: boolean;
+    centered?: boolean,
+    is_link?: boolean | false,
+    link?: String | "";
+    actions?: boolean | false,
 }
 export interface ITableData {
     id: string,
@@ -15,40 +17,53 @@ export default defineComponent({
     name: 'Table',
     props: {
         title: String || undefined,
-        data: Object as PropType<ITableData[] | []>,
-        columns: Object as PropType<ITableColumn[] | []>
+        data: Object as PropType<ITableData[]>,
+        columns: Object as PropType<ITableColumn[]>
     }
 });
 </script>
 
 <template>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr v-if="title">
-                <th v-bind:colspan="columns?.length" class="text-center">
-                    {{ title }}
-                </th>
-            </tr>
-            <tr>
-                <th v-for="(header, index) in columns" :key="index" scope="col">
-                    {{ header.label }}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(item) in data" :key="item.id">
-                <td v-for="(value) in item" style="text-align: left;">
-                    {{ value }}
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-hover table-borderless table-sm">
+            <thead>
+                <tr v-if="title">
+                    <th v-bind:colspan="columns?.length" class="text-center">
+                        {{ title }}
+                    </th>
+                </tr>
+                <tr class="table-header">
+                    <th v-for="(header, indexHeader) in columns" :key="indexHeader" scope="col" style="text-align: center;">
+                        {{ header.label }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                <tr v-for="(item) in data" :key="item.id">
+                    <td v-for="(value, key, index) in item" :key="index" style="text-align: center;">
+                        <p class="mb-0" :href="item.link"
+                            v-if="columns?.findIndex((obj) => obj.actions) !== -1 && key === 'actions'" v-html="value">
+                        </p>
+                        <p class="mb-0" v-else-if="key !== 'actions'">
+                            {{ value }}
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <style scoped>
+.table-header {
+    background: #ffc107 !important
+}
+
 th {
-    text-align: left;
-    font-weight: bold
+    text-align: center;
+    font-weight: bold;
+    border-bottom: none;
+    vertical-align: middle
 }
 
 td {

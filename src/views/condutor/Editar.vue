@@ -4,7 +4,7 @@ import { format } from "date-fns"
 const data_cadastro = format(new Date, "dd/MM/yyyy HH:MM");
 const data_atualizado = format(new Date, "dd/MM/yyyy HH:MM");
 export default defineComponent({
-    name: 'EdicaoVeiculo',
+    name: 'EdicaoCondutor',
     data: () => {
         return {
             data_cadastro,
@@ -14,12 +14,12 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div class="edicao-veiculo">
+    <div class="edicao-condutor">
         <div class="container text-start">
             <form>
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
                     <h2>ID: {{ $route.params.condutor_id }}</h2>
-                    <div class=" d-flex justify-content-center align-items-center gap-2">
+                    <div class="d-flex justify-content-center align-items-center gap-2">
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deletemodal">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-pencil" viewBox="0 0 16 16">
@@ -30,9 +30,11 @@ export default defineComponent({
                         </button>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletemodal">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                class="bi bi-person-x" viewBox="0 0 16 16">
                                 <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                    d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.256 7a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z" />
+                                <path
+                                    d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708Z" />
                             </svg>
                             Deletar
                         </button>
@@ -40,40 +42,31 @@ export default defineComponent({
                 </div>
                 <div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Placa do veiculo</span>
-                        <input type="text" class="form-control" placeholder="Placa do veiculo" aria-label="Placa do veiculo"
+                        <span class="input-group-text" id="basic-addon1">Nome Completo</span>
+                        <input type="text" class="form-control" placeholder="Nome" aria-label="Nome"
                             aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Ano da versão</span>
-                        <input type="text" class="form-control" placeholder="Ano da versão" aria-label="Ano da versão"
+                        <span class="input-group-text" id="basic-addon1">CPF</span>
+                        <input type="text" class="form-control" placeholder="CPF" aria-label="CPF"
                             aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Modelo</label>
-                        <select class="form-select" id="inputGroupSelect01">
-                            <option selected>Escolha uma modelo</option>
-                            <option value="1">Civic</option>
-                            <option value="2">Camaro</option>
-                        </select>
+                        <span class="input-group-text" id="basic-addon1">Telefone</span>
+                        <input type="text" class="form-control" placeholder="Telefone" aria-label="Telefone"
+                            aria-describedby="basic-addon1">
                     </div>
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Cor</label>
-                        <select class="form-select" id="inputGroupSelect01">
-                            <option selected>Escolha uma cor</option>
-                            <option value="RED">Vermelho</option>
-                            <option value="GREEN">Verde</option>
-                            <option value="BLUE">Azul</option>
-                        </select>
-                    </div>
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Tipo de Veiculo</label>
-                        <select class="form-select" id="inputGroupSelect01">
-                            <option selected>Escolha uma tipo</option>
-                            <option value="CARRO">Carro</option>
-                            <option value="MOTO">Moto</option>
-                            <option value="VAN">Van</option>
-                        </select>
+                    <div class="d-flex align-items-center justify-content-center gap-2">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Tempo pago</span>
+                            <input type="time" class="form-control" placeholder="Tempo pago" aria-label="Tempo pago"
+                                aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Tempo desconto</span>
+                            <input type="time" class="form-control" placeholder="Tempo desconto" aria-label="Tempo desconto"
+                                aria-describedby="basic-addon1">
+                        </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
                         <div class="form-check">
@@ -95,7 +88,7 @@ export default defineComponent({
     </div>
 </template>
 <style scoped>
-.edicao-modelo {
+.edicao-condutor {
     padding: 30px;
 }
 </style>

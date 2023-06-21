@@ -1,45 +1,50 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import Table from '@/components/Table.vue';
-import { EspecialidadeClient } from '../../client/especialidade.client';
+import { MarcaClient } from '../../client/marca.client';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id"
+        name: "id",
     },
     {
         label: "Nome",
         name: "nome"
     },
-]
-const listItemTopics = ref([]);
-const data = await new EspecialidadeClient().getList();
-console.log(data.drinks);
-listItemTopics.value = data.drinks.map((item: any) => {
-    let ingredients = [
-        item.strIngredient1,
-        item.strIngredient2,
-        item.strIngredient3,
-        item.strIngredient4,
-        item.strIngredient5,
-        item.strIngredient6,
-        item.strIngredient7,
-        item.strIngredient8,
-        item.strIngredient9,
-        item.strIngredient10,
-        item.strIngredient11,
-        item.strIngredient12,
-        item.strIngredient13,
-        item.strIngredient14,
-        item.strIngredient15,
-    ].filter((item) => item !== null).join(", ");
-    return {
-        id: item.idDrink,
-        name: item.strDrink,
-        ingredients,
-        receipt: item.strInstructions,
+    {
+        label: "Ações",
+        name: "actions",
+        actions: true
     }
-});
+]
+const listItemTopics = ref<any>([]);
+listItemTopics.value = [
+    {
+        id: "wr45251c2f1d4",
+        nome: "Lamborghini",
+        actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/marca/chevrolet'>Editar</a><button class='btn btn-danger'>Deletar</button></div>"
+    },
+    {
+        id: "afsadf7a8sd9a",
+        nome: "Ferrari",
+        actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/marca/chevrolet'>Editar</a><button class='btn btn-danger'>Deletar</button></div>"
+    },
+    {
+        id: "dsdfh7d8sfgd0",
+        nome: "Ford",
+        actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/marca/chevrolet'>Editar</a><button class='btn btn-danger'>Deletar</button></div>"
+    },
+    {
+        id: "adgsf7ad8fadf",
+        nome: "Wolkswagen",
+        actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/marca/chevrolet'>Editar</a><button class='btn btn-danger'>Deletar</button></div>"
+    },
+    {
+        id: "gsdgh7sf8ddfs",
+        nome: "Chevrolet",
+        actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/marca/chevrolet'>Editar</a><button class='btn btn-danger'>Deletar</button></div>"
+    }
+]
 export default defineComponent({
     name: 'ListagemMarca',
     data: () => {

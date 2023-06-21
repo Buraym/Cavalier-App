@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import Table from '@/components/Table.vue';
-// import { CondutorClient } from '@/client/condutor.client.ts';
 import { EspecialidadeClient } from '@/client/especialidade.client';
 const listHeaderTopics: any[] = [
     {
@@ -27,6 +26,11 @@ const listHeaderTopics: any[] = [
     {
         label: "Tempo Desconto",
         name: "tempo_desconto"
+    },
+    {
+        label: "Ações",
+        name: "actions",
+        actions: true
     }
 ]
 const listItemTopics = ref([]);
@@ -52,9 +56,12 @@ listItemTopics.value = data.drinks.map((item: any) => {
     ].filter((item) => item !== null).join(", ");
     return {
         id: item.idDrink,
-        name: item.strDrink,
-        ingredients,
-        receipt: item.strInstructions,
+        nome: item.strDrink,
+        cpf: ingredients,
+        telefone: item.strInstructions,
+        tempo_pago: item.strInstructions,
+        tempo_desconto: item.strInstructions,
+        actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/condutor/" + item.idDrink + "'>Editar</a><button class='btn btn-danger'>Deletar</button></div>"
     }
 });
 export default defineComponent({

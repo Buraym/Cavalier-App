@@ -23,6 +23,11 @@ const listHeaderTopics: any[] = [
     {
         label: "Cor",
         name: "cor"
+    },
+    {
+        label: "Ações",
+        name: "actions",
+        actions: true
     }
 ]
 const listItemTopics = ref<any[] | []>([]);
@@ -34,21 +39,24 @@ listItemTopics.value = [
         modelo: "Vectra",
         ano: "2020",
         placa: "A4E2C9",
-        cor: "PRETO"
+        cor: "PRETO",
+        actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/veiculo/345342fs6d7a8afd'>Editar</a><button class='btn btn-danger'>Deletar</button></div>"
     },
     {
         id: "345342fs6d7a8afd",
         modelo: "Civic",
         ano: "2018",
         placa: "C9V5B1",
-        cor: "BRANCO"
+        cor: "BRANCO",
+        actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/veiculo/345342fs6d7a8afd'>Editar</a><button class='btn btn-danger'>Deletar</button></div>"
     },
     {
         id: "345342fs6d7a8afd",
         modelo: "Lamborghini Aventador",
         ano: "2015",
         placa: "Y83O0P",
-        cor: "VERMELHO"
+        cor: "VERMELHO",
+        actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/veiculo/345342fs6d7a8afd'>Editar</a><button class='btn btn-danger'>Deletar</button></div>"
     }
 ]
 export default defineComponent({

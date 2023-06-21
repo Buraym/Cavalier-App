@@ -15,6 +15,11 @@ const listHeaderTopics: any[] = [
     {
         label: "Marca",
         name: "marca"
+    },
+    {
+        label: "Ações",
+        name: "actions",
+        actions: true
     }
 ]
 const listItemTopics = ref([]);
@@ -40,9 +45,9 @@ listItemTopics.value = data.drinks.map((item: any) => {
     ].filter((item) => item !== null).join(", ");
     return {
         id: item.idDrink,
-        name: item.strDrink,
-        ingredients,
-        receipt: item.strInstructions,
+        nome: item.strDrink,
+        marca: ingredients,
+        actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/modelo/" + item.idDrink + "'>Editar</a><button class='btn btn-danger'>Deletar</button></div>"
     }
 });
 export default defineComponent({
