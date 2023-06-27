@@ -137,6 +137,11 @@ export default defineComponent({
                             <input type="text" v-model="valorMulta" class="form-control" placeholder="Valor multa"
                                 aria-label="Valor multa" aria-describedby="basic-addon1">
                         </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Valor da multa por hora (R$)</span>
+                            <input type="text" v-model="valorHoraMulta" class="form-control" placeholder="Valor multa"
+                                aria-label="Valor multa" aria-describedby="basic-addon1">
+                        </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">

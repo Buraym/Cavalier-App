@@ -1,9 +1,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { format } from "date-fns"
 import { MarcaClient } from '@/client/marca.client';
 export default defineComponent({
-    name: 'EdicaoMarca',
+    name: 'CadastroMarca',
     emits: ['EnviarFormulario'],
     data: () => {
         return {
@@ -13,18 +12,15 @@ export default defineComponent({
     methods: {
         async EnviarFormulario(event: any) {
             event.preventDefault();
-            console.log(this.name);
-            const data_cadastro = format(new Date, "dd/MM/yyyy HH:MM");
-            const data_atualizado = format(new Date, "dd/MM/yyyy HH:MM");
             const client = new MarcaClient();
-            await client.create({ name });
-            // this.$router.push('/marca')
+            await client.create({ name: this.name });
+            this.$router.push('/marca')
         }
     }
 });
 </script>
 <template>
-    <div class="edicao-marca">
+    <div class="cadastro-marca">
         <div class="container text-start">
             <form v-on:submit="EnviarFormulario">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
@@ -45,7 +41,7 @@ export default defineComponent({
     </div>
 </template>
 <style scoped>
-.edicao-marca {
+.cadastro-marca {
     padding: 30px;
 }
 </style>

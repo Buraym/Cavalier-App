@@ -2,6 +2,8 @@
 import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
 import { ModeloClient } from '@/client/modelo.client';
+import { MarcaClient } from '@/client/marca.client';
+const marcas = ref<any[] | []>([]);
 export default defineComponent({
     name: 'EdicaoModelo',
     data: () => {
@@ -9,14 +11,24 @@ export default defineComponent({
             ativo: true,
             nome: "",
             marca: null,
+            marcas,
             data_cadastro: "",
             data_atualizado: "",
         }
     },
+    mounted() {
+        this.RetornarMarcas();
+    },
     methods: {
+        async RetornarMarcas() {
+            const marcaClient = new MarcaClient();
+            this.marcas = (await marcaClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
+        },
         async RetornarModelo() {
             const client = new ModeloClient();
+            const marcaClient = new MarcaClient();
             const data = await client.findById(String(this.$route.params.modelo_id))
+            this.marcas = (await marcaClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
             // this.nome = data.nome;
             // this.marca = data.marca;
             // this.ativo = data.ativo;
@@ -69,8 +81,7 @@ export default defineComponent({
                         <label class="input-group-text" for="inputGroupSelect01">Marca</label>
                         <select v-model="marca" class="form-select" id="inputGroupSelect01">
                             <option value="null">Escolha uma marca</option>
-                            <option value="1">Honda</option>
-                            <option value="2">Chevrolet</option>
+                            <option v-for="(item) in marcas" :key="item.id" :value="item.id">{{ item.title }}</option>
                         </select>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">

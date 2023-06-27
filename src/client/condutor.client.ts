@@ -29,7 +29,7 @@ export class CondutorClient {
         }
     }
 
-    public async create(condutor: Condutor) : Promise<void> {
+    public async create(condutor: any) : Promise<void> {
         try {
             return ( await this.axiosClient.post<void>(`/`, condutor)).data;
         } catch (err:any) {
@@ -37,9 +37,9 @@ export class CondutorClient {
         }
     }
 
-    public async editById(id: Number, condutor: Condutor) : Promise<Condutor> {
+    public async editById(id: Number, condutor: any) : Promise<any> {
         try {
-            return ( await this.axiosClient.put<Condutor>(`/${id}`, condutor)).data;
+            return ( await this.axiosClient.put<any>(`/${id}`, condutor)).data;
         } catch (err:any) {
             return Promise.reject(err.response);
         }

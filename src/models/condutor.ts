@@ -1,27 +1,25 @@
 import AbstractEntity from "./abstract.entity";
 
 export default class Condutor extends AbstractEntity {
-    private condutor_id: Number;
-    private condutor_cadastro: Date;
-    private condutor_atualizacao: Date;
-    private condutor_ativo: boolean;
+    public id: Number;
+    public cadastro: Date;
+    public atualizacao: Date;
+    public ativo: boolean;
 
-    private condutor_nome: String;
-    private condutor_cpf: String;
-    private condutor_telefone: String;
-    private condutor_tempo_pago: String;
-    private condutor_tempo_desconto: String;
+    public nome: String;
+    public cpf: String;
+    public telefone: String;
+    public tempoGasto: Number;
     
-    constructor(condutor_id: Number, condutor_cadastro: Date, condutor_atualizacao: Date, condutor_ativo: boolean, condutor_nome: String, condutor_cpf: String, condutor_telefone: String, condutor_tempo_pago: String, condutor_tempo_desconto: String) {
-        super(condutor_id, condutor_cadastro, condutor_atualizacao, condutor_ativo);
-        this.condutor_id = condutor_id;
-        this.condutor_cadastro = condutor_cadastro;
-        this.condutor_atualizacao = condutor_atualizacao;
-        this.condutor_ativo = condutor_ativo;
-        this.condutor_nome = condutor_nome;
-        this.condutor_cpf = condutor_cpf;
-        this.condutor_telefone = condutor_telefone;
-        this.condutor_tempo_pago = condutor_tempo_pago;
-        this.condutor_tempo_desconto = condutor_tempo_desconto;
+    constructor(id: Number, cadastro: Date, atualizacao: Date, ativo: boolean, nome: String, cpf: String, telefone: String, tempoGasto: Number) {
+        super(id, cadastro, atualizacao, ativo);
+        this.id = id;
+        this.cadastro = cadastro;
+        this.atualizacao = atualizacao;
+        this.ativo = ativo;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.telefone = telefone;
+        this.tempoGasto = tempoGasto;
     }
 }

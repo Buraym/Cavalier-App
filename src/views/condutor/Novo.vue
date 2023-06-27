@@ -1,22 +1,25 @@
 <script lang="ts">
+import { CondutorClient } from '@/client/condutor.client';
 import { defineComponent } from 'vue';
-import { format } from "date-fns"
 export default defineComponent({
     name: 'CadastroCondutor',
     emits: ["EnviarFormulario"],
     data: () => {
         return {
-            name: "",
+            nome: "",
             cpf: "",
             telefone: ""
         }
     },
     methods: {
-        EnviarFormulario(event: any) {
+        async EnviarFormulario(event: any) {
             event.preventDefault();
-            console.log(this.name, this.cpf, this.telefone);
-            const data_cadastro = format(new Date, "dd/MM/yyyy HH:MM");
-            const data_atualizado = format(new Date, "dd/MM/yyyy HH:MM");
+            const client = new CondutorClient();
+            await client.create({
+                nome: this.nome,
+                cpf: this.cpf,
+                telefone: this.telefone
+            })
         }
     }
 });
@@ -31,7 +34,7 @@ export default defineComponent({
                 <div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Nome Completo</span>
-                        <input type="text" v-model="name" class="form-control" placeholder="Nome" aria-label="Nome"
+                        <input type="text" v-model="nome" class="form-control" placeholder="Nome" aria-label="Nome"
                             aria-describedby="basic-addon1" required>
                     </div>
                     <div class="input-group mb-3">
