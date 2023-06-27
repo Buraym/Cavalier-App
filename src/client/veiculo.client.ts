@@ -6,30 +6,30 @@ export class VeiculoClient {
     private axiosClient: AxiosInstance;
     constructor () {
         this.axiosClient = axios.create({
-            baseURL: "http://localhost:8080/api/veiculo",
+            baseURL: "http://localhost:8090/api/veiculo",
             headers: {
                 "Content-Type": "application/json"
             }
         })   
     }
 
-    public async getList() : Promise<Veiculo[] | []> {
+    public async getList() : Promise<any[] | []> {
         try {
-            return ( await this.axiosClient.get<Veiculo[] | []>(`/`)).data;
+            return ( await this.axiosClient.get<any[] | []>(`/lista`)).data;
         } catch (err:any) {
             return Promise.reject(err.response);
         }
     }
 
-    private async findById(id: string) : Promise<Veiculo> {
+    public async findById(id: string) : Promise<any> {
         try {
-            return ( await this.axiosClient.get<Veiculo>(`/${id}`)).data;
+            return ( await this.axiosClient.get<any>(`/${id}`)).data;
         } catch (err:any) {
             return Promise.reject(err.response);
         }
     }
 
-    private async create(veiculo: Veiculo) : Promise<void> {
+    public async create(veiculo: any) : Promise<void> {
         try {
             return ( await this.axiosClient.post<void>(`/`, veiculo)).data;
         } catch (err:any) {
@@ -37,15 +37,15 @@ export class VeiculoClient {
         }
     }
 
-    private async editById(id: Number, veiculo: Veiculo) : Promise<Veiculo> {
+    public async editById(id: Number, veiculo: any) : Promise<any> {
         try {
-            return ( await this.axiosClient.put<Veiculo>(`/${id}`, veiculo)).data;
+            return ( await this.axiosClient.put<any>(`/${id}`, veiculo)).data;
         } catch (err:any) {
             return Promise.reject(err.response);
         }
     }
 
-    private async deleteById(id: string) : Promise<string> {
+    public async deleteById(id: string) : Promise<string> {
         try {
             return ( await this.axiosClient.delete<string>(`/${id}`)).data;
         } catch (err:any) {

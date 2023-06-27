@@ -1,14 +1,34 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
-const data_cadastro = format(new Date, "dd/MM/yyyy HH:MM");
-const data_atualizado = format(new Date, "dd/MM/yyyy HH:MM");
+import { ModeloClient } from '@/client/modelo.client';
 export default defineComponent({
     name: 'EdicaoModelo',
     data: () => {
         return {
-            data_cadastro,
-            data_atualizado,
+            ativo: true,
+            nome: "",
+            marca: null,
+            data_cadastro: "",
+            data_atualizado: "",
+        }
+    },
+    methods: {
+        async RetornarModelo() {
+            const client = new ModeloClient();
+            const data = await client.findById(String(this.$route.params.modelo_id))
+            // this.nome = data.nome;
+            // this.marca = data.marca;
+            // this.ativo = data.ativo;
+            // this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1], data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:MM")
+            // if (data.atualizacao) {
+            //     this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1], data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
+            // }
+            console.log(data);
+        },
+        async EditarModelo(event: any) {
+            event.preventDefault();
+            const client = new ModeloClient();
         }
     }
 });
@@ -16,9 +36,9 @@ export default defineComponent({
 <template>
     <div class="edicao-modelo">
         <div class="container text-start">
-            <form>
+            <form @submit="EditarModelo">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
-                    <h2>ID: {{ $route.params.condutor_id }}</h2>
+                    <h2>ID: {{ $route.params.modelo_id }}</h2>
                     <div class="d-flex justify-content-center align-items-center gap-2">
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deletemodal">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -30,11 +50,10 @@ export default defineComponent({
                         </button>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletemodal">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-person-x" viewBox="0 0 16 16">
+                                class="bi bi-trash-fill" viewBox="0 0 16 16">
                                 <path
-                                    d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.256 7a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z" />
-                                <path
-                                    d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708Z" />
+                                    d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z">
+                                </path>
                             </svg>
                             Deletar
                         </button>
@@ -43,28 +62,30 @@ export default defineComponent({
                 <div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Nome do Modelo</span>
-                        <input type="text" class="form-control" placeholder="Nome da Modelo" aria-label="Nome da Modelo"
-                            aria-describedby="basic-addon1">
+                        <input type="text" v-model="nome" class="form-control" placeholder="Nome da Modelo"
+                            aria-label="Nome da Modelo" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Marca</label>
-                        <select class="form-select" id="inputGroupSelect01">
-                            <option selected>Escolha uma marca</option>
+                        <select v-model="marca" class="form-select" id="inputGroupSelect01">
+                            <option value="null">Escolha uma marca</option>
                             <option value="1">Honda</option>
                             <option value="2">Chevrolet</option>
                         </select>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <input v-model="ativo" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 Ativo ?
                             </label>
                         </div>
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <h5 class="mb-0">Cadastrado em: <span class="badge text-bg-warning">{{ data_cadastro }}</span>
+                            <h5 v-if="data_cadastro !== ''" class="mb-0">Cadastrado em: <span
+                                    class="badge text-bg-warning">{{ data_cadastro }}</span>
                             </h5>
-                            <h5 class="mb-0">Editado em: <span class="badge text-bg-warning">{{ data_atualizado }}</span>
+                            <h5 v-if="data_atualizado !== ''" class="mb-0">Editado em: <span
+                                    class="badge text-bg-warning">{{ data_atualizado }}</span>
                             </h5>
                         </div>
                     </div>

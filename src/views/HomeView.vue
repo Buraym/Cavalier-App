@@ -88,10 +88,14 @@ listItemTopics.value = [
     valor_total: "R$ 45,90"
   }
 ]
+let OldMovimentations = ref<any[] | []>([]);
+let UsedParkingSpots = ref<any[] | []>([]);
 export default defineComponent({
   name: 'HomeView',
   data: () => {
     return {
+      OldMovimentations,
+      UsedParkingSpots,
       data: listItemTopics,
       columns: listHeaderTopics
     }
@@ -99,6 +103,12 @@ export default defineComponent({
   components: {
     Table
   },
+  methods: {
+    async RetornarListaDeVagasOcupadas() {
+
+    },
+    async DesocuparVaga() { }
+  }
 });
 </script>
 <template>

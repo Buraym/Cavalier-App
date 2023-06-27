@@ -1,14 +1,39 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
-const data_cadastro = format(new Date, "dd/MM/yyyy HH:MM");
-const data_atualizado = format(new Date, "dd/MM/yyyy HH:MM");
+import { CondutorClient } from '@/client/condutor.client';
 export default defineComponent({
     name: 'EdicaoCondutor',
     data: () => {
         return {
-            data_cadastro,
-            data_atualizado,
+            ativo: true,
+            nome: "",
+            cpf: "",
+            telefone: "",
+            tempo_gasto: "",
+            data_cadastro: "",
+            data_atualizado: "",
+        }
+    },
+    mounted() {
+        this.RetornarCondutor();
+    },
+    methods: {
+        async RetornarCondutor() {
+            const client = new CondutorClient();
+            const data = await client.findById(String(this.$route.params.condutor_id))
+            // this.nome = data.nome;
+            // this.marca = data.marca;
+            // this.ativo = data.ativo;
+            // this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1], data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:MM")
+            // if (data.atualizacao) {
+            //     this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1], data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
+            // }
+            console.log(data);
+        },
+        async EditarCondutor(event: any) {
+            event.preventDefault();
+            const client = new CondutorClient();
         }
     }
 });
@@ -16,7 +41,7 @@ export default defineComponent({
 <template>
     <div class="edicao-condutor">
         <div class="container text-start">
-            <form>
+            <form @submit="RetornarCondutor">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
                     <h2>ID: {{ $route.params.condutor_id }}</h2>
                     <div class="d-flex justify-content-center align-items-center gap-2">
@@ -43,42 +68,39 @@ export default defineComponent({
                 <div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Nome Completo</span>
-                        <input type="text" class="form-control" placeholder="Nome" aria-label="Nome"
+                        <input type="text" v-model="nome" class="form-control" placeholder="Nome" aria-label="Nome"
                             aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">CPF</span>
-                        <input type="text" class="form-control" placeholder="CPF" aria-label="CPF"
+                        <input type="text" v-model="cpf" class="form-control" placeholder="CPF" aria-label="CPF"
                             aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Telefone</span>
-                        <input type="text" class="form-control" placeholder="Telefone" aria-label="Telefone"
-                            aria-describedby="basic-addon1">
+                        <input type="text" v-model="telefone" class="form-control" placeholder="Telefone"
+                            aria-label="Telefone" aria-describedby="basic-addon1">
                     </div>
-                    <div class="d-flex align-items-center justify-content-center gap-2">
+                    <div class="d-flex align-items-center justify-content-center">
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Tempo pago</span>
-                            <input type="time" class="form-control" placeholder="Tempo pago" aria-label="Tempo pago"
-                                aria-describedby="basic-addon1">
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Tempo desconto</span>
-                            <input type="time" class="form-control" placeholder="Tempo desconto" aria-label="Tempo desconto"
-                                aria-describedby="basic-addon1">
+                            <span class="input-group-text" id="basic-addon1">Tempo Gasto</span>
+                            <input type="time" v-model="tempo_gasto" class="form-control" placeholder="Tempo Gasto"
+                                aria-label="Tempo pago" aria-describedby="basic-addon1">
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <input v-model="ativo" class="form-check-input" type="checkbox" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 Ativo ?
                             </label>
                         </div>
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <h5 class="mb-0">Cadastrado em: <span class="badge text-bg-warning">{{ data_cadastro }}</span>
+                            <h5 v-if="data_cadastro !== ''" class="mb-0">Cadastrado em: <span
+                                    class="badge text-bg-warning">{{ data_cadastro }}</span>
                             </h5>
-                            <h5 class="mb-0">Editado em: <span class="badge text-bg-warning">{{ data_atualizado }}</span>
+                            <h5 v-if="data_atualizado !== ''" class="mb-0">Editado em: <span
+                                    class="badge text-bg-warning">{{ data_atualizado }}</span>
                             </h5>
                         </div>
                     </div>

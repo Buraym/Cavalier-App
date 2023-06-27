@@ -1,12 +1,12 @@
-import Marca from "@/models/marca";
+import Configuracao from "@/models/configuracao";
 import axios, { AxiosInstance } from "axios"
 
-export class MarcaClient {
+export class ConfiguracaoClient {
 
     private axiosClient: AxiosInstance;
     constructor () {
         this.axiosClient = axios.create({
-            baseURL: "http://localhost:8090/api/marca",
+            baseURL: "http://localhost:8090/api/configuracao",
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json"
@@ -14,17 +14,9 @@ export class MarcaClient {
         })   
     }
 
-    public async getList() : Promise<any[] | []> {
+    public async getConfig() : Promise<any> {
         try {
-            return ( await this.axiosClient.get<any[] | []>(`/lista`)).data;
-        } catch (err:any) {
-            return Promise.reject(err.response);
-        }
-    }
-
-    public async findById(id: string) : Promise<any> {
-        try {
-            return ( await this.axiosClient.get<any>(`/${id}`)).data;
+            return ( await this.axiosClient.get<any>(`/52`)).data;
         } catch (err:any) {
             return Promise.reject(err.response);
         }
@@ -38,9 +30,9 @@ export class MarcaClient {
         }
     }
 
-    public async editById(id: Number, marca: any) : Promise<Marca> {
+    public async editById(id: Number, marca: any) : Promise<any> {
         try {
-            return ( await this.axiosClient.put<Marca>(`/${id}`, marca)).data;
+            return ( await this.axiosClient.put<any>(`/${id}`, marca)).data;
         } catch (err:any) {
             return Promise.reject(err.response);
         }

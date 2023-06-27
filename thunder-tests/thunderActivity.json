@@ -1,0 +1,73 @@
+[
+  {
+    "_id": "b50cb93c-de00-4dce-a9f4-1aece520a46a",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:8090/api/configuracao",
+    "url": "http://localhost:8090/api/configuracao",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-06-26T21:22:56.498Z",
+    "modified": "2023-06-26T21:22:56.498Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"valorHora\": 12.2,\n  \"valorMinutoHora\": 1.5,\n  \"inicioExpediente\": \"10:15:30\",\n  \"fimExpediente\": \"10:15:30\",\n  \"tempoParaDesconto\": \"10:15:30\",\n  \"tempoDeDesconto\": \"10:15:30\",\n  \"gerarDesconto\": true,\n  \"vagasCarro\": 5,\n  \"vagasMoto\": 5,\n  \"vagasVan\": 5\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "6c7c7a4d-abe3-44a5-a929-7103c892913c",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:8090/api/marca",
+    "url": "http://localhost:8090/api/marca",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-06-26T21:22:56.498Z",
+    "modified": "2023-06-27T01:27:19.611Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"nome\": \"Nissan\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "5423463c-2f3b-4a39-91d0-58ff0ebf4124",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:8090/api/modelo",
+    "url": "http://localhost:8090/api/modelo",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-06-26T21:22:56.498Z",
+    "modified": "2023-06-27T00:25:53.132Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"nome\": \"Camaro SS\",\n  \"modelo_marca\": 8\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "7322b130-6451-4923-83fb-0fd5ff832222",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:8090/api/marca/lista",
+    "url": "http://localhost:8090/api/marca/lista",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-06-26T21:22:56.498Z",
+    "modified": "2023-06-27T00:19:17.145Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  }
+]
