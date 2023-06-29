@@ -20,6 +20,7 @@ export default defineComponent({
                 cpf: this.cpf,
                 telefone: this.telefone
             })
+            this.$router.push("/condutor");
         }
     }
 });
@@ -44,8 +45,8 @@ export default defineComponent({
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Telefone</span>
-                        <input type="text" v-model="telefone" class="form-control" placeholder="Telefone"
-                            aria-label="Telefone" aria-describedby="basic-addon1" required>
+                        <input type="text" v-model="telefone" class="form-control" min="17" max="17"
+                            placeholder="55 XX X XXXX-XXXX" aria-label="Telefone" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
                         <button type="submit" class="btn btn-warning w-100">Cadastrar condutor</button>

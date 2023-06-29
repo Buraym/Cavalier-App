@@ -20,26 +20,50 @@ export default defineComponent({
         }
     },
     mounted() {
+        this.RetornarModelos();
         this.RetornarVeiculo();
     },
     methods: {
+        async RetornarModelos() {
+            const client = new ModeloClient();
+            this.modelos = (await client.getList()).map((item) => ({ title: item.nome, value: item.id }));
+            console.log(this.modelos);
+        },
         async RetornarVeiculo() {
             const client = new VeiculoClient();
-            const modeloClient = new VeiculoClient();
             const data = await client.findById(String(this.$route.params.veiculo_id))
-            this.modelos = (await modeloClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
-            // this.nome = data.nome;
-            // this.marca = data.marca;
-            // this.ativo = data.ativo;
-            // this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1], data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:MM")
-            // if (data.atualizacao) {
-            //     this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1], data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
-            // }
-            console.log(data);
+            this.placa = data.placa;
+            this.ano = data.ano;
+            this.modelo = data.modelo.id;
+            this.cor = data.cor;
+            this.tipo = data.tipo;
+            this.ativo = data.ativo;
+            this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1] - 1, data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:MM")
+            if (data.atualizacao) {
+                this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1] - 1, data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
+            }
         },
         async EditarVeiculo(event: any) {
             event.preventDefault();
             const client = new VeiculoClient();
+            const modeloClient = new ModeloClient();
+            const data = await client.findById(String(this.$route.params.veiculo_id))
+            const modeloData = await modeloClient.findById(String(this.modelo))
+            await client.editById(Number(this.$route.params.veiculo_id), {
+                ...data,
+                ativo: this.ativo,
+                placa: this.placa,
+                ano: this.ano,
+                modelo: modeloData,
+                cor: this.cor,
+                tipo: this.tipo,
+            });
+            this.$router.push("/veiculo");
+        },
+        async DeletarItem(id: String) {
+            const client = new VeiculoClient();
+            await client.deleteById(String(id));
+            this.$router.push("/veiculo");
         }
     }
 });
@@ -49,17 +73,17 @@ export default defineComponent({
         <div class="container text-start">
             <form @submit="EditarVeiculo">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
-                    <h2>ID: {{ $route.params.veiculo_id }}</h2>
+                    <h4>Código do veiculo: {{ $route.params.veiculo_id }}</h4>
                     <div class=" d-flex justify-content-center align-items-center gap-2">
-                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deletemodal">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-pencil" viewBox="0 0 16 16">
+                        <button type="submit" class="btn btn-warning">
+                            <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'
+                                class='bi bi-pencil-fill' viewBox='0 0 16 16'>
                                 <path
-                                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                    d='M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z' />
                             </svg>
                             Atualizar
                         </button>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletemodal">
+                        <button type="button" class="btn btn-danger" @click="DeletarItem(this.$route.params.modelo_id)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-trash-fill" viewBox="0 0 16 16">
                                 <path
@@ -85,7 +109,8 @@ export default defineComponent({
                         <label class="input-group-text" for="inputGroupSelect01">Modelo</label>
                         <select v-model="modelo" class="form-select" id="inputGroupSelect01">
                             <option value="null">Escolha uma modelo</option>
-                            <option v-for="(item) in modelos" :key="item.id" :value="item.id">{{ item.title }}</option>
+                            <option v-for="(item) in modelos" :key="item.id" :value="item.value"
+                                :selected="item.value === modelo">{{ item.title }}</option>
                         </select>
                     </div>
                     <div class="input-group mb-3">

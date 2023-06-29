@@ -38,9 +38,9 @@ export class MarcaClient {
         }
     }
 
-    public async editById(id: Number, marca: any) : Promise<Marca> {
+    public async editById(id: Number, marca: any) : Promise<any> {
         try {
-            return ( await this.axiosClient.put<Marca>(`/${id}`, marca)).data;
+            return (await this.axiosClient.put<any>(`/${id}`, marca)).data;
         } catch (err:any) {
             return Promise.reject(err.response);
         }

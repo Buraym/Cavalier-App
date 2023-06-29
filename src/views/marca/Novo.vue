@@ -13,8 +13,11 @@ export default defineComponent({
         async EnviarFormulario(event: any) {
             event.preventDefault();
             const client = new MarcaClient();
-            await client.create({ name: this.name });
-            this.$router.push('/marca')
+            const data = await client.create({
+                nome: this.name
+            });
+            console.log(data);
+            // this.$router.push('/marca')
         }
     }
 });

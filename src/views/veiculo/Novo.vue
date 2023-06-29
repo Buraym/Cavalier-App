@@ -27,10 +27,12 @@ export default defineComponent({
         async EnviarFormulario(event: any) {
             event.preventDefault();
             const client = new VeiculoClient();
+            const modeloClient = new ModeloClient();
+            const modelo = await modeloClient.findById(String(this.modelo));
             await client.create({
                 placa: this.placa,
-                ano: this.ano,
-                modelo: this.modelo,
+                ano: Number(this.ano),
+                modelo: modelo,
                 cor: this.cor,
                 tipo: this.tipo
             });
@@ -49,25 +51,27 @@ export default defineComponent({
                 <div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Placa do veiculo</span>
-                        <input type="text" v-model="placa" class="form-control" placeholder="Placa do veiculo"
-                            aria-label="Placa do veiculo" aria-describedby="basic-addon1">
+                        <input type="text" v-model="placa" class="form-control" min="8" max="10"
+                            placeholder="Placa do veiculo" aria-label="Placa do veiculo" aria-describedby="basic-addon1"
+                            required>
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Ano da versão</span>
                         <input type="number" v-model="ano" class="form-control" placeholder="Ano da versão"
                             :max="new Date().getFullYear()" :min="1900" aria-label="Ano da versão"
-                            aria-describedby="basic-addon1">
+                            aria-describedby="basic-addon1" required>
                     </div>
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Modelo</label>
-                        <select v-model="modelo" class="form-select" id="inputGroupSelect01">
+                        <select v-model="modelo" class="form-select" id="inputGroupSelect01" required>
                             <option value="null">Escolha um modelo</option>
-                            <option v-for="(item) in modelos" :key="item.id" :value="item.id">{{ item.title }}</option>
+                            <option v-for="(item) in modelos" :key="item.value" :value="item.value">{{ item.title }}
+                            </option>
                         </select>
                     </div>
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Cor</label>
-                        <select v-model="cor" class="form-select" id="inputGroupSelect01">
+                        <select v-model="cor" class="form-select" id="inputGroupSelect01" required>
                             <option value="null">Escolha uma cor</option>
                             <option value="RED">Vermelho</option>
                             <option value="GREEN">Verde</option>
@@ -76,7 +80,7 @@ export default defineComponent({
                     </div>
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Tipo de Veiculo</label>
-                        <select v-model="tipo" class="form-select" id="inputGroupSelect01">
+                        <select v-model="tipo" class="form-select" id="inputGroupSelect01" required>
                             <option value="null">Escolha uma tipo</option>
                             <option value="CARRO">Carro</option>
                             <option value="MOTO">Moto</option>

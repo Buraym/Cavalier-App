@@ -1,6 +1,6 @@
 import { intervalToDuration, isAfter, isBefore } from "date-fns";
 
-export default function(movimentation: any, config: any, custom_values: any) {
+export function CalcTotalTime(movimentation: any, config: any, custom_values: any) {
     // Inicia com zero
     let total_value = 0;
     // Se maior que uma hora e perfeitamente divisivel por 60, entra nesse
@@ -66,4 +66,18 @@ export default function(movimentation: any, config: any, custom_values: any) {
 
 
     return Number(total_value).toFixed(2);
+}
+
+export function IntToTime(time: Number): String {
+    return Number(time) < 1 ?
+                    "00:00" :
+                    String(Math.floor(Number(time) / 60) < 10 ? "0" + String(Math.floor(Number(time) / 60)) : String(Math.floor(Number(time) / 60))) +
+                    ":" +
+                    String(Math.floor(Number(time) % 60) < 10 ? "0" + String(Math.floor(Number(time) % 60)) : String(Math.floor(Number(time) % 60)))
+}
+
+export function StringToDate(time: String): Date {
+    const date = new Date(String(time));
+    date.setUTCHours(Number(date.getHours()));
+    return date;
 }

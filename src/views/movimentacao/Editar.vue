@@ -4,6 +4,7 @@ import { format } from "date-fns"
 import { MovimentacaoClient } from "@/client/movimentacoes.client";
 import { CondutorClient } from '@/client/condutor.client';
 import { VeiculoClient } from '@/client/veiculo.client';
+import { IntToTime, StringToDate } from '../../utils/index';
 const condutores = ref<any[] | []>([]);
 const veiculos = ref<any[] | []>([]);
 export default defineComponent({
@@ -17,7 +18,7 @@ export default defineComponent({
             veiculos,
             entrada: "",
             saida: "",
-            tempo: "",
+            tempo: '',
             tempoDesconto: "",
             tempoMulta: "",
             valorDesconto: "",
@@ -30,28 +31,73 @@ export default defineComponent({
         }
     },
     mounted() {
+        this.RetornarVeiculos();
+        this.RetornarCondutores();
         this.RetornarMovimentacao();
     },
     methods: {
+        async RetornarCondutores() {
+            const client = new CondutorClient();
+            this.condutores = (await client.getList()).map((item) => ({ title: item.nome, value: item.id }));
+        },
+        async RetornarVeiculos() {
+            const client = new VeiculoClient();
+            this.veiculos = (await client.getList()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
+        },
         async RetornarMovimentacao() {
             const client = new MovimentacaoClient();
-            const condutorClient = new CondutorClient();
-            const veiculoClient = new VeiculoClient();
             const data = await client.findById(String(this.$route.params.movimentacao_id))
-            this.condutores = (await condutorClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
-            this.veiculos = (await veiculoClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
-            // this.nome = data.nome;
-            // this.marca = data.marca;
-            // this.ativo = data.ativo;
-            // this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1], data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:MM")
-            // if (data.atualizacao) {
-            //     this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1], data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
-            // }
+            this.condutor = data.condutor.id;
+            this.veiculo = data.veiculo.id;
+            this.entrada = format(new Date(data.entrada[0], data.entrada[1] - 1, data.entrada[2], data.entrada[3], data.entrada[4], 0), "dd/MM/yyyy HH:mm");
+            this.saida = format(new Date(data.saida[0], data.saida[1] - 1, data.saida[2], data.saida[3], data.saida[4], 0), "dd/MM/yyyy HH:mm");
+            this.tempo = String(IntToTime(data.tempo));
+            this.tempoDesconto = String(IntToTime(data.tempoDesconto));
+            this.tempoMulta = String(IntToTime(data.tempoMulta));
+            this.valorDesconto = String(data.valorDesconto);
+            this.valorHora = String(data.valorHora);
+            this.valorMulta = String(data.valorMulta);
+            this.valorTotal = String(data.valorTotal);
+            this.valorHoraMulta = String(data.valorHoraMulta);
+            this.ativo = data.ativo;
+            this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1] - 1, data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:mm")
+            if (data.atualizacao) {
+                this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1] - 1, data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
+            }
             console.log(data);
         },
         async EditarMovimentacao(event: any) {
             event.preventDefault();
             const client = new MovimentacaoClient();
+            const condutorClient = new CondutorClient();
+            const veiculoClient = new VeiculoClient();
+            const data = await client.findById(String(this.$route.params.movimentacao_id))
+            const condutorData = await condutorClient.findById(String(this.condutor))
+            const veiculoData = await veiculoClient.findById(String(this.veiculo))
+            await client.create({
+                ...data,
+                condutor: condutorData,
+                veiculo: veiculoData,
+                // entrada: StringToDate(this.entrada),
+                // saida: StringToDate(this.saida),
+                entrada: StringToDate(this.entrada),
+                saida: StringToDate(this.saida),
+                ativo: this.ativo,
+                tempo: Number(String(this.tempo).split(":")[0]) * 60 + Number(String(this.tempo).split(":")[1]),
+                tempoDesconto: Number(String(this.tempoDesconto).split(":")[0]) * 60 + Number(String(this.tempoDesconto).split(":")[1]),
+                tempoMulta: Number(String(this.tempoMulta).split(":")[0]) * 60 + Number(String(this.tempoMulta).split(":")[1]),
+                valorDesconto: Number(Math.abs(Number(this.valorDesconto)).toFixed(2)),
+                valorMulta: Number(Math.abs(Number(this.valorMulta)).toFixed(2)),
+                valorTotal: Number(Math.abs(Number(this.valorTotal)).toFixed(2)),
+                valorHora: Number(Math.abs(Number(this.valorHora)).toFixed(2)),
+                valorHoraMulta: Number(Math.abs(Number(this.valorHoraMulta)).toFixed(2)),
+            });
+            this.$router.push("/movimentacao");
+        },
+        async DeletarItem(id: string) {
+            const client = new MovimentacaoClient();
+            await client.deleteById(id);
+            this.$router.push("/movimentacao")
         }
     }
 });
@@ -63,15 +109,16 @@ export default defineComponent({
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
                     <h2>ID: {{ $route.params.movimentacao_id }}</h2>
                     <div class="d-flex justify-content-center align-items-center gap-2">
-                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deletemodal">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-pencil" viewBox="0 0 16 16">
+                        <button type="submit" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deletemodal">
+                            <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'
+                                class='bi bi-pencil-fill' viewBox='0 0 16 16'>
                                 <path
-                                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                    d='M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z' />
                             </svg>
                             Atualizar
                         </button>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletemodal">
+                        <button type="button" class="btn btn-danger"
+                            @click="DeletarItem(this.$route.params.movimentacao_id)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-trash-fill" viewBox="0 0 16 16">
                                 <path
@@ -87,25 +134,27 @@ export default defineComponent({
                         <label class="input-group-text" for="inputGroupSelect01">Condutor</label>
                         <select v-model="condutor" class="form-select" id="inputGroupSelect01">
                             <option value="null">Escolha uma condutor</option>
-                            <option v-for="(item) in condutores" :key="item.id" :value="item.id">{{ item.title }}</option>
+                            <option v-for="(item) in condutores" :key="item.id" :value="item.value"
+                                :selected="item.value === condutor">{{ item.title }}</option>
                         </select>
                     </div>
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Veiculo</label>
                         <select v-model="veiculo" class="form-select" id="inputGroupSelect01">
                             <option value="null">Escolha uma veiculo</option>
-                            <option v-for="(item) in veiculos" :key="item.id" :value="item.id">{{ item.title }}</option>
+                            <option v-for="(item) in veiculos" :key="item.id" :value="item.value"
+                                :selected="item.value === veiculo">{{ item.title }}</option>
                         </select>
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Hora Entrada</span>
-                            <input type="time" v-model="entrada" class="form-control" placeholder="Hora Entrada"
+                            <input type="datetime-local" v-model="entrada" class="form-control" placeholder="Hora Entrada"
                                 aria-label="Hora Entrada" aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Hora Saída</span>
-                            <input type="time" v-model="saida" class="form-control" placeholder="Hora Saída"
+                            <input type="datetime-local" v-model="saida" class="form-control" placeholder="Hora Saída"
                                 aria-label="Hora Saída" aria-describedby="basic-addon1">
                         </div>
                     </div>

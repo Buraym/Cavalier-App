@@ -38,32 +38,36 @@ export default defineComponent({
             const configuracaoClient = new ConfiguracaoClient();
             this.config = (await configuracaoClient.getConfig());
         },
-        async RetornarVeiculos() {
-            const veiculoClient = new VeiculoClient();
-            this.veiculos = (await veiculoClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
-        },
         async RetornarCondutores() {
-            const condutorClient = new CondutorClient();
-            this.condutores = (await condutorClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
+            const client = new CondutorClient();
+            this.condutores = (await client.getList()).map((item) => ({ title: item.nome, value: item.id }));
+        },
+        async RetornarVeiculos() {
+            const client = new VeiculoClient();
+            this.veiculos = (await client.getList()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
         },
         async EnviarFormulario(event: any) {
             event.preventDefault();
             const client = new MovimentacaoClient();
+            const condutorClient = new CondutorClient();
+            const veiculoClient = new VeiculoClient();
+            const condutor = await condutorClient.findById(String(this.condutor));
+            const veiculo = await veiculoClient.findById(String(this.veiculo));
             await client.create({
-                condutor: this.condutor,
-                veiculo: this.veiculo,
+                condutor,
+                veiculo,
                 entrada: this.entrada,
                 saida: this.saida,
                 tempo: Number(String(this.tempo).split(":")[0]) * 60 + Number(String(this.tempo).split(":")[1]),
                 tempoDesconto: Number(String(this.tempoDesconto).split(":")[0]) * 60 + Number(String(this.tempoDesconto).split(":")[1]),
                 tempoMulta: Number(String(this.tempoMulta).split(":")[0]) * 60 + Number(String(this.tempoMulta).split(":")[1]),
-                valorDesconto: Math.abs(Number(this.valorDesconto)).toFixed(2),
-                valorMulta: Math.abs(Number(this.valorMulta)).toFixed(2),
-                valorTotal: Math.abs(Number(this.valorTotal)).toFixed(2),
-                valorHora: Math.abs(Number(this.valorHora)).toFixed(2),
-                valorHoraMulta: Math.abs(Number(this.valorHoraMulta)).toFixed(2),
+                valorDesconto: Number(Math.abs(Number(this.valorDesconto)).toFixed(2)),
+                valorMulta: Number(Math.abs(Number(this.valorMulta)).toFixed(2)),
+                valorTotal: Number(Math.abs(Number(this.valorTotal)).toFixed(2)),
+                valorHora: Number(Math.abs(Number(this.valorHora)).toFixed(2)),
+                valorHoraMulta: Number(Math.abs(Number(this.valorHoraMulta)).toFixed(2)),
             });
-            // this.$router.push('/movimentacao')
+            this.$router.push('/movimentacao');
         }
     }
 });
@@ -80,25 +84,27 @@ export default defineComponent({
                         <label class="input-group-text" for="inputGroupSelect01">Condutor</label>
                         <select v-model="condutor" class="form-select" id="inputGroupSelect01">
                             <option value="null">Escolha uma condutor</option>
-                            <option v-for="(item) in condutores" :key="item.id" :value="item.id">{{ item.title }}</option>
+                            <option v-for="(item) in condutores" :key="item.value" :value="item.value">{{ item.title }}
+                            </option>
                         </select>
                     </div>
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Veiculo</label>
                         <select v-model="veiculo" class="form-select" id="inputGroupSelect01">
                             <option value="null">Escolha uma veículo</option>
-                            <option v-for="(item) in veiculos" :key="item.id" :value="item.id">{{ item.title }}</option>
+                            <option v-for="(item) in veiculos" :key="item.value" :value="item.value">{{ item.title }}
+                            </option>
                         </select>
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Hora Entrada</span>
-                            <input type="time" v-model="entrada" class="form-control" placeholder="Hora Entrada"
+                            <input type="datetime-local" v-model="entrada" class="form-control" placeholder="Hora Entrada"
                                 aria-label="Hora Entrada" aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Hora Saída</span>
-                            <input type="time" v-model="saida" class="form-control" placeholder="Hora Saída"
+                            <input type="datetime-local" v-model="saida" class="form-control" placeholder="Hora Saída"
                                 aria-label="Hora Saída" aria-describedby="basic-addon1">
                         </div>
                     </div>
@@ -132,15 +138,11 @@ export default defineComponent({
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Valor da multa por hora (R$)</span>
-                            <input type="text" v-model="valorMulta" class="form-control" placeholder="Valor multa"
+                            <input type="text" v-model="valorHoraMulta" class="form-control" placeholder="Valor multa"
                                 aria-label="Valor multa" aria-describedby="basic-addon1">
                         </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Valor unitario por hora (R$)</span>
-                            <input type="text" v-model="valorHora" class="form-control"
-                                placeholder="Valor unitario por hora" aria-label="Valor unitario por hora"
-                                aria-describedby="basic-addon1">
-                        </div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Valor unitario por hora (R$)</span>
                             <input type="text" v-model="valorHora" class="form-control"

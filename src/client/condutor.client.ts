@@ -21,9 +21,9 @@ export class CondutorClient {
         }
     }
 
-    public async findById(id: string) : Promise<Condutor> {
+    public async findById(id: string) : Promise<any> {
         try {
-            return ( await this.axiosClient.get<Condutor>(`/${id}`)).data;
+            return ( await this.axiosClient.get<any>(`/${id}`)).data;
         } catch (err:any) {
             return Promise.reject(err.response);
         }
