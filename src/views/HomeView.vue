@@ -3,6 +3,9 @@ import { defineComponent, ref } from 'vue';
 import { format, intervalToDuration, isToday } from "date-fns"
 import { MovimentacaoClient } from "@/client/movimentacoes.client"
 import { ConfiguracaoClient } from "@/client/configuracao.client"
+// import { invoke } from '@tauri-apps/api';
+// invoke('greet', { name: 'World' })
+//   .then((response) => console.log(response))
 import Table from '@/components/Table.vue';
 const listHeaderTopics: any[] = [
   {
