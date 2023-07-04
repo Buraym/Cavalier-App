@@ -3,10 +3,32 @@ import { defineComponent, ref } from 'vue';
 import { format, intervalToDuration, isToday } from "date-fns"
 import { MovimentacaoClient } from "@/client/movimentacoes.client"
 import { ConfiguracaoClient } from "@/client/configuracao.client"
-// import { invoke } from '@tauri-apps/api';
-// invoke('greet', { name: 'World' })
-//   .then((response) => console.log(response))
+import SQLite from 'tauri-plugin-sqlite-api';
 import Table from '@/components/Table.vue';
+const db = await SQLite.open('./test.db');
+await db.execute(`
+  CREATE TABLE IF NOT EXISTS Usuarios (
+      id INTEGER PRIMARY KEY,
+      nome TEXT NOT NULL,
+      idade INTEGER,
+      email TEXT,
+      contato TEXT
+  );
+  CREATE TABLE IF NOT EXISTS marca
+  (
+      id INTEGER PRIMARY KEY,
+      ativo BOOLEAN NOT NULL,
+      atualizacao TEXT,
+      cadastro TEXT NOT NULL,
+      nome TEXT NOT NULL,
+      UNIQUE (nome)
+  );
+`);
+// await db.execute('INSERT INTO marca VALUES (?1, ?2, ?3, ?4, ?5)', [18, true, new Date(), new Date(), 'Jack']);
+/** select count */
+const rows = await db.select('SELECT * FROM marca')
+console.log(rows);
+const isClosed = await db.close()
 const listHeaderTopics: any[] = [
   {
     label: "ID",

@@ -4,7 +4,8 @@
     "beforeBuildCommand": "yarn build",
     "beforeDevCommand": "yarn serve",
     "devPath": "http://localhost:3000",
-    "distDir": "../dist"
+    "distDir": "../dist",
+    "withGlobalTauri": true
   },
   "package": {
     "productName": "estacionamento",
@@ -29,7 +30,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "estacionamento",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
