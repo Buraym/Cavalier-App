@@ -1,34 +1,9 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { format, intervalToDuration, isToday } from "date-fns"
-import { MovimentacaoClient } from "@/client/movimentacoes.client"
-import { ConfiguracaoClient } from "@/client/configuracao.client"
-import SQLite from 'tauri-plugin-sqlite-api';
+import { format, intervalToDuration, isToday } from "date-fns";
+import { MovimentacaoClient } from "@/client/movimentacoes.client";
+import { ConfiguracaoClient } from "@/client/configuracao.client";
 import Table from '@/components/Table.vue';
-const db = await SQLite.open('./test.db');
-await db.execute(`
-  CREATE TABLE IF NOT EXISTS Usuarios (
-      id INTEGER PRIMARY KEY,
-      nome TEXT NOT NULL,
-      idade INTEGER,
-      email TEXT,
-      contato TEXT
-  );
-  CREATE TABLE IF NOT EXISTS marca
-  (
-      id INTEGER PRIMARY KEY,
-      ativo BOOLEAN NOT NULL,
-      atualizacao TEXT,
-      cadastro TEXT NOT NULL,
-      nome TEXT NOT NULL,
-      UNIQUE (nome)
-  );
-`);
-// await db.execute('INSERT INTO marca VALUES (?1, ?2, ?3, ?4, ?5)', [18, true, new Date(), new Date(), 'Jack']);
-/** select count */
-const rows = await db.select('SELECT * FROM marca')
-console.log(rows);
-const isClosed = await db.close()
 const listHeaderTopics: any[] = [
   {
     label: "ID",
