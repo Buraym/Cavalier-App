@@ -6,7 +6,7 @@ export async function init_db() {
     await db.execute(`
         CREATE TABLE IF NOT EXISTS marca
         (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             ativo BOOLEAN NOT NULL,
             atualizacao TEXT,
             cadastro TEXT NOT NULL,
@@ -131,7 +131,8 @@ export async function retornar_marca(id: string) {
 export async function criar_marca(marca: any) {
     const db = await SQLite.open('./test.db');
     await db.execute(`
-        INSERT INTO marca VALUES (SELECT IFNULL(MAX(id), 0) + 1 FROM marca, ?1, ?2, ?3, ?4)
+        INSERT INTO marca( ativo, atualizacao, cadastro, nome )
+        VALUES (?1, ?2, ?3, ?4)
     `, [true, null, new Date(), marca.nome]);
     await db.close();
 }
@@ -141,9 +142,9 @@ export async function editar_marca(id: string, marca: any) {
     const db = await SQLite.open('./test.db');
     await db.execute(`
         UPDATE marca
-        SET nome = ?1, atualizacao = ?2
-        WHERE id = ?3;
-    `, [marca.nome, new Date(), id]);
+        SET nome = ?1, ativo = $2, atualizacao = ?3
+        WHERE id = ?4;
+    `, [marca.nome, marca.ativo, new Date(), id]);
     await db.close();
 }
 

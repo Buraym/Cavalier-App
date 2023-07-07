@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { format } from "date-fns"
-import { MarcaClient } from '@/client/marca.client';
+import { editar_marca, retornar_marca, deletar_marca } from '@/utils/database';
 export default defineComponent({
     name: 'EdicaoMarca',
     data: () => {
@@ -12,37 +12,28 @@ export default defineComponent({
             data_atualizado: "",
         }
     },
-
     mounted() {
         this.RetornarMarca();
     },
     methods: {
         async RetornarMarca() {
-            const client = new MarcaClient();
-            const data = await client.findById(String(this.$route.params.marca_id))
-            this.nome = data.nome;
-            this.ativo = data.ativo;
-            this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1] - 1, data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:MM")
-            if (data.atualizacao) {
-                this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1] - 1, data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
+            const marca = await retornar_marca(String(this.$route.params.marca_id));
+            this.nome = marca.nome;
+            this.ativo = marca.ativo ? true : false;
+            this.data_cadastro = format(new Date(marca.cadastro), "dd/MM/yyyy HH:MM")
+            if (marca.atualizacao) {
+                this.data_atualizado = format(new Date(marca.atualizacao), "dd/MM/yyyy HH:MM")
             }
-            console.log(data);
+            console.log(marca);
         },
         async EditarMarca(event: any) {
             event.preventDefault();
-            const client = new MarcaClient();
-            const data = await client.findById(String(this.$route.params.marca_id))
-            await client.editById(Number(this.$route.params.marca_id), {
-                ...data,
-                nome: this.nome,
-                ativo: this.ativo,
-            });
+            await editar_marca(String(this.$route.params.marca_id), { nome: this.nome, ativo: this.ativo });
             this.$router.push("/marca");
         },
         async DeletarItem(id: any) {
-            const client = new MarcaClient();
-            await client.deleteById(id);
-            this.$router.push("/marca")
+            await deletar_marca(id);
+            this.$router.push("/marca");
         }
     }
 });

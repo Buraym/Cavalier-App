@@ -77,6 +77,11 @@
   color: #2c3e50;
 }
 
+.form-check-input:checked {
+  background-color: #ffc107 !important;
+  border-color: #ffc107 !important;
+}
+
 nav {
   padding-top: 30px;
   padding-left: 35px;

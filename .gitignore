@@ -111,3 +111,4 @@ thunder-tests/**
 *.njsproj
 *.sln
 *.sw?
+src-tauri/test.db

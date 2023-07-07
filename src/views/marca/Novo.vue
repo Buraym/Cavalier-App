@@ -1,23 +1,19 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { MarcaClient } from '@/client/marca.client';
+import { criar_marca } from '@/utils/database';
 export default defineComponent({
     name: 'CadastroMarca',
     emits: ['EnviarFormulario'],
     data: () => {
         return {
-            name: "",
+            nome: "",
         }
     },
     methods: {
         async EnviarFormulario(event: any) {
             event.preventDefault();
-            const client = new MarcaClient();
-            const data = await client.create({
-                nome: this.name
-            });
-            console.log(data);
-            // this.$router.push('/marca')
+            await criar_marca({ nome: this.nome });
+            this.$router.push('/marca');
         }
     }
 });
@@ -32,7 +28,7 @@ export default defineComponent({
                 <div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Nome da Marca</span>
-                        <input type="text" v-model="name" class="form-control" placeholder="Nome da Marca"
+                        <input type="text" v-model="nome" class="form-control" placeholder="Nome da Marca"
                             aria-label="Nome da Marca" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
