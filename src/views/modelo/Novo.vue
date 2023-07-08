@@ -1,6 +1,5 @@
 <script lang="ts">
-import { MarcaClient } from '@/client/marca.client';
-import { ModeloClient } from '@/client/modelo.client';
+import { criar_modelo, listar_marcas } from '@/utils/database';
 import { defineComponent, ref } from 'vue';
 const marcas = ref<any[] | []>([]);
 export default defineComponent({
@@ -8,7 +7,7 @@ export default defineComponent({
     emits: ['EnviarFormulario'],
     data: () => {
         return {
-            name: "",
+            nome: "",
             marca: null,
             marcas,
         }
@@ -18,19 +17,13 @@ export default defineComponent({
     },
     methods: {
         async RetornarMarcas() {
-            const marcaClient = new MarcaClient();
-            this.marcas = (await marcaClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
+            this.marcas = (await listar_marcas()).map((item) => ({ title: item.nome, value: item.id }));
         },
         async EnviarFormulario(event: any) {
             event.preventDefault();
-            const client = new ModeloClient();
-            const marcaClient = new MarcaClient();
-            const marca = await marcaClient.findById(String(this.marca));
-            marca.id = Number(marca.id);
-            console.log(this.name, marca)
-            await client.create({
-                nome: this.name,
-                marca: marca
+            await criar_modelo({
+                nome: this.nome,
+                marca_id: this.marca
             });
             this.$router.push('/modelo')
         }
@@ -47,7 +40,7 @@ export default defineComponent({
                 <div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Nome do Modelo</span>
-                        <input type="text" v-model="name" class="form-control" placeholder="Nome da Modelo"
+                        <input type="text" v-model="nome" class="form-control" placeholder="Nome da Modelo"
                             aria-label="Nome da Modelo" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">

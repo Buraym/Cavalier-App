@@ -31,8 +31,8 @@ export default defineComponent({
             await editar_marca(String(this.$route.params.marca_id), { nome: this.nome, ativo: this.ativo });
             this.$router.push("/marca");
         },
-        async DeletarItem(id: any) {
-            await deletar_marca(id);
+        async DeletarItem() {
+            await deletar_marca(String(this.$route.params.marca_id));
             this.$router.push("/marca");
         }
     }
@@ -53,7 +53,7 @@ export default defineComponent({
                             </svg>
                             Atualizar
                         </button>
-                        <button type="button" class="btn btn-danger" @click="DeletarItem(this.$route.params.marca_id)">
+                        <button type="button" class="btn btn-danger" @click="DeletarItem">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-trash-fill" viewBox="0 0 16 16">
                                 <path

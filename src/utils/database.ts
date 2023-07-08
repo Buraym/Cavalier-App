@@ -16,7 +16,7 @@ export async function init_db() {
 
         CREATE TABLE IF NOT EXISTS modelo
         (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             ativo BOOLEAN NOT NULL,
             atualizacao TEXT,
             cadastro TEXT NOT NULL,
@@ -30,7 +30,7 @@ export async function init_db() {
 
         CREATE TABLE IF NOT EXISTS veiculo
         (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             ativo BOOLEAN NOT NULL,
             atualizacao TEXT,
             cadastro TEXT NOT NULL,
@@ -47,7 +47,7 @@ export async function init_db() {
 
         CREATE TABLE IF NOT EXISTS condutor
         (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             ativo BOOLEAN NOT NULL,
             atualizacao TEXT,
             cadastro TEXT NOT NULL,
@@ -60,7 +60,7 @@ export async function init_db() {
 
         CREATE TABLE IF NOT EXISTS movimentacao
         (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             ativo BOOLEAN NOT NULL,
             atualizacao TEXT,
             cadastro TEXT NOT NULL,
@@ -87,7 +87,7 @@ export async function init_db() {
 
         CREATE TABLE IF NOT EXISTS configuracao
         (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             ativo BOOLEAN NOT NULL,
             atualizacao TEXT,
             cadastro TEXT NOT NULL,
@@ -103,7 +103,6 @@ export async function init_db() {
             valor_minuto_hora NUMERIC(38, 2)
         );
     `);
-    await db.close();
 }
 
 // MARCAS
@@ -113,7 +112,6 @@ export async function listar_marcas() {
     const results = await db.select<Array<any>>(`
         SELECT * FROM marca;
     `);
-    await db.close();
     return results;
 }
 
@@ -123,7 +121,7 @@ export async function retornar_marca(id: string) {
     const result = await db.select<Array<any>>(`
         SELECT * FROM marca WHERE id=?1;
     `, [id]);
-    await db.close();
+    
     return result[0];
 }
 
@@ -131,10 +129,10 @@ export async function retornar_marca(id: string) {
 export async function criar_marca(marca: any) {
     const db = await SQLite.open('./test.db');
     await db.execute(`
-        INSERT INTO marca( ativo, atualizacao, cadastro, nome )
+        INSERT INTO marca (ativo, atualizacao, cadastro, nome)
         VALUES (?1, ?2, ?3, ?4)
     `, [true, null, new Date(), marca.nome]);
-    await db.close();
+    
 }
 
 // EDITAR MARCA
@@ -145,7 +143,7 @@ export async function editar_marca(id: string, marca: any) {
         SET nome = ?1, ativo = $2, atualizacao = ?3
         WHERE id = ?4;
     `, [marca.nome, marca.ativo, new Date(), id]);
-    await db.close();
+    
 }
 
 // DELETAR MARCA
@@ -155,7 +153,7 @@ export async function deletar_marca(id: string) {
         DELETE FROM marca
         WHERE id = ?1;
     `, [id]);
-    await db.close();
+    
 }
 
 // MODELOS
@@ -178,7 +176,7 @@ export async function listar_modelos() {
             marca: marcas.filter((marca) => marca.id === marca_id)[0]
         }
     });
-    await db.close();
+    
     return results;
 }
 
@@ -186,15 +184,11 @@ export async function listar_modelos() {
 export async function retornar_modelo(id: string) {
     const db = await SQLite.open('./test.db');
     let result = await db.select<Array<any>>(`
-        SELECT *
-        FROM modelo
-        WHERE m.id=?1;
+        SELECT * FROM modelo WHERE id=?1;
     `, [id]);
     if (result.length > 0 && result[0]) {
         const marca = await db.select<Array<any>>(`
-            SELECT *
-            FROM marca
-            WHERE id = ${result[0].marca_id};
+            SELECT * FROM marca WHERE id = ${result[0].marca_id};
         `);
         if (marca[0]) {
             result = result.map((modelo) => {
@@ -206,7 +200,6 @@ export async function retornar_modelo(id: string) {
             })
         }
     }
-    await db.close();
     return result[0];
 }
 
@@ -214,9 +207,10 @@ export async function retornar_modelo(id: string) {
 export async function criar_modelo(modelo: any) {
     const db = await SQLite.open('./test.db');
     await db.execute(`
-        INSERT INTO modelo VALUES (SELECT IFNULL(MAX(id), 0) + 1 FROM modelo, ?1, ?2, ?3, ?4, ?5)
-    `, [true, null, new Date(), modelo.nome, modelo.id]);
-    await db.close();
+        INSERT INTO modelo (ativo, atualizacao, cadastro, nome, marca_id)
+        VALUES (?1, ?2, ?3, ?4, ?5)
+    `, [true, null, new Date(), modelo.nome, modelo.marca_id]);
+    
 }
 
 // EDITAR MODELO
@@ -227,7 +221,7 @@ export async function editar_modelo(id: string, modelo: any) {
         SET nome = ?1, ativo = ?2, marca_id = ?3, atualizacao = ?4
         WHERE id = ?5;
     `, [modelo.nome, modelo.ativo, modelo.marca_id, new Date(), id]);
-    await db.close();
+    
 }
 
 // DELETAR MODELO
@@ -237,7 +231,7 @@ export async function deletar_modelo(id: string) {
         DELETE FROM modelo
         WHERE id = ?1;
     `, [id]);
-    await db.close();
+    
 }
 
 // VEICULOS
@@ -273,7 +267,7 @@ export async function listar_veiculos() {
             })
         }
     }
-    await db.close();
+    
     return results;
 }
 
@@ -311,7 +305,7 @@ export async function retornar_veiculo(id: string) {
             }
         }
     }
-    await db.close();
+    
     return result;
 }
 
@@ -322,7 +316,7 @@ export async function criar_veiculo(veiculo: any) {
         INSERT INTO veiculo
         VALUES (SELECT IFNULL(MAX(id), 0) + 1 FROM veiculo, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8);
     `, [true, null, new Date(), veiculo.ano, veiculo.cor, veiculo.placa, veiculo.tipo, veiculo.modelo_id]);
-    await db.close();
+    
 }
 
 // EDITAR VEICULO
@@ -333,7 +327,7 @@ export async function editar_veiculo(id: string, veiculo: any) {
         SET placa = ?1, cor = ?2, ano = ?3, tipo = ?4, ativo = ?5, atualização = ?6
         WHERE id = ?7;
     `, [veiculo.placa, veiculo.cor, veiculo.ano, veiculo.tipo, veiculo.ativo, new Date(), id]);
-    await db.close();
+    
 }
 
 // DELETAR VEICULO
@@ -343,7 +337,7 @@ export async function deletar_veiculo(id: string) {
         DELETE FROM veiculo
         WHERE id = ?1;
     `, [id]);
-    await db.close();
+    
 }
 
 // CONDUTORES
@@ -354,7 +348,7 @@ export async function listar_condutores() {
         SELECT *
         FROM condutor;
     `);
-    await db.close();
+    
     return result;
 }
 
@@ -364,7 +358,7 @@ export async function retornar_condutor(id: string) {
     const result = await db.select<Array<any>>(`
         SELECT * FROM condutor WHERE id=?1;
     `, [id]);
-    await db.close();
+    
     return result;
 }
 
@@ -375,7 +369,7 @@ export async function criar_condutor(condutor: any) {
         INSERT INTO condutor
         VALUES (SELECT IFNULL(MAX(id), 0) + 1 FROM veiculo, ?1, ?2, ?3, ?4, ?5, ?6, ?7);
     `, [true, null, new Date(), condutor.cpf, condutor.nome, condutor.telefone, condutor.tempo_gasto]);
-    await db.close();
+    
 }
 
 // EDITAR CONDUTOR
@@ -386,7 +380,7 @@ export async function editar_condutor(id: string, condutor: any) {
         SET cpf = ?1, nome = ?2, telefone = ?3, tempo_gasto = ?4, ativo = ?5, atualização = ?6
         WHERE id = ?7;
     `, [condutor.cpf, condutor.nome, condutor.telefone, condutor.tempo_gasto, condutor.ativo, new Date(), id]);
-    await db.close();
+    
 }
 
 // DELETAR CONDUTOR
@@ -396,7 +390,7 @@ export async function deletar_condutor(id: string) {
         DELETE FROM condutor
         WHERE id = ?1;
     `, [id]);
-    await db.close();
+    
 }
 
 // MOVIMENTACAO
@@ -453,7 +447,7 @@ export async function listar_movimentacoes() {
             }
         }
     }
-    await db.close();
+    
     return results;
 }
 
@@ -469,7 +463,7 @@ export async function retornar_movimentacao(id: string) {
         JOIN marca ma ON m.marca_id = ma.id
         WHERE mv.id = ?1;
     `, [id]);
-    await db.close();
+    
     return result;
 }
 
@@ -484,7 +478,7 @@ export async function criar_movimentacao(movimentacao: any) {
         movimentacao.tempo_desconto, movimentacao.tempo_multa, movimentacao.valor_desconto, movimentacao.valor_hora,
         movimentacao.valor_hora_multa, movimentacao.valor_multa, movimentacao.valor_total, movimentacao.condutor_id,
         movimentacao.veiculo_id]);
-    await db.close();
+    
 }
 
 // EDITAR MOVIMENTACAO
@@ -513,7 +507,7 @@ export async function editar_movimentacao(id: string, movimentacao: any) {
         new Date(),
         id
     ]);
-    await db.close();
+    
 }
 
 // DELETAR MOVIMENTACAO
@@ -523,7 +517,7 @@ export async function deletar_movimentacao(id: string) {
         DELETE FROM movimentacao
         WHERE id = ?1;
     `, [id]);
-    await db.close();
+    
 }
 
 // CONFIGURACOES
@@ -535,7 +529,7 @@ export async function retornar_configuracao(id: string) {
         FROM configuracao
         LIMIT 1;
     `, [id]);
-    await db.close();
+    
     return result;
 }
 
@@ -550,7 +544,7 @@ export async function criar_configuracao(configuracao: any) {
         configuracao.gerar_desconto, configuracao.inicio_expediente, configuracao.tempo_de_desconto,
         configuracao.tempo_para_desconto, configuracao.vagas_carro, configuracao.vagas_moto,
         configuracao.vagas_van, configuracao.valor_hora, configuracao.valor_minuto_hora]);
-    await db.close();
+    
 }
 
 // EDITAR CONFIGURACAO
@@ -566,5 +560,5 @@ export async function editar_configuracao(id: string, configuracao: any) {
         configuracao.gerar_desconto, configuracao.inicio_expediente, configuracao.tempo_de_desconto,
         configuracao.tempo_para_desconto, configuracao.vagas_carro, configuracao.vagas_moto,
         configuracao.vagas_van, configuracao.valor_hora, configuracao.valor_minuto_hora, id]);
-    await db.close();
+    
 }

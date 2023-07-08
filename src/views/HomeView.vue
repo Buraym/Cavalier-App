@@ -3,6 +3,7 @@ import { defineComponent, ref } from 'vue';
 import { format, intervalToDuration, isToday } from "date-fns";
 import { MovimentacaoClient } from "@/client/movimentacoes.client";
 import { ConfiguracaoClient } from "@/client/configuracao.client";
+import { init_db } from "@/utils/database"
 import Table from '@/components/Table.vue';
 const listHeaderTopics: any[] = [
   {
@@ -93,6 +94,7 @@ listItemTopics.value = [
 let OldMovimentations = ref<any[] | []>([]);
 let UsedParkingSpots = ref<any[] | []>([]);
 let config = ref<any>(null);
+// await init_db();
 export default defineComponent({
   name: 'HomeView',
   data: () => {
