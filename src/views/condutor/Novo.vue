@@ -1,5 +1,5 @@
 <script lang="ts">
-import { CondutorClient } from '@/client/condutor.client';
+import { criar_condutor } from '@/utils/database';
 import { defineComponent } from 'vue';
 export default defineComponent({
     name: 'CadastroCondutor',
@@ -14,10 +14,9 @@ export default defineComponent({
     methods: {
         async EnviarFormulario(event: any) {
             event.preventDefault();
-            const client = new CondutorClient();
-            await client.create({
-                nome: this.nome,
+            await criar_condutor({
                 cpf: this.cpf,
+                nome: this.nome,
                 telefone: this.telefone
             })
             this.$router.push("/condutor");
@@ -40,8 +39,8 @@ export default defineComponent({
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">CPF</span>
-                        <input type="text" v-model="cpf" class="form-control" placeholder="CPF" aria-label="CPF"
-                            aria-describedby="basic-addon1" required>
+                        <input type="text" v-model="cpf" maxlength="14" class="form-control" placeholder="CPF"
+                            aria-label="CPF" aria-describedby="basic-addon1" required>
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Telefone</span>

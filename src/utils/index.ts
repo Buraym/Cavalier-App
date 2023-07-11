@@ -76,6 +76,10 @@ export function IntToTime(time: Number): String {
                     String(Math.floor(Number(time) % 60) < 10 ? "0" + String(Math.floor(Number(time) % 60)) : String(Math.floor(Number(time) % 60)))
 }
 
+export function StringToTime(time: String): Number {
+    return Number(String(time).split(":")[0]) * 60 + Number(String(time).split(":")[1]);
+}
+
 export function StringToDate(time: String): Date {
     const date = new Date(String(time));
     date.setUTCHours(Number(date.getHours()));

@@ -276,7 +276,8 @@ export async function retornar_veiculo(id: string) {
     const db = await SQLite.open('./test.db');
     let result = await db.select<Array<any>>(`
         SELECT *
-        FROM veiculo;
+        FROM veiculo
+        WHERE id = ?1;
     `, [id]);
     if (result.length > 0 && result[0]) {
         let modelo = await db.select<Array<any>>(`
@@ -306,15 +307,15 @@ export async function retornar_veiculo(id: string) {
         }
     }
     
-    return result;
+    return result[0];
 }
 
 // CRIAR VEICULO
 export async function criar_veiculo(veiculo: any) {
     const db = await SQLite.open('./test.db');
     await db.execute(`
-        INSERT INTO veiculo
-        VALUES (SELECT IFNULL(MAX(id), 0) + 1 FROM veiculo, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8);
+        INSERT INTO veiculo (ativo, atualizacao, cadastro, ano, cor, placa, tipo, modelo_id)
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8);
     `, [true, null, new Date(), veiculo.ano, veiculo.cor, veiculo.placa, veiculo.tipo, veiculo.modelo_id]);
     
 }
@@ -324,7 +325,7 @@ export async function editar_veiculo(id: string, veiculo: any) {
     const db = await SQLite.open('./test.db');
     await db.execute(`
         UPDATE veiculo
-        SET placa = ?1, cor = ?2, ano = ?3, tipo = ?4, ativo = ?5, atualização = ?6
+        SET placa = ?1, cor = ?2, ano = ?3, tipo = ?4, ativo = ?5, atualizacao = ?6
         WHERE id = ?7;
     `, [veiculo.placa, veiculo.cor, veiculo.ano, veiculo.tipo, veiculo.ativo, new Date(), id]);
     
@@ -359,17 +360,16 @@ export async function retornar_condutor(id: string) {
         SELECT * FROM condutor WHERE id=?1;
     `, [id]);
     
-    return result;
+    return result[0];
 }
 
 // CRIAR CONDUTOR
 export async function criar_condutor(condutor: any) {
     const db = await SQLite.open('./test.db');
     await db.execute(`
-        INSERT INTO condutor
-        VALUES (SELECT IFNULL(MAX(id), 0) + 1 FROM veiculo, ?1, ?2, ?3, ?4, ?5, ?6, ?7);
-    `, [true, null, new Date(), condutor.cpf, condutor.nome, condutor.telefone, condutor.tempo_gasto]);
-    
+        INSERT INTO condutor ( ativo, atualizacao, cadastro, cpf, nome, telefone, tempo_gasto )
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, 0);
+    `, [true, null, new Date(), condutor.cpf, condutor.nome, condutor.telefone]);
 }
 
 // EDITAR CONDUTOR
@@ -377,7 +377,7 @@ export async function editar_condutor(id: string, condutor: any) {
     const db = await SQLite.open('./test.db');
     await db.execute(`
         UPDATE condutor
-        SET cpf = ?1, nome = ?2, telefone = ?3, tempo_gasto = ?4, ativo = ?5, atualização = ?6
+        SET cpf = ?1, nome = ?2, telefone = ?3, tempo_gasto = ?4, ativo = ?5, atualizacao = ?6
         WHERE id = ?7;
     `, [condutor.cpf, condutor.nome, condutor.telefone, condutor.tempo_gasto, condutor.ativo, new Date(), id]);
     

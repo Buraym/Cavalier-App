@@ -26,9 +26,8 @@ export default defineComponent({
         },
         async RetornarModelo() {
             const modelo = await retornar_modelo(String(this.$route.params.modelo_id));
-            const marca = await retornar_marca(String(modelo.id));
             this.nome = modelo.nome;
-            this.marca = marca.id;
+            this.marca = modelo.marca.id;
             this.ativo = modelo.ativo ? true : false;
             this.data_cadastro = format(new Date(modelo.cadastro), "dd/MM/yyyy HH:MM")
             if (modelo.atualizacao) {

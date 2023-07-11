@@ -1,8 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
-import { VeiculoClient } from '@/client/veiculo.client';
-import { ModeloClient } from '@/client/modelo.client';
+import { editar_veiculo, retornar_veiculo, deletar_veiculo, listar_modelos } from '@/utils/database';
 const modelos = ref<any[] | []>([]);
 export default defineComponent({
     name: 'EdicaoVeiculo',
@@ -25,44 +24,36 @@ export default defineComponent({
     },
     methods: {
         async RetornarModelos() {
-            const client = new ModeloClient();
-            this.modelos = (await client.getList()).map((item) => ({ title: item.nome, value: item.id }));
-            console.log(this.modelos);
+            this.modelos = (await listar_modelos()).map((item) => ({ title: item.nome, value: item.id }));
         },
         async RetornarVeiculo() {
-            const client = new VeiculoClient();
-            const data = await client.findById(String(this.$route.params.veiculo_id))
-            this.placa = data.placa;
-            this.ano = data.ano;
-            this.modelo = data.modelo.id;
-            this.cor = data.cor;
-            this.tipo = data.tipo;
-            this.ativo = data.ativo;
-            this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1] - 1, data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:MM")
-            if (data.atualizacao) {
-                this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1] - 1, data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
+            const veiculo = await retornar_veiculo(String(this.$route.params.veiculo_id));
+            console.log(veiculo);
+            this.placa = veiculo.placa;
+            this.ano = veiculo.ano;
+            this.modelo = veiculo.modelo.id;
+            this.cor = veiculo.cor;
+            this.tipo = veiculo.tipo;
+            this.ativo = veiculo.ativo ? true : false;
+            this.data_cadastro = format(new Date(veiculo.cadastro), "dd/MM/yyyy HH:MM")
+            if (veiculo.atualizacao) {
+                this.data_atualizado = format(new Date(veiculo.atualizacao), "dd/MM/yyyy HH:MM")
             }
         },
         async EditarVeiculo(event: any) {
             event.preventDefault();
-            const client = new VeiculoClient();
-            const modeloClient = new ModeloClient();
-            const data = await client.findById(String(this.$route.params.veiculo_id))
-            const modeloData = await modeloClient.findById(String(this.modelo))
-            await client.editById(Number(this.$route.params.veiculo_id), {
-                ...data,
+            await editar_veiculo(String(this.$route.params.veiculo_id), {
                 ativo: this.ativo,
                 placa: this.placa,
                 ano: this.ano,
-                modelo: modeloData,
+                modelo: this.modelo,
                 cor: this.cor,
                 tipo: this.tipo,
             });
             this.$router.push("/veiculo");
         },
-        async DeletarItem(id: String) {
-            const client = new VeiculoClient();
-            await client.deleteById(String(id));
+        async DeletarItem() {
+            await deletar_veiculo(String(this.$route.params.veiculo_id));
             this.$router.push("/veiculo");
         }
     }
@@ -83,7 +74,7 @@ export default defineComponent({
                             </svg>
                             Atualizar
                         </button>
-                        <button type="button" class="btn btn-danger" @click="DeletarItem(this.$route.params.modelo_id)">
+                        <button type="button" class="btn btn-danger" @click="DeletarItem">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-trash-fill" viewBox="0 0 16 16">
                                 <path
@@ -118,8 +109,15 @@ export default defineComponent({
                         <select v-model="cor" class="form-select" id="inputGroupSelect01">
                             <option value="null">Escolha uma cor</option>
                             <option value="RED">Vermelho</option>
+                            <option value="WHITE">Branco</option>
+                            <option value="GREY">Cinza</option>
+                            <option value="SILVER">Prata</option>
+                            <option value="BLACK">Preto</option>
+                            <option value="PURPLE">Roxo</option>
+                            <option value="ORANGE">Laranja</option>
                             <option value="GREEN">Verde</option>
                             <option value="BLUE">Azul</option>
+                            <option value="OTHER">Outra cor ou estampa</option>
                         </select>
                     </div>
                     <div class="input-group mb-3">
