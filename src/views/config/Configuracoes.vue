@@ -1,23 +1,26 @@
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent } from 'vue';
 import { ConfiguracaoClient } from '@/client/configuracao.client';
 import { format } from 'date-fns';
+import { retornar_configuracao } from '@/utils/database';
+import { editar_configuracao } from '@/utils/database';
 
 export default defineComponent({
     name: 'Configuracoes',
     emits: ["EnviarFormulario"],
     data: () => {
         return {
-            vagasCarro: "0",
-            vagasMoto: "0",
-            vagasVan: "0",
-            valorHora: "12.2",
-            valorMinutoHora: "1.5",
-            inicioExpediente: "0",
-            fimExpediente: "0",
+            vagasCarro: "10",
+            vagasMoto: "5",
+            vagasVan: "2",
+            valorHora: 12.2,
+            valorMinutoHora: 1.5,
+            inicioExpediente: "09:00:00",
+            fimExpediente: "18:00:00",
             gerarDesconto: true,
-            tempoParaDesconto: "0",
-            tempoDeDesconto: "0"
+            tempoParaDesconto: "00:30:00",
+            tempoDeDesconto: "01:00:00",
+            ativo: true,
         }
     },
     mounted() {
@@ -25,21 +28,21 @@ export default defineComponent({
     },
     methods: {
         async RetornarConfiguracao() {
-            const client = new ConfiguracaoClient();
-            const config = await client.getConfig();
-            this.vagasCarro = config.vagasCarro;
-            this.vagasMoto = config.vagasMoto;
-            this.vagasVan = config.vagasVan;
-            this.valorHora = config.valorHora;
-            this.valorMinutoHora = config.valorMinutoHora;
+            const configuracao = await retornar_configuracao();
+            console.log(configuracao);
+            this.vagasCarro = String(configuracao.vagas_carro);
+            this.vagasMoto = String(configuracao.vagas_moto);
+            this.vagasVan = String(configuracao.vagas_van);
+            this.valorHora = configuracao.valor_hora;
+            this.valorMinutoHora = configuracao.valor_minuto_hora;
             this.inicioExpediente = format(
                 new Date(
                     new Date().getFullYear(),
                     new Date().getMonth(),
                     new Date().getDate(),
-                    config.inicioExpediente[0],
-                    config.inicioExpediente[1],
-                    config.inicioExpediente[2]
+                    Number(String(configuracao.inicio_expediente).split(":")[0]),
+                    Number(String(configuracao.inicio_expediente).split(":")[1]),
+                    Number(String(configuracao.inicio_expediente).split(":")[1]),
                 ),
                 "HH:mm:ss"
             );
@@ -48,21 +51,21 @@ export default defineComponent({
                     new Date().getFullYear(),
                     new Date().getMonth(),
                     new Date().getDate(),
-                    config.fimExpediente[0],
-                    config.fimExpediente[1],
-                    config.fimExpediente[2]
+                    Number(String(configuracao.fim_expediente).split(":")[0]),
+                    Number(String(configuracao.fim_expediente).split(":")[1]),
+                    Number(String(configuracao.fim_expediente).split(":")[1]),
                 ),
                 "HH:mm:ss"
             );
-            this.gerarDesconto = config.gerarDesconto;
+            this.gerarDesconto = configuracao.gerar_desconto ? true : false;
             this.tempoParaDesconto = format(
                 new Date(
                     new Date().getFullYear(),
                     new Date().getMonth(),
                     new Date().getDate(),
-                    config.tempoParaDesconto[0],
-                    config.tempoParaDesconto[1],
-                    config.tempoParaDesconto[2]
+                    Number(String(configuracao.tempo_para_desconto).split(":")[0]),
+                    Number(String(configuracao.tempo_para_desconto).split(":")[1]),
+                    Number(String(configuracao.tempo_para_desconto).split(":")[1]),
                 ),
                 "HH:mm:ss"
             );
@@ -71,9 +74,9 @@ export default defineComponent({
                     new Date().getFullYear(),
                     new Date().getMonth(),
                     new Date().getDate(),
-                    config.tempoDeDesconto[0],
-                    config.tempoDeDesconto[1],
-                    config.tempoDeDesconto[2]
+                    Number(String(configuracao.tempo_de_desconto).split(":")[0]),
+                    Number(String(configuracao.tempo_de_desconto).split(":")[1]),
+                    Number(String(configuracao.tempo_de_desconto).split(":")[1])
                 ),
                 "HH:mm:ss"
             );
@@ -81,30 +84,31 @@ export default defineComponent({
         async EnviarFormulario(event: any) {
             event.preventDefault();
             console.log({
-                vagasCarro: this.vagasCarro,
-                vagasMoto: this.vagasMoto,
-                vagasVan: this.vagasVan,
-                valorHora: this.valorHora,
-                valorMinutoHora: this.valorMinutoHora,
-                inicioExpediente: this.inicioExpediente,
-                fimExpediente: this.fimExpediente,
-                gerarDesconto: this.gerarDesconto,
-                tempoParaDesconto: this.tempoParaDesconto,
-                tempoDeDesconto: this.tempoDeDesconto
+                ativo: this.ativo,
+                vagas_carro: this.vagasCarro,
+                vagas_moto: this.vagasMoto,
+                vagas_van: this.vagasVan,
+                valor_hora: this.valorHora,
+                valor_minuto_hora: this.valorMinutoHora,
+                inicio_expediente: this.inicioExpediente,
+                fim_expediente: this.fimExpediente,
+                gerar_desconto: this.gerarDesconto,
+                tempo_para_desconto: this.tempoParaDesconto,
+                tempo_de_desconto: this.tempoDeDesconto
             })
-            const client = new ConfiguracaoClient();
-            const stringResult = await client.create({
-                vagasCarro: this.vagasCarro,
-                vagasMoto: this.vagasMoto,
-                vagasVan: this.vagasVan,
-                valorHora: this.valorHora,
-                valorMinutoHora: this.valorMinutoHora,
-                inicioExpediente: this.inicioExpediente,
-                fimExpediente: this.fimExpediente,
-                gerarDesconto: this.gerarDesconto,
-                tempoParaDesconto: this.tempoParaDesconto,
-                tempoDeDesconto: this.tempoDeDesconto
-            });
+            // await editar_configuracao({
+            //     vagas_carro: this.vagasCarro,
+            //     vagas_moto: this.vagasMoto,
+            //     vagas_van: this.vagasVan,
+            //     valor_hora: this.valorHora,
+            //     valor_minuto_hora: this.valorMinutoHora,
+            //     inicio_expediente: this.inicioExpediente,
+            //     fim_expediente: this.fimExpediente,
+            //     gerar_desconto: this.gerarDesconto,
+            //     tempo_para_desconto: this.tempoParaDesconto,
+            //     tempo_de_desconto: this.tempoDeDesconto
+            // });
+            // this.$router.push("/");
         }
     }
 });
@@ -150,7 +154,7 @@ export default defineComponent({
                 </div>
             </div>
             <h4 class="text-start mb-3 mt-5">Configurações de descontos</h4>
-            <div class="d-flex w-100 align-items-center justify-content-center gap-3 mb-5 ">
+            <div class="d-flex w-100 align-items-center justify-content-center gap-3 mb-3">
                 <div class="form-check">
                     <input class="form-check-input form-check-input-warning" v-model="gerarDesconto" type="checkbox"
                         value="" id="flexCheckDefault">
@@ -168,6 +172,16 @@ export default defineComponent({
                     <input type="time" v-model="tempoDeDesconto" step="1" class="form-control"
                         placeholder="Tempo Minimo de desconto" aria-label="Tempo Minimo de desconto">
                 </div>
+            </div>
+            <div class="d-flex w-100 align-items-center justify-content-start gap-3 mb-5">
+                <div class="form-check">
+                    <input class="form-check-input form-check-input-warning" v-model="ativo" type="checkbox"
+                        id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Configuração automatica de preços e horarios ativa ?
+                    </label>
+                </div>
+
             </div>
             <button type="submit" class="btn btn-warning w-100">Atualizar</button>
         </form>

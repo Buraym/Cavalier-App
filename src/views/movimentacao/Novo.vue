@@ -1,9 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { CondutorClient } from '@/client/condutor.client';
-import { VeiculoClient } from '@/client/veiculo.client';
-import { MovimentacaoClient } from '@/client/movimentacoes.client';
 import { ConfiguracaoClient } from '@/client/configuracao.client';
+import { criar_movimentacao, listar_condutores, listar_veiculos, retornar_configuracao } from '@/utils/database';
+import { format } from 'date-fns';
 const condutores = ref<any[] | []>([]);
 const veiculos = ref<any[] | []>([]);
 export default defineComponent({
@@ -16,16 +15,17 @@ export default defineComponent({
             veiculo: null,
             veiculos,
             config: null,
-            entrada: "",
+            entrada: format(new Date(), "yyyy-MM-dd HH:mm"),
             saida: "",
-            tempo: "",
-            tempoDesconto: "",
-            tempoMulta: "",
+            tempo: "00:00",
+            tempoDesconto: "00:00",
+            tempoMulta: "00:00",
             valorDesconto: 0.00,
             valorMulta: 0.00,
             valorTotal: 0.00,
             valorHora: 0.00,
-            valorHoraMulta: 0.00
+            valorHoraMulta: 0.00,
+            calculoAutomatico: true
         }
     },
     mounted() {
@@ -35,45 +35,41 @@ export default defineComponent({
     },
     methods: {
         async RetornarConfiguracao() {
-            const configuracaoClient = new ConfiguracaoClient();
-            this.config = (await configuracaoClient.getConfig());
+            const config = await retornar_configuracao();
+            console.log(config);
+            this.config = config;
+            this.valorHora = config.valor_hora;
         },
         async RetornarCondutores() {
-            const client = new CondutorClient();
-            this.condutores = (await client.getList()).map((item) => ({ title: item.nome, value: item.id }));
+            this.condutores = (await listar_condutores()).map((item) => ({ title: item.nome, value: item.id }));
         },
         async RetornarVeiculos() {
-            const client = new VeiculoClient();
-            this.veiculos = (await client.getList()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
+            this.veiculos = (await listar_veiculos()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
         },
         async EnviarFormulario(event: any) {
             event.preventDefault();
-            const client = new MovimentacaoClient();
-            const condutorClient = new CondutorClient();
-            const veiculoClient = new VeiculoClient();
-            const condutor = await condutorClient.findById(String(this.condutor));
-            const veiculo = await veiculoClient.findById(String(this.veiculo));
-            await client.create({
-                condutor,
-                veiculo,
-                entrada: this.entrada,
-                saida: this.saida,
+            await criar_movimentacao({
+                condutor_id: this.condutor,
+                veiculo_id: this.veiculo,
+                entrada: new Date(this.entrada),
+                saida: new Date(this.saida),
                 tempo: Number(String(this.tempo).split(":")[0]) * 60 + Number(String(this.tempo).split(":")[1]),
-                tempoDesconto: Number(String(this.tempoDesconto).split(":")[0]) * 60 + Number(String(this.tempoDesconto).split(":")[1]),
-                tempoMulta: Number(String(this.tempoMulta).split(":")[0]) * 60 + Number(String(this.tempoMulta).split(":")[1]),
-                valorDesconto: Number(Math.abs(Number(this.valorDesconto)).toFixed(2)),
-                valorMulta: Number(Math.abs(Number(this.valorMulta)).toFixed(2)),
-                valorTotal: Number(Math.abs(Number(this.valorTotal)).toFixed(2)),
-                valorHora: Number(Math.abs(Number(this.valorHora)).toFixed(2)),
-                valorHoraMulta: Number(Math.abs(Number(this.valorHoraMulta)).toFixed(2)),
-            });
+                tempo_desconto: Number(String(this.tempoDesconto).split(":")[0]) * 60 + Number(String(this.tempoDesconto).split(":")[1]),
+                tempo_multa: Number(String(this.tempoMulta).split(":")[0]) * 60 + Number(String(this.tempoMulta).split(":")[1]),
+                valor_desconto: Number(Math.abs(Number(this.valorDesconto)).toFixed(2)),
+                valor_multa: Number(Math.abs(Number(this.valorMulta)).toFixed(2)),
+                valor_total: Number(Math.abs(Number(this.valorTotal)).toFixed(2)),
+                valor_hora: Number(Math.abs(Number(this.valorHora)).toFixed(2)),
+                valor_hora_multa: Number(Math.abs(Number(this.valorHoraMulta)).toFixed(2)),
+            })
+            console.log("DEU BÃO !!!")
             this.$router.push('/movimentacao');
         }
     }
 });
 </script>
 <template>
-    <div class="cadastro-modelo">
+    <div class="cadastro-movimentacao">
         <div class="container text-start">
             <form @submit="EnviarFormulario">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
@@ -125,7 +121,7 @@ export default defineComponent({
                                 aria-label="Tempo multa" aria-describedby="basic-addon1">
                         </div>
                     </div>
-                    <div class="d-flex align-items-center justify-content-center gap-2">
+                    <div v-if="!calculoAutomatico" class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Valor desconto (R$)</span>
                             <input type="text" v-model="valorDesconto" class="form-control" placeholder="Valor desconto"
@@ -142,7 +138,7 @@ export default defineComponent({
                                 aria-label="Valor multa" aria-describedby="basic-addon1">
                         </div>
                     </div>
-                    <div class="d-flex align-items-center justify-content-center gap-2">
+                    <div v-if="!calculoAutomatico" class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Valor unitario por hora (R$)</span>
                             <input type="text" v-model="valorHora" class="form-control"
@@ -153,6 +149,15 @@ export default defineComponent({
                             <span class="input-group-text" id="basic-addon1">Valor total (R$)</span>
                             <input type="text" v-model="valorTotal" class="form-control" placeholder="Valor total"
                                 aria-label="Valor total" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+                        <div class="form-check">
+                            <input v-model="calculoAutomatico" class="form-check-input" type="checkbox"
+                                id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Calculo automatico ?
+                            </label>
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
@@ -166,7 +171,13 @@ export default defineComponent({
     </div>
 </template>
 <style scoped>
-.cadastro-marca {
+.cadastro-movimentacao {
     padding: 30px;
+}
+
+@media (max-width: 992px) {
+    .cadastro-movimentacao {
+        padding: 10px;
+    }
 }
 </style>

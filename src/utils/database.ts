@@ -102,7 +102,28 @@ export async function init_db() {
             valor_hora NUMERIC(38, 2),
             valor_minuto_hora NUMERIC(38, 2)
         );
+
+        INSERT INTO configuracao
+        (
+            id,
+            ativo,
+            atualizacao,
+            cadastro,
+            fim_expediente,
+            gerar_desconto,
+            inicio_expediente,
+            tempo_de_desconto,
+            tempo_para_desconto,
+            vagas_carro,
+            vagas_moto,
+            vagas_van,
+            valor_hora,
+            valor_minuto_hora
+        )
+        SELECT 1, 1, NULL, DATE('now'), TIME('18:00:00'), 1, TIME('09:00:00'), TIME('01:00:00'), TIME('00:30:00'), 10, 5, 2, 15.50, 0.25
+        WHERE NOT EXISTS (SELECT 1 FROM configuracao);
     `);
+    db.close();
 }
 
 // MARCAS
@@ -370,6 +391,7 @@ export async function criar_condutor(condutor: any) {
         INSERT INTO condutor ( ativo, atualizacao, cadastro, cpf, nome, telefone, tempo_gasto )
         VALUES (?1, ?2, ?3, ?4, ?5, ?6, 0);
     `, [true, null, new Date(), condutor.cpf, condutor.nome, condutor.telefone]);
+    db.close();
 }
 
 // EDITAR CONDUTOR
@@ -398,7 +420,7 @@ export async function deletar_condutor(id: string) {
 export async function listar_movimentacoes() {
     const db = await SQLite.open('./test.db');
     let results = await db.select<Array<any>>(`
-        SELECT mv.*, c.*, v.*, m.*, ma.*
+        SELECT *
         FROM movimentacao;
     `);
     if (results.length > 0) {
@@ -412,7 +434,7 @@ export async function listar_movimentacoes() {
             FROM veiculo
             WHERE id in ( ${results.map((movimentacao) => movimentacao.veiculo_id).join(", ")} );
         `)
-        if (veiculos.length > 0) {
+        if (condutores.length > 0 && condutores[0] && veiculos.length > 0 && veiculos[0]) {
             let modelos = await db.select<Array<any>>(`
                 SELECT *
                 FROM modelo
@@ -454,27 +476,66 @@ export async function listar_movimentacoes() {
 // RETORNAR MOVIMENTACAO
 export async function retornar_movimentacao(id: string) {
     const db = await SQLite.open('./test.db');
-    const result = await db.execute(`
-        SELECT mv.*, c.*, v.*, m.*, ma.*
-        FROM movimentacao mv
-        JOIN condutor c ON mv.condutor_id = c.id
-        JOIN veiculo v ON mv.veiculo_id = v.id
-        JOIN modelo m ON v.modelo_id = m.id
-        JOIN marca ma ON m.marca_id = ma.id
-        WHERE mv.id = ?1;
+    let result = await db.select<Array<any>>(`
+        SELECT *
+        FROM movimentacao
+        WHERE id = ?1;
     `, [id]);
-    
-    return result;
+    if (result.length > 0 && result[0]) {
+        let condutor = await db.select<Array<any>>(`
+            SELECT *
+            FROM condutor
+            WHERE id = ${result[0].condutor_id};
+        `);
+        let veiculo = await db.select<Array<any>>(`
+            SELECT *
+            FROM veiculo
+            WHERE id = ${result[0].veiculo_id};
+        `);
+        if (condutor.length > 0 && condutor[0] && veiculo.length > 0 && veiculo[0]) {
+            let modelo = await db.select<Array<any>>(`
+                SELECT *
+                FROM modelo
+                WHERE id = ${veiculo[0].modelo_id};
+            `);
+            if (modelo.length > 0 && modelo[0]) {
+                let marca = await db.select<Array<any>>(`
+                    SELECT *
+                    FROM marca
+                    WHERE id = ${modelo[0].marca_id};
+                `);
+                if (marca.length > 0 && marca[0]) {
+                    result = result.map((movimentacao) => {
+                        let { condutor_id, veiculo_id, ...rest } = movimentacao;
+                        let { modelo_id, ...veiculoRest} = veiculo[0];
+                        let { marca_id, ...modeloRest} = modelo[0];
+                        return {
+                            ...rest,
+                            condutor: condutor[0],
+                            veiculo: {
+                                ...veiculoRest,
+                                modelo: {
+                                    ...modeloRest,
+                                    marca: marca[0]
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    }
+    return result[0];
 }
 
 // CRIAR MOVIMENTACAO
 export async function criar_movimentacao(movimentacao: any) {
     const db = await SQLite.open('./test.db');
     await db.execute(`
-        INSERT INTO movimentacao (id, ativo, atualizacao, cadastro, entrada, saida, tempo, tempo_desconto,
+        INSERT INTO movimentacao (ativo, atualizacao, cadastro, entrada, saida, tempo, tempo_desconto,
         tempo_multa, valor_desconto, valor_hora, valor_hora_multa, valor_multa, valor_total, condutor_id, veiculo_id)
-        VALUES ((SELECT IFNULL(MAX(id), 0) + 1 FROM movimentacao), ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15);
-    `, [true, null, new Date(), new Date(), movimentacao.entrada, movimentacao.saida, movimentacao.tempo,
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15);
+    `, [true, null, new Date(), movimentacao.entrada, movimentacao.saida, movimentacao.tempo,
         movimentacao.tempo_desconto, movimentacao.tempo_multa, movimentacao.valor_desconto, movimentacao.valor_hora,
         movimentacao.valor_hora_multa, movimentacao.valor_multa, movimentacao.valor_total, movimentacao.condutor_id,
         movimentacao.veiculo_id]);
@@ -522,15 +583,15 @@ export async function deletar_movimentacao(id: string) {
 
 // CONFIGURACOES
 // RETORNAR CONFIGURACAO
-export async function retornar_configuracao(id: string) {
+export async function retornar_configuracao() {
     const db = await SQLite.open('./test.db');
-    const result = await db.execute(`
+    const result = await db.select<Array<any>>(`
         SELECT *
         FROM configuracao
         LIMIT 1;
-    `, [id]);
+    `);
     
-    return result;
+    return result[0];
 }
 
 // CRIAR CONFIGURACAO
@@ -548,17 +609,17 @@ export async function criar_configuracao(configuracao: any) {
 }
 
 // EDITAR CONFIGURACAO
-export async function editar_configuracao(id: string, configuracao: any) {
+export async function editar_configuracao(configuracao: any) {
     const db = await SQLite.open('./test.db');
     await db.execute(`
         UPDATE configuracao
         SET ativo = ?1, atualizacao = ?2, cadastro = ?3, fim_expediente = ?4, gerar_desconto = ?5, inicio_expediente = ?6,
         tempo_de_desconto = ?7, tempo_para_desconto = ?8, vagas_carro = ?9, vagas_moto = ?10, vagas_van = ?11,
         valor_hora = ?12, valor_minuto_hora = ?13
-        WHERE id = ?14;
+        WHERE id = 1;
     `, [configuracao.ativo, new Date(), configuracao.cadastro, configuracao.fim_expediente,
         configuracao.gerar_desconto, configuracao.inicio_expediente, configuracao.tempo_de_desconto,
         configuracao.tempo_para_desconto, configuracao.vagas_carro, configuracao.vagas_moto,
-        configuracao.vagas_van, configuracao.valor_hora, configuracao.valor_minuto_hora, id]);
+        configuracao.vagas_van, configuracao.valor_hora, configuracao.valor_minuto_hora]);
     
 }

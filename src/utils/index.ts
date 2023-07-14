@@ -82,6 +82,6 @@ export function StringToTime(time: String): Number {
 
 export function StringToDate(time: String): Date {
     const date = new Date(String(time));
-    date.setUTCHours(Number(date.getHours()));
+    date.setUTCHours(Number(date.getHours()) + 3);
     return date;
 }
