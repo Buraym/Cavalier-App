@@ -20,9 +20,9 @@ export default defineComponent({
             const marca = await retornar_marca(String(this.$route.params.marca_id));
             this.nome = marca.nome;
             this.ativo = marca.ativo ? true : false;
-            this.data_cadastro = format(new Date(marca.cadastro), "dd/MM/yyyy HH:MM")
+            this.data_cadastro = format(new Date(marca.cadastro), "dd/MM/yyyy HH:mm")
             if (marca.atualizacao) {
-                this.data_atualizado = format(new Date(marca.atualizacao), "dd/MM/yyyy HH:MM")
+                this.data_atualizado = format(new Date(marca.atualizacao), "dd/MM/yyyy HH:mm")
             }
             console.log(marca);
         },

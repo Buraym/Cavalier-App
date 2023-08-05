@@ -1,9 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { format, intervalToDuration, isToday } from "date-fns";
-import { MovimentacaoClient } from "@/client/movimentacoes.client";
-import { ConfiguracaoClient } from "@/client/configuracao.client";
-import { init_db } from "@/utils/database"
+import { retornar_configuracao, listar_movimentacoes, deletar_movimentacao } from '@/utils/database';
 import Table from '@/components/Table.vue';
 const listHeaderTopics: any[] = [
   {
@@ -34,11 +32,7 @@ const listHeaderTopics: any[] = [
   {
     label: "Tempo desconto",
     name: "tempo_desconto"
-  },
-  {
-    label: "Valor Total",
-    name: "valor_total"
-  },
+  }
 ]
 const listItemTopics = ref<any[] | []>([]);
 let hours = intervalToDuration({
@@ -114,21 +108,17 @@ export default defineComponent({
   },
   methods: {
     async RetornarConfiguracao() {
-      const client = new ConfiguracaoClient();
-      this.config = await client.getConfig();
+      this.config = await retornar_configuracao();
+      console.log(await retornar_configuracao());
     },
     async RetornarVagas() {
-      const client = new MovimentacaoClient();
-      const list = await client.getList();
+      const list = await listar_movimentacoes();
+      console.log(list);
       this.OldMovimentations = list.filter((item: any) =>
-        item.ativo &&
+        item.ativo && item.saida &&
         isToday(
           new Date(
-            item.entrada[0],
-            item.entrada[1],
-            item.entrada[2],
-            item.entrada[3],
-            item.entrada[4]
+            item.entrada
           )
         )
       ).map((item) => ({
@@ -137,42 +127,67 @@ export default defineComponent({
         cpf: item.condutor.cpf,
         veiculo_nome: item.veiculo.nome,
         entrada: format(new Date(
-          item.entrada[0],
-          item.entrada[1],
-          item.entrada[2],
-          item.entrada[3],
-          item.entrada[4],
-          item.entrada[5]
+          item.entrada
         ), 'dd/MM/yyyy - HH:mm'),
-        saida: format(new Date(
-          item.saida[0],
-          item.saida[1],
-          item.saida[2],
-          item.saida[3],
-          item.saida[4],
-          item.saida[5]
-        ), 'dd/MM/yyyy - HH:mm'),
-        valor_total: "R$ " + String(item.valorTotal)
+        saida: item.saida ? format(new Date(
+          item.saida
+        ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
+        valor_total: "R$ " + Number(item.valor_total).toFixed(2)
       }));
       this.UsedParkingSpots = list.filter((item: any) =>
         item.ativo &&
-        !item.saida &&
+        item.saida === null
+      ).map((item) => ({
+        condutor: String(item.condutor.nome) + " | " + String(item.condutor.cpf),
+        condutor_id: String(item.condutor.id),
+        entrada: format(new Date(
+          item.entrada
+        ), 'dd/MM/yyyy - HH:mm'),
+        duracao: new Date() < new Date(
+          item.entrada
+        ) ? "" : `${intervalToDuration({
+          start: new Date(
+            item.entrada
+          ), end: new Date()
+        }).days} dia(s), ${intervalToDuration({
+          start: new Date(
+            item.entrada
+          ), end: new Date()
+        }).hours} Hora(s) e ${intervalToDuration({
+          start: new Date(
+            item.entrada
+          ), end: new Date()
+        }).minutes} minuto(s)`,
+        veiculo: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
+        veiculo_id: String(item.veiculo.id),
+        placa: item.veiculo.placa
+      }));
+    },
+    async DeletarItem(id: string) {
+      await deletar_movimentacao(id);
+      const list = await listar_movimentacoes();
+      this.OldMovimentations = list.filter((item: any) =>
+        item.ativo &&
         isToday(
           new Date(
-            item.entrada[0],
-            item.entrada[1],
-            item.entrada[2],
-            item.entrada[3],
-            item.entrada[4],
-            item.entrada[5]
+            item.entrada
           )
         )
-      );
-      console.log(list);
-      console.log(this.OldMovimentations);
-      console.log(this.UsedParkingSpots);
+      ).map((item) => ({
+        id: item.id,
+        name: item.condutor.nome,
+        cpf: item.condutor.cpf,
+        veiculo_nome: item.veiculo.nome,
+        entrada: format(new Date(
+          item.entrada
+        ), 'dd/MM/yyyy - HH:mm'),
+        saida: item.saida ? format(new Date(
+          item.saida
+        ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
+        valor_total: "R$ " + Number(item.valor_total).toFixed(2)
+      }));
     },
-    async DesocuparVaga() {
+    async EncerrarEstacionamento(id: string) {
 
     }
   }
@@ -180,47 +195,58 @@ export default defineComponent({
 </script>
 <template>
   <div class="home">
-    <div class="row row-cols-1 row-cols-md-3 g-5 px-5 pt-3">
+    <div v-if="UsedParkingSpots.length > 0" class="row row-cols-1 row-cols-md-3 g-5 px-5 pt-3">
       <div class="col" v-for="(item) in UsedParkingSpots" :key="item.id">
         <div class="card">
           <div class="card-header">
-            <a :href='"/condutor/asdasdasd"' class="list-group-item list-group-item-action">
-              {{ item.condutor.nome }}
+            <a :href='"/condutor/" + item.condutor_id' class="list-group-item list-group-item-action">
+              {{ item.condutor }}
             </a>
           </div>
-          <div class="list-group m-3">
-            <a :href='"/veiculo/asdasdasd"' class="list-group-item list-group-item-action">
+          <div class="m-3 mb-1 d-flex">
+            <a :href='"/veiculo/" + item.veiculo_id' class="vehicle-link">
               <div class="d-flex w-100 justify-content-between align-items-start">
-                <p class="mb-1 text-left">
-                  {{ item.veiculo.modelo.nome }} - {{ item.veiculo.ano }} | {{ item.veiculo.cor }}
+                <p class="mb-1 w-100">
+                  {{ item.veiculo }}
                 </p>
-                <small>{{ format(new Date(
-                  item.entrada[0],
-                  item.entrada[1],
-                  item.entrada[2],
-                  item.entrada[3],
-                  item.entrada[4],
-                  item.entrada[5]
-                ), 'dd/MM/yyyy - HH:mm') }}</small>
               </div>
-              <small>{{ item.veiculo.placa }}</small>
+              <small>{{ item.placa }}</small>
             </a>
+            <button type="button" class="btn btn-warning text-white" aria-label="Encerrar vaga">
+              <i class="bi bi-explicit-fill"></i>
+            </button>
+          </div>
+          <div class="w-100 d-flex justify-content-between px-3 mb-1">
+            <small>*Entrada: {{ item.entrada }}</small>
+            <small>{{ item.duracao }}</small>
           </div>
         </div>
       </div>
-      <div class="d-flex justify-content-center align-items-center w-100 mt-5">
-        <p class="mb-0 mt-3">
-          Nenhum Carro estacionado hoje !!!
-        </p>
-      </div>
     </div>
-    <div class="container py-3 my-3">
-      <Table :columns="columns" :data="OldMovimentations" :title="'Movimentações dos condutores hoje'" />
+    <div v-if="OldMovimentations.length > 0" class="container py-3 my-3">
+      <Table :columns="columns" :data="OldMovimentations" :title="'Movimentações dos condutores hoje'"
+        :edit="String(/movimentacao/)" :remove="DeletarItem" />
     </div>
   </div>
 </template>
 <style scoped>
-.card {
-  min-height: 172px !important;
+.vehicle-link {
+  width: 90%;
+  padding: 20px;
+  text-decoration: none;
+  color: black;
+  border: 1px solid #dee2e6;
+  border-top-left-radius: 0.4rem;
+  border-bottom-left-radius: 0.4rem;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.btn-warning {
+  width: 10%;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 0.4rem;
+  border-bottom-right-radius: 0.4rem;
 }
 </style>

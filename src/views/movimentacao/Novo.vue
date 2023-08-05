@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { ConfiguracaoClient } from '@/client/configuracao.client';
 import { criar_movimentacao, listar_condutores, listar_veiculos, retornar_configuracao } from '@/utils/database';
 import { format } from 'date-fns';
+import { CalcTotalTime, StringToTime } from '@/utils';
 const condutores = ref<any[] | []>([]);
 const veiculos = ref<any[] | []>([]);
 export default defineComponent({
@@ -39,6 +39,8 @@ export default defineComponent({
             console.log(config);
             this.config = config;
             this.valorHora = config.valor_hora;
+            this.valorHoraMulta = config.valor_hora;
+            this.valorHora = config.valor_hora;
         },
         async RetornarCondutores() {
             this.condutores = (await listar_condutores()).map((item) => ({ title: item.nome, value: item.id }));
@@ -48,21 +50,39 @@ export default defineComponent({
         },
         async EnviarFormulario(event: any) {
             event.preventDefault();
-            await criar_movimentacao({
+            let customValues = {
+                tempo: this.tempo,
+                tempo_desconto: this.tempoDesconto,
+                tempo_multa: this.tempoMulta,
+                valor_desconto: this.valorDesconto,
+                valor_multa: this.valorMulta,
+                valor_total: this.valorTotal,
+                valor_hora: this.valorHora,
+                valor_hora_multa: this.valorHoraMulta,
+                valor_minuto_hora: Number(this.valorHora / 60)
+            }
+            console.log(customValues);
+            let calculatedData = CalcTotalTime({
+                entrada: new Date(this.entrada),
+                saida: new Date(this.saida),
+            }, this.calculoAutomatico ? this.config : null, this.calculoAutomatico ? null : customValues);
+            console.log(calculatedData);
+            let data = {
                 condutor_id: this.condutor,
                 veiculo_id: this.veiculo,
                 entrada: new Date(this.entrada),
                 saida: new Date(this.saida),
-                tempo: Number(String(this.tempo).split(":")[0]) * 60 + Number(String(this.tempo).split(":")[1]),
-                tempo_desconto: Number(String(this.tempoDesconto).split(":")[0]) * 60 + Number(String(this.tempoDesconto).split(":")[1]),
-                tempo_multa: Number(String(this.tempoMulta).split(":")[0]) * 60 + Number(String(this.tempoMulta).split(":")[1]),
-                valor_desconto: Number(Math.abs(Number(this.valorDesconto)).toFixed(2)),
-                valor_multa: Number(Math.abs(Number(this.valorMulta)).toFixed(2)),
-                valor_total: Number(Math.abs(Number(this.valorTotal)).toFixed(2)),
-                valor_hora: Number(Math.abs(Number(this.valorHora)).toFixed(2)),
-                valor_hora_multa: Number(Math.abs(Number(this.valorHoraMulta)).toFixed(2)),
-            })
-            console.log("DEU BÃO !!!")
+                tempo: calculatedData.tempo,
+                tempo_desconto: calculatedData.tempo_desconto,
+                tempo_multa: calculatedData.tempo_multa,
+                valor_desconto: calculatedData.valor_desconto,
+                valor_multa: calculatedData.valor_multa,
+                valor_total: calculatedData.valor_total,
+                valor_hora: calculatedData.valor_hora,
+                valor_hora_multa: calculatedData.valor_hora_multa,
+            }
+            console.log(data)
+            await criar_movimentacao(data)
             this.$router.push('/movimentacao');
         }
     }

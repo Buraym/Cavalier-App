@@ -1,12 +1,9 @@
-export default class AbstractEntity {
-    public id: Number;
-    public cadastro: Date;
-    public atualizacao: Date;
-    public ativo: boolean;
-    constructor(id: Number, cadastro: Date, atualizacao: Date, ativo: boolean) {
-        this.id = id;
-        this.cadastro = cadastro;
-        this.atualizacao = atualizacao;
-        this.ativo = ativo;
-    }
+export default interface IAbstract {
+    id: Number,
+    ativo: boolean,
+    atualizacao: null | String | Date,
+    cadastro: String | Date,
+    criado_por: Number,
+    atualizado_por: Number,
+    deletado_por: Number,
 }

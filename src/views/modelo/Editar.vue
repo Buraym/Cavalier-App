@@ -29,9 +29,9 @@ export default defineComponent({
             this.nome = modelo.nome;
             this.marca = modelo.marca.id;
             this.ativo = modelo.ativo ? true : false;
-            this.data_cadastro = format(new Date(modelo.cadastro), "dd/MM/yyyy HH:MM")
+            this.data_cadastro = format(new Date(modelo.cadastro), "dd/MM/yyyy HH:mm")
             if (modelo.atualizacao) {
-                this.data_atualizado = format(new Date(modelo.atualizacao), "dd/MM/yyyy HH:MM")
+                this.data_atualizado = format(new Date(modelo.atualizacao), "dd/MM/yyyy HH:mm")
             }
         },
         async EditarModelo(event: any) {

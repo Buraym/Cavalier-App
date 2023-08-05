@@ -86,10 +86,15 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/movimentacao/Editar.vue')
   },
   {
+    path: '/relatorio',
+    name: 'relatorio',
+    component: () => import('../views/relatorio/Relatorio.vue')
+  },
+  {
     path: '/:nomepagina(.*)*',
     name: 'paginanaoencontrada',
     component: () => import('../views/Pagina404.vue')
-  },
+  }
 ]
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

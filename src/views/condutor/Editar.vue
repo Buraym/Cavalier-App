@@ -28,9 +28,10 @@ export default defineComponent({
             this.ativo = condutor.ativo ? true : false;
             this.telefone = condutor.telefone;
             this.tempoGasto = String(IntToTime(Number(condutor.tempo_gasto)));
-            this.data_cadastro = format(new Date(condutor.cadastro), "dd/MM/yyyy HH:MM")
+            this.data_cadastro = format(new Date(condutor.cadastro), "dd/MM/yyyy HH:mm")
             if (condutor.atualizacao) {
-                this.data_atualizado = format(new Date(condutor.atualizacao), "dd/MM/yyyy HH:MM")
+                console.log(condutor.atualizacao);
+                this.data_atualizado = format(new Date(condutor.atualizacao), "dd/MM/yyyy HH:mm")
             }
             console.log(condutor);
         },

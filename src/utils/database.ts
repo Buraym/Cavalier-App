@@ -11,6 +11,9 @@ export async function init_db() {
             atualizacao TEXT,
             cadastro TEXT NOT NULL,
             nome TEXT NOT NULL,
+            criado_por INTEGER,
+            atualizado_por INTEGER,
+            deletado_por INTEGER,
             UNIQUE (nome)
         );
 
@@ -22,6 +25,9 @@ export async function init_db() {
             cadastro TEXT NOT NULL,
             nome TEXT NOT NULL,
             marca_id INTEGER NOT NULL,
+            criado_por INTEGER,
+            atualizado_por INTEGER,
+            deletado_por INTEGER,
             FOREIGN KEY (marca_id) REFERENCES marca (id)
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION,
@@ -39,6 +45,9 @@ export async function init_db() {
             placa TEXT NOT NULL,
             tipo TEXT NOT NULL,
             modelo_id INTEGER NOT NULL,
+            criado_por INTEGER,
+            atualizado_por INTEGER,
+            deletado_por INTEGER,
             FOREIGN KEY (modelo_id) REFERENCES modelo (id)
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION,
@@ -55,6 +64,9 @@ export async function init_db() {
             nome TEXT NOT NULL,
             telefone TEXT NOT NULL,
             tempo_gasto INTEGER,
+            criado_por INTEGER,
+            atualizado_por INTEGER,
+            deletado_por INTEGER,
             UNIQUE (cpf)
         );
 
@@ -76,13 +88,15 @@ export async function init_db() {
             valor_total NUMERIC(38,2),
             condutor_id INTEGER NOT NULL,
             veiculo_id INTEGER NOT NULL,
+            criado_por INTEGER,
+            atualizado_por INTEGER,
+            deletado_por INTEGER,
             FOREIGN KEY (veiculo_id) REFERENCES veiculo (id)
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION,
             FOREIGN KEY (condutor_id) REFERENCES condutores (id)
                 ON UPDATE NO ACTION
-                ON DELETE NO ACTION,
-            UNIQUE (veiculo_id)
+                ON DELETE NO ACTION
         );
 
         CREATE TABLE IF NOT EXISTS configuracao
@@ -100,7 +114,10 @@ export async function init_db() {
             vagas_moto INTEGER,
             vagas_van INTEGER,
             valor_hora NUMERIC(38, 2),
-            valor_minuto_hora NUMERIC(38, 2)
+            valor_minuto_hora NUMERIC(38, 2),
+            criado_por INTEGER,
+            atualizado_por INTEGER,
+            deletado_por INTEGER
         );
 
         INSERT INTO configuracao
@@ -122,6 +139,18 @@ export async function init_db() {
         )
         SELECT 1, 1, NULL, DATE('now'), TIME('18:00:00'), 1, TIME('09:00:00'), TIME('01:00:00'), TIME('00:30:00'), 10, 5, 2, 15.50, 0.25
         WHERE NOT EXISTS (SELECT 1 FROM configuracao);
+
+        CREATE TABLE IF NOT EXISTS usuario
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ativo BOOLEAN NOT NULL,
+            atualizacao TEXT,
+            cadastro TEXT NOT NULL,
+            nome VARCHAR(100) NOT NULL,
+            documento VARCHAR(20) NOT NULL,
+            contato VARCHAR(20),
+            cargo VARCHAR(50)
+        );
     `);
     db.close();
 }
@@ -420,9 +449,11 @@ export async function deletar_condutor(id: string) {
 export async function listar_movimentacoes() {
     const db = await SQLite.open('./test.db');
     let results = await db.select<Array<any>>(`
-        SELECT *
-        FROM movimentacao;
-    `);
+            SELECT *
+            FROM movimentacao
+            ORDER BY entrada DESC;
+        `);
+    
     if (results.length > 0) {
         let condutores = await db.select<Array<any>>(`
             SELECT *
@@ -470,6 +501,127 @@ export async function listar_movimentacoes() {
         }
     }
     
+    return results;
+}
+
+// RETORNAR MOVIMENTACAO PAGINADO
+export async function listar_movimentacoes_paginated(page: Number, perPage: Number) {
+    const db = await SQLite.open('./test.db');
+    let results = await db.select<Array<any>>(`
+        SELECT *
+        FROM movimentacao
+        ORDER BY entrada DESC
+        LIMIT ${perPage}
+        OFFSET (${page} - 1) * ${perPage};
+    `);
+    let totalPages = await db.select<Array<any>>(`SELECT COUNT(*) AS total_rows FROM movimentacao;`);
+    
+    if (results.length > 0) {
+        let condutores = await db.select<Array<any>>(`
+            SELECT *
+            FROM condutor
+            WHERE id IN ( ${results.map((movimentacao) => movimentacao.condutor_id).join(", ")} );
+        `)
+        let veiculos = await db.select<Array<any>>(`
+            SELECT *
+            FROM veiculo
+            WHERE id in ( ${results.map((movimentacao) => movimentacao.veiculo_id).join(", ")} );
+        `)
+        if (condutores.length > 0 && condutores[0] && veiculos.length > 0 && veiculos[0]) {
+            let modelos = await db.select<Array<any>>(`
+                SELECT *
+                FROM modelo
+                WHERE id in ( ${veiculos.map((veiculo) => veiculo.modelo_id).join(", ")} );
+            `)
+            if (modelos.length > 0) {
+                let marcas = await db.select<Array<any>>(`
+                    SELECT *
+                    FROM marca
+                    WHERE id in ( ${modelos.map((modelo) => modelo.marca_id).join(", ")} );
+                `)
+                if (marcas.length > 0) {
+                    results = results.map((movimentacao) => {
+                        let { condutor_id, veiculo_id, ...rest } = movimentacao;
+                        let condutor = condutores.filter((condutor) => condutor.id === condutor_id)[0];
+                        let { modelo_id, ...veiculoRest } = veiculos.filter((veiculo) => veiculo.id === veiculo_id)[0];
+                        let { marca_id, ...modeloRest } = modelos.filter((modelo) => modelo.id === modelo_id)[0];
+                        let marca = marcas.filter((marca) => marca.id === marca_id)[0];
+                        return {
+                            ...rest,
+                            condutor,
+                            veiculo: {
+                                ...veiculoRest,
+                                modelo: {
+                                    ...modeloRest,
+                                    marca,
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    }
+    
+    return { results, totalItems: Number(totalPages[0].total_rows), totalPages: Math.ceil(Number(totalPages[0].total_rows) / Number(perPage))  };
+}
+
+// RETORNAR MOVIMENTACAO DESTE MÊS
+export async function listar_movimentacoes_deste_mes() {
+    const db = await SQLite.open('./test.db');
+    let results = await db.select<Array<any>>(`
+        SELECT *
+        FROM movimentacao
+        WHERE entrada >= DATE('now', 'start of month')
+        AND entrada < DATE('now', 'start of month', '+1 month');
+        ORDER BY entrada DESC
+    `);
+    if (results.length > 0) {
+        let condutores = await db.select<Array<any>>(`
+            SELECT *
+            FROM condutor
+            WHERE id IN ( ${results.map((movimentacao) => movimentacao.condutor_id).join(", ")} );
+        `)
+        let veiculos = await db.select<Array<any>>(`
+            SELECT *
+            FROM veiculo
+            WHERE id in ( ${results.map((movimentacao) => movimentacao.veiculo_id).join(", ")} );
+        `)
+        if (condutores.length > 0 && condutores[0] && veiculos.length > 0 && veiculos[0]) {
+            let modelos = await db.select<Array<any>>(`
+                SELECT *
+                FROM modelo
+                WHERE id in ( ${veiculos.map((veiculo) => veiculo.modelo_id).join(", ")} );
+            `)
+            if (modelos.length > 0) {
+                let marcas = await db.select<Array<any>>(`
+                    SELECT *
+                    FROM marca
+                    WHERE id in ( ${modelos.map((modelo) => modelo.marca_id).join(", ")} );
+                `)
+                if (marcas.length > 0) {
+                    results = results.map((movimentacao) => {
+                        let { condutor_id, veiculo_id, ...rest } = movimentacao;
+                        let condutor = condutores.filter((condutor) => condutor.id === condutor_id)[0];
+                        let { modelo_id, ...veiculoRest } = veiculos.filter((veiculo) => veiculo.id === veiculo_id)[0];
+                        let { marca_id, ...modeloRest } = modelos.filter((modelo) => modelo.id === modelo_id)[0];
+                        let marca = marcas.filter((marca) => marca.id === marca_id)[0];
+                        return {
+                            ...rest,
+                            condutor,
+                            veiculo: {
+                                ...veiculoRest,
+                                modelo: {
+                                    ...modeloRest,
+                                    marca,
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    }
     return results;
 }
 

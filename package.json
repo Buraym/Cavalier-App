@@ -16,6 +16,7 @@
     "date-fns": "^2.30.0",
     "tauri-plugin-sqlite-api": "github:lzdyes/tauri-plugin-sqlite#v0.1.1",
     "vue": "^3.2.13",
+    "vue-imask": "^7.1.3",
     "vue-router": "^4.0.3"
   },
   "devDependencies": {

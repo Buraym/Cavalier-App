@@ -60,13 +60,12 @@ export default defineComponent({
             this.ativo = data.ativo ? true : false;
             this.data_cadastro = format(new Date(data.cadastro), "dd/MM/yyyy HH:mm")
             if (data.atualizacao) {
-                this.data_atualizado = format(new Date(data.atualizacao), "dd/MM/yyyy HH:MM")
+                this.data_atualizado = format(new Date(data.atualizacao), "dd/MM/yyyy HH:mm")
             }
         },
         async EditarMovimentacao(event: any) {
             event.preventDefault();
             const data = await retornar_movimentacao(String(this.$route.params.movimentacao_id))
-            console.log(this.veiculo);
             await editar_movimentacao(String(this.$route.params.movimentacao_id), {
                 ...data,
                 condutor_id: this.condutor,

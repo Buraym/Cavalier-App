@@ -35,9 +35,9 @@ export default defineComponent({
             this.cor = veiculo.cor;
             this.tipo = veiculo.tipo;
             this.ativo = veiculo.ativo ? true : false;
-            this.data_cadastro = format(new Date(veiculo.cadastro), "dd/MM/yyyy HH:MM")
+            this.data_cadastro = format(new Date(veiculo.cadastro), "dd/MM/yyyy HH:mm")
             if (veiculo.atualizacao) {
-                this.data_atualizado = format(new Date(veiculo.atualizacao), "dd/MM/yyyy HH:MM")
+                this.data_atualizado = format(new Date(veiculo.atualizacao), "dd/MM/yyyy HH:mm")
             }
         },
         async EditarVeiculo(event: any) {

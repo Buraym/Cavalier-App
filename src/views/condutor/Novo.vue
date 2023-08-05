@@ -1,4 +1,5 @@
 <script lang="ts">
+import { IMaskComponent } from 'vue-imask';
 import { criar_condutor } from '@/utils/database';
 import { defineComponent } from 'vue';
 export default defineComponent({
@@ -10,6 +11,9 @@ export default defineComponent({
             cpf: "",
             telefone: ""
         }
+    },
+    components: {
+        'imask-input': IMaskComponent
     },
     methods: {
         async EnviarFormulario(event: any) {
@@ -39,13 +43,14 @@ export default defineComponent({
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">CPF</span>
-                        <input type="text" v-model="cpf" maxlength="14" class="form-control" placeholder="CPF"
-                            aria-label="CPF" aria-describedby="basic-addon1" required>
+                        <imask-input type="text" v-model="cpf" :mask="'000.000.000-00'" maxlength="14" class="form-control"
+                            placeholder="CPF" rearia-label="CPF" aria-describedby="basic-addon1" required />
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Telefone</span>
-                        <input type="text" v-model="telefone" class="form-control" min="17" max="17"
-                            placeholder="55 XX X XXXX-XXXX" aria-label="Telefone" aria-describedby="basic-addon1" required>
+                        <imask-input type="text" v-model="telefone" :mask="'+00 (00) 0 0000-0000'" class="form-control"
+                            min="17" max="17" placeholder="Numero de telefone" aria-label="Telefone"
+                            aria-describedby="basic-addon1" required />
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
                         <button type="submit" class="btn btn-warning w-100">Cadastrar condutor</button>
