@@ -22,7 +22,10 @@ export default defineComponent({
     <div class="cadastro-marca">
         <div class="container text-start">
             <form v-on:submit="EnviarFormulario">
-                <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
+                <div class="d-flex align-items-center justify-content-start gap-2 mt-5 mb-3">
+                    <a class="back d-flex justify-content-center align-items-center" @click="$router.go(-1)">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
                     <h2>Cadastro de Marca</h2>
                 </div>
                 <div>

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { format } from 'date-fns';
-import { retornar_configuracao, editar_configuracao } from '@/utils/database';
+import { retornar_configuracao } from '@/utils/database';
 
 export default defineComponent({
     name: 'Configuracoes',
@@ -117,15 +117,15 @@ export default defineComponent({
             <h4 class="text-start mb-3  mt-5">Configurações Gerais</h4>
             <div class="d-flex w-100 align-items-center justify-content-center gap-3 mb-3">
                 <div class="input-group m-0">
-                    <span class="input-group-text">Quantidade de vagas para carro</span>
+                    <span class="input-group-text">QTD. de vagas para carros</span>
                     <input type="number" v-model="vagasCarro" class="form-control">
                 </div>
                 <div class="input-group m-0">
-                    <span class="input-group-text">Quantidade de vagas para moto</span>
+                    <span class="input-group-text">QTD. de vagas para motos</span>
                     <input type="number" v-model="vagasMoto" class="form-control">
                 </div>
                 <div class="input-group m-0">
-                    <span class="input-group-text">Quantidade de vagas para van</span>
+                    <span class="input-group-text">QTD. de vagas para vans</span>
                     <input type="number" v-model="vagasVan" class="form-control">
                 </div>
             </div>
@@ -140,7 +140,7 @@ export default defineComponent({
                     <input type="number" v-model="valorMinutoHora" step="0.01" class="form-control"
                         placeholder="Valor do Minuto" aria-label="Valor Minuto">
                 </div>
-                <div class="input-group m-0">
+                <!-- <div class="input-group m-0">
                     <span class="input-group-text">Inicio do expediente</span>
                     <input type="time" v-model="inicioExpediente" step="1" class="form-control"
                         aria-label="Inicio do expediente">
@@ -149,9 +149,9 @@ export default defineComponent({
                     <span class="input-group-text">Fim do expediente</span>
                     <input type="time" v-model="fimExpediente" step="1" class="form-control" placeholder="Fim do expediente"
                         aria-label="Fim do expediente">
-                </div>
+                </div> -->
             </div>
-            <h4 class="text-start mb-3 mt-5">Configurações de descontos</h4>
+            <!-- <h4 class="text-start mb-3 mt-5">Configurações de descontos</h4>
             <div class="d-flex w-100 align-items-center justify-content-center gap-3 mb-3">
                 <div class="form-check">
                     <input class="form-check-input form-check-input-warning" v-model="gerarDesconto" type="checkbox"
@@ -180,7 +180,7 @@ export default defineComponent({
                     </label>
                 </div>
 
-            </div>
+            </div> -->
             <button type="submit" class="btn btn-warning w-100">Atualizar</button>
         </form>
     </div>

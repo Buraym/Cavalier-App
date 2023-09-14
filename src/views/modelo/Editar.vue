@@ -55,7 +55,9 @@ export default defineComponent({
         <div class="container text-start">
             <form @submit="EditarModelo">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
-                    <h2>ID: {{ $route.params.modelo_id }}</h2>
+                    <a class="back d-flex justify-content-center align-items-center" @click="$router.go(-1)">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
                     <div class="d-flex justify-content-center align-items-center gap-2">
                         <button type="submit" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deletemodal">
                             <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'

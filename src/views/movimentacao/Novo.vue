@@ -61,28 +61,43 @@ export default defineComponent({
                 valor_hora_multa: this.valorHoraMulta,
                 valor_minuto_hora: Number(this.valorHora / 60)
             }
-            console.log(customValues);
-            let calculatedData = CalcTotalTime({
-                entrada: new Date(this.entrada),
-                saida: new Date(this.saida),
-            }, this.calculoAutomatico ? this.config : null, this.calculoAutomatico ? null : customValues);
-            console.log(calculatedData);
-            let data = {
+            let data: any = {
                 condutor_id: this.condutor,
                 veiculo_id: this.veiculo,
                 entrada: new Date(this.entrada),
-                saida: new Date(this.saida),
-                tempo: calculatedData.tempo,
-                tempo_desconto: calculatedData.tempo_desconto,
-                tempo_multa: calculatedData.tempo_multa,
-                valor_desconto: calculatedData.valor_desconto,
-                valor_multa: calculatedData.valor_multa,
-                valor_total: calculatedData.valor_total,
-                valor_hora: calculatedData.valor_hora,
-                valor_hora_multa: calculatedData.valor_hora_multa,
+                saida: null,
+                tempo: 0,
+                tempo_desconto: 0,
+                tempo_multa: 0,
+                valor_desconto: 0,
+                valor_multa: 0,
+                valor_total: 0,
+                valor_hora: 0,
+                valor_hora_multa: 0,
             }
-            console.log(data)
-            await criar_movimentacao(data)
+            if (this.saida !== "") {
+                let calculatedData = CalcTotalTime({
+                    entrada: new Date(this.entrada),
+                    saida: new Date(this.saida),
+                }, this.calculoAutomatico ? this.config : null, this.calculoAutomatico ? null : customValues);
+                console.log(calculatedData);
+                data = {
+                    condutor_id: this.condutor,
+                    veiculo_id: this.veiculo,
+                    entrada: new Date(this.entrada),
+                    saida: new Date(this.saida),
+                    tempo: calculatedData.tempo,
+                    tempo_desconto: calculatedData.tempo_desconto,
+                    tempo_multa: calculatedData.tempo_multa,
+                    valor_desconto: calculatedData.valor_desconto,
+                    valor_multa: calculatedData.valor_multa,
+                    valor_total: calculatedData.valor_total,
+                    valor_hora: calculatedData.valor_hora,
+                    valor_hora_multa: calculatedData.valor_hora_multa,
+                }
+            }
+            console.log(data);
+            await criar_movimentacao(data);
             this.$router.push('/movimentacao');
         }
     }
@@ -92,8 +107,11 @@ export default defineComponent({
     <div class="cadastro-movimentacao">
         <div class="container text-start">
             <form @submit="EnviarFormulario">
-                <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
-                    <h2>Cadastro de Movimentação</h2>
+                <div class="d-flex align-items-center justify-content-start gap-2 mt-5 mb-3">
+                    <a class="back d-flex justify-content-center align-items-center" @click="$router.go(-1)">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h2 class="mb-0">Cadastro de Movimentação</h2>
                 </div>
                 <div>
                     <div class="input-group mb-3">
@@ -116,7 +134,7 @@ export default defineComponent({
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Hora Entrada</span>
                             <input type="datetime-local" v-model="entrada" class="form-control" placeholder="Hora Entrada"
-                                aria-label="Hora Entrada" aria-describedby="basic-addon1">
+                                aria-label="Hora Entrada" aria-describedby="basic-addon1" required>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Hora Saída</span>

@@ -2,7 +2,7 @@
 import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
 import { IntToTime, StringToDate } from '../../utils/index';
-import { listar_veiculos, listar_condutores, retornar_movimentacao, criar_movimentacao, deletar_movimentacao } from '@/utils/database';
+import { listar_veiculos, listar_condutores, retornar_movimentacao, deletar_movimentacao } from '@/utils/database';
 import { editar_movimentacao } from '@/utils/database';
 const condutores = ref<any[] | []>([]);
 const veiculos = ref<any[] | []>([]);
@@ -48,7 +48,7 @@ export default defineComponent({
             this.condutor = data.condutor.id;
             this.veiculo = data.veiculo.id;
             this.entrada = format(new Date(data.entrada), "yyyy-MM-dd HH:mm");
-            this.saida = format(new Date(data.saida), "yyyy-MM-dd HH:mm");
+            this.saida = data.saida ? format(new Date(data.saida), "yyyy-MM-dd HH:mm") : "";
             this.tempo = String(IntToTime(data.tempo));
             this.tempoDesconto = String(IntToTime(data.tempo_desconto));
             this.tempoMulta = String(IntToTime(data.tempo_multa));
@@ -82,7 +82,7 @@ export default defineComponent({
                 valor_hora: Number(Math.abs(Number(this.valorHora)).toFixed(2)),
                 valor_hora_multa: Number(Math.abs(Number(this.valorHoraMulta)).toFixed(2)),
             });
-            this.$router.push("/movimentacao");
+            this.$router.go(-1);
         },
         async DeletarItem() {
             await deletar_movimentacao(String(this.$route.params.movimentacao_id));
@@ -96,7 +96,9 @@ export default defineComponent({
         <div class="container text-start">
             <form @submit="EditarMovimentacao">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
-                    <h2>ID: {{ $route.params.movimentacao_id }}</h2>
+                    <a class="back d-flex justify-content-center align-items-center" @click="$router.go(-1)">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
                     <div class="d-flex justify-content-center align-items-center gap-2">
                         <button type="submit" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deletemodal">
                             <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'

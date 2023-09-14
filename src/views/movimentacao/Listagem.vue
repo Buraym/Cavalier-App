@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import Table from '@/components/Table.vue';
-import { format, secondsToHours, secondsToMinutes } from 'date-fns';
-import { listar_movimentacoes, deletar_movimentacao, listar_movimentacoes_paginated } from '@/utils/database';
+import { format } from 'date-fns';
+import { deletar_movimentacao, listar_movimentacoes_paginated } from '@/utils/database';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
@@ -25,24 +25,8 @@ const listHeaderTopics: any[] = [
         name: "saida"
     },
     {
-        label: "Tempo desconto",
-        name: "tempo_desconto"
-    },
-    {
-        label: "Tempo Multa",
-        name: "tempo_multa"
-    },
-    {
         label: "Valor Hora",
         name: "valor_hora"
-    },
-    {
-        label: "Valor Desconto",
-        name: "valor_desconto"
-    },
-    {
-        label: "Valor Multa",
-        name: "valor_multa"
     },
     {
         label: "Valor Total",
@@ -88,23 +72,7 @@ export default defineComponent({
                 saida: item.saida ? format(new Date(
                     item.saida
                 ), "dd/MM/yyyy - HH:mm") : "Sem saída",
-                tempo_desconto: format(new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth(),
-                    new Date().getDate(),
-                    secondsToHours(item.tempo_desconto),
-                    secondsToMinutes(item.tempo_desconto)
-                ), "HH:mm"),
-                tempo_multa: format(new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth(),
-                    new Date().getDate(),
-                    secondsToHours(item.tempo_desconto),
-                    secondsToMinutes(item.tempo_desconto)
-                ), "HH:mm"),
                 valor_hora: "R$ " + Number(item.valor_hora).toFixed(2),
-                valor_desconto: "R$ " + Number(item.valor_desconto).toFixed(2),
-                valor_multa: "R$ " + Number(item.valor_multa).toFixed(2),
                 valor_total: "R$ " + Number(item.valor_total).toFixed(2),
             }));
             if (page) {
@@ -129,7 +97,7 @@ export default defineComponent({
         </div>
         <div class="d-flex w-100 justify-content-end">
             <nav class="d-flex w-100 justify-content-end" aria-label="Page navigation example">
-                <div class="d-flex mx-2 mb-2">
+                <div class="d-flex mx-2 mb-2 mt-3">
                     Exibindo
                     <select v-model="perPage" @change="ListagemDeItens()" class="form-select form-select-sm mx-2 mb-1"
                         aria-label="Small select example">
@@ -139,7 +107,7 @@ export default defineComponent({
                         <option value="50" v-bind:selected="perPage === 50">50</option>
                     </select> de <strong class="mx-1"> {{ items }} </strong>
                 </div>
-                <ul class="pagination">
+                <ul class="pagination mt-2">
                     <li class="page-item" v-if="pages > 1" style="border-right: none">
                         <button v-bind:disabled="page === 1" v-bind:class="{ active: page === 1 }"
                             class="page-link warning-color mx-0" style="border-right: none" aria-label="Previous"

@@ -34,8 +34,11 @@ export default defineComponent({
     <div class="cadastro-modelo">
         <div class="container text-start">
             <form @submit="EnviarFormulario">
-                <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
-                    <h2>Cadastro de Modelo</h2>
+                <div class="d-flex align-items-center justify-content-start gap-2 mt-5 mb-3">
+                    <a class="back d-flex justify-content-center align-items-center" @click="$router.go(-1)">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h2 class="mb-0">Cadastro de Modelo</h2>
                 </div>
                 <div>
                     <div class="input-group mb-3">

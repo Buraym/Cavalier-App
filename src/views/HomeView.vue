@@ -1,7 +1,14 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { format, intervalToDuration, isToday } from "date-fns";
-import { retornar_configuracao, listar_movimentacoes, deletar_movimentacao } from '@/utils/database';
+import { CalcTotalTime, StringToDate } from '@/utils';
+import {
+  retornar_configuracao,
+  retornar_movimentacao,
+  listar_movimentacoes,
+  deletar_movimentacao,
+  editar_movimentacao
+} from '@/utils/database';
 import Table from '@/components/Table.vue';
 const listHeaderTopics: any[] = [
   {
@@ -88,7 +95,6 @@ listItemTopics.value = [
 let OldMovimentations = ref<any[] | []>([]);
 let UsedParkingSpots = ref<any[] | []>([]);
 let config = ref<any>(null);
-// await init_db();
 export default defineComponent({
   name: 'HomeView',
   data: () => {
@@ -109,11 +115,9 @@ export default defineComponent({
   methods: {
     async RetornarConfiguracao() {
       this.config = await retornar_configuracao();
-      console.log(await retornar_configuracao());
     },
     async RetornarVagas() {
       const list = await listar_movimentacoes();
-      console.log(list);
       this.OldMovimentations = list.filter((item: any) =>
         item.ativo && item.saida &&
         isToday(
@@ -125,7 +129,7 @@ export default defineComponent({
         id: item.id,
         name: item.condutor.nome,
         cpf: item.condutor.cpf,
-        veiculo_nome: item.veiculo.nome,
+        veiculo_nome: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
         entrada: format(new Date(
           item.entrada
         ), 'dd/MM/yyyy - HH:mm'),
@@ -134,10 +138,12 @@ export default defineComponent({
         ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
         valor_total: "R$ " + Number(item.valor_total).toFixed(2)
       }));
+      console.log(list);
       this.UsedParkingSpots = list.filter((item: any) =>
         item.ativo &&
         item.saida === null
       ).map((item) => ({
+        id: item.id,
         condutor: String(item.condutor.nome) + " | " + String(item.condutor.cpf),
         condutor_id: String(item.condutor.id),
         entrada: format(new Date(
@@ -188,7 +194,30 @@ export default defineComponent({
       }));
     },
     async EncerrarEstacionamento(id: string) {
-
+      const saida_time = new Date();
+      const movimentacao = await retornar_movimentacao(id);
+      let calculatedData = CalcTotalTime({
+        entrada: new Date(movimentacao.entrada),
+        saida: saida_time,
+      }, this.config, null);
+      console.log(movimentacao, config, calculatedData);
+      await editar_movimentacao(String(id), {
+        ativo: true,
+        condutor_id: movimentacao.condutor.id,
+        veiculo_id: movimentacao.veiculo.id,
+        entrada: new Date(movimentacao.entrada),
+        saida: saida_time,
+        tempo: calculatedData.tempo,
+        tempo_desconto: calculatedData.tempo_desconto,
+        tempo_multa: calculatedData.tempo_multa,
+        valor_desconto: calculatedData.valor_desconto,
+        valor_multa: calculatedData.valor_multa,
+        valor_total: calculatedData.valor_total,
+        valor_hora: calculatedData.valor_hora,
+        valor_hora_multa: calculatedData.valor_hora_multa,
+      });
+      console.log(await retornar_movimentacao(id));
+      await this.RetornarVagas();
     }
   }
 });
@@ -212,7 +241,8 @@ export default defineComponent({
               </div>
               <small>{{ item.placa }}</small>
             </a>
-            <button type="button" class="btn btn-warning text-white" aria-label="Encerrar vaga">
+            <button type="button" @click="EncerrarEstacionamento(item.id)" class="btn btn-warning text-white"
+              title="Encerrar vaga">
               <i class="bi bi-explicit-fill"></i>
             </button>
           </div>
@@ -244,6 +274,7 @@ export default defineComponent({
 
 .btn-warning {
   width: 10%;
+  min-width: 41px;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   border-top-right-radius: 0.4rem;
