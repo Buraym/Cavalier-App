@@ -1,10 +1,11 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
-import { MovimentacaoClient } from "@/client/movimentacoes.client";
-import { CondutorClient } from '@/client/condutor.client';
-import { VeiculoClient } from '@/client/veiculo.client';
 import { IntToTime, StringToDate } from '../../utils/index';
+import { retornar_movimentacao, deletar_movimentacao } from '@/controllers/movimentacao';
+import { listar_veiculos } from '@/controllers/veiculo';
+import { listar_condutores } from '@/controllers/condutor';
+import { editar_movimentacao } from '@/utils/database';
 const condutores = ref<any[] | []>([]);
 const veiculos = ref<any[] | []>([]);
 export default defineComponent({
@@ -37,66 +38,56 @@ export default defineComponent({
     },
     methods: {
         async RetornarCondutores() {
-            const client = new CondutorClient();
-            this.condutores = (await client.getList()).map((item) => ({ title: item.nome, value: item.id }));
+            this.condutores = (await listar_condutores()).map((item) => ({ title: item.nome, value: item.id }));
         },
         async RetornarVeiculos() {
-            const client = new VeiculoClient();
-            this.veiculos = (await client.getList()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
+            this.veiculos = (await listar_veiculos()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
+            console.log(this.veiculos);
         },
         async RetornarMovimentacao() {
-            const client = new MovimentacaoClient();
-            const data = await client.findById(String(this.$route.params.movimentacao_id))
+            const data = await retornar_movimentacao(String(this.$route.params.movimentacao_id))
+            console.log(data);
             this.condutor = data.condutor.id;
             this.veiculo = data.veiculo.id;
-            this.entrada = format(new Date(data.entrada[0], data.entrada[1] - 1, data.entrada[2], data.entrada[3], data.entrada[4], 0), "dd/MM/yyyy HH:mm");
-            this.saida = format(new Date(data.saida[0], data.saida[1] - 1, data.saida[2], data.saida[3], data.saida[4], 0), "dd/MM/yyyy HH:mm");
+            this.entrada = format(new Date(data.entrada), "yyyy-MM-dd HH:mm");
+            this.saida = data.saida ? format(new Date(data.saida), "yyyy-MM-dd HH:mm") : "";
             this.tempo = String(IntToTime(data.tempo));
-            this.tempoDesconto = String(IntToTime(data.tempoDesconto));
-            this.tempoMulta = String(IntToTime(data.tempoMulta));
-            this.valorDesconto = String(data.valorDesconto);
-            this.valorHora = String(data.valorHora);
-            this.valorMulta = String(data.valorMulta);
-            this.valorTotal = String(data.valorTotal);
-            this.valorHoraMulta = String(data.valorHoraMulta);
-            this.ativo = data.ativo;
-            this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1] - 1, data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:mm")
+            this.tempoDesconto = String(IntToTime(data.tempo_desconto));
+            this.tempoMulta = String(IntToTime(data.tempo_multa));
+            this.valorDesconto = String(data.valor_desconto);
+            this.valorHora = String(data.valor_hora);
+            this.valorMulta = String(data.valor_multa);
+            this.valorTotal = String(data.valor_total);
+            this.valorHoraMulta = String(data.valor_hora_multa);
+            this.ativo = data.ativo ? true : false;
+            this.data_cadastro = format(new Date(data.cadastro), "dd/MM/yyyy HH:mm")
             if (data.atualizacao) {
-                this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1] - 1, data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
+                this.data_atualizado = format(new Date(data.atualizacao), "dd/MM/yyyy HH:mm")
             }
-            console.log(data);
         },
         async EditarMovimentacao(event: any) {
             event.preventDefault();
-            const client = new MovimentacaoClient();
-            const condutorClient = new CondutorClient();
-            const veiculoClient = new VeiculoClient();
-            const data = await client.findById(String(this.$route.params.movimentacao_id))
-            const condutorData = await condutorClient.findById(String(this.condutor))
-            const veiculoData = await veiculoClient.findById(String(this.veiculo))
-            await client.create({
+            const data = await retornar_movimentacao(String(this.$route.params.movimentacao_id))
+            await editar_movimentacao(String(this.$route.params.movimentacao_id), {
                 ...data,
-                condutor: condutorData,
-                veiculo: veiculoData,
-                // entrada: StringToDate(this.entrada),
-                // saida: StringToDate(this.saida),
+                condutor_id: this.condutor,
+                veiculo_id: this.veiculo,
                 entrada: StringToDate(this.entrada),
                 saida: StringToDate(this.saida),
                 ativo: this.ativo,
                 tempo: Number(String(this.tempo).split(":")[0]) * 60 + Number(String(this.tempo).split(":")[1]),
-                tempoDesconto: Number(String(this.tempoDesconto).split(":")[0]) * 60 + Number(String(this.tempoDesconto).split(":")[1]),
-                tempoMulta: Number(String(this.tempoMulta).split(":")[0]) * 60 + Number(String(this.tempoMulta).split(":")[1]),
-                valorDesconto: Number(Math.abs(Number(this.valorDesconto)).toFixed(2)),
-                valorMulta: Number(Math.abs(Number(this.valorMulta)).toFixed(2)),
-                valorTotal: Number(Math.abs(Number(this.valorTotal)).toFixed(2)),
-                valorHora: Number(Math.abs(Number(this.valorHora)).toFixed(2)),
-                valorHoraMulta: Number(Math.abs(Number(this.valorHoraMulta)).toFixed(2)),
+                tempo_desconto: Number(String(this.tempoDesconto).split(":")[0]) * 60 + Number(String(this.tempoDesconto).split(":")[1]),
+                tempo_multa: Number(String(this.tempoMulta).split(":")[0]) * 60 + Number(String(this.tempoMulta).split(":")[1]),
+                valor_desconto: Number(Math.abs(Number(this.valorDesconto)).toFixed(2)),
+                valor_multa: Number(Math.abs(Number(this.valorMulta)).toFixed(2)),
+                valor_total: Number(Math.abs(Number(this.valorTotal)).toFixed(2)),
+                valor_hora: Number(Math.abs(Number(this.valorHora)).toFixed(2)),
+                valor_hora_multa: Number(Math.abs(Number(this.valorHoraMulta)).toFixed(2)),
             });
-            this.$router.push("/movimentacao");
+            this.$router.go(-1);
         },
-        async DeletarItem(id: string) {
-            const client = new MovimentacaoClient();
-            await client.deleteById(id);
+        async DeletarItem() {
+            await deletar_movimentacao(String(this.$route.params.movimentacao_id));
             this.$router.push("/movimentacao")
         }
     }
@@ -107,7 +98,9 @@ export default defineComponent({
         <div class="container text-start">
             <form @submit="EditarMovimentacao">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
-                    <h2>ID: {{ $route.params.movimentacao_id }}</h2>
+                    <a class="back d-flex justify-content-center align-items-center" @click="$router.go(-1)">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
                     <div class="d-flex justify-content-center align-items-center gap-2">
                         <button type="submit" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deletemodal">
                             <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'
@@ -117,8 +110,7 @@ export default defineComponent({
                             </svg>
                             Atualizar
                         </button>
-                        <button type="button" class="btn btn-danger"
-                            @click="DeletarItem(this.$route.params.movimentacao_id)">
+                        <button type="button" class="btn btn-danger" @click="DeletarItem">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-trash-fill" viewBox="0 0 16 16">
                                 <path
@@ -142,15 +134,15 @@ export default defineComponent({
                         <label class="input-group-text" for="inputGroupSelect01">Veiculo</label>
                         <select v-model="veiculo" class="form-select" id="inputGroupSelect01">
                             <option value="null">Escolha uma veiculo</option>
-                            <option v-for="(item) in veiculos" :key="item.id" :value="item.value"
+                            <option v-for="(item) in veiculos" :key="item.value" :value="item.value"
                                 :selected="item.value === veiculo">{{ item.title }}</option>
                         </select>
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Hora Entrada</span>
-                            <input type="datetime-local" v-model="entrada" class="form-control" placeholder="Hora Entrada"
-                                aria-label="Hora Entrada" aria-describedby="basic-addon1">
+                            <input type="datetime-local" v-model="entrada" class="form-control" aria-label="Hora Entrada"
+                                aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Hora Saída</span>

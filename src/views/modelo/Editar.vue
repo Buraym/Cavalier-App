@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
-import { ModeloClient } from '@/client/modelo.client';
-import { MarcaClient } from '@/client/marca.client';
+import { listar_marcas } from '@/controllers/marca';
+import { editar_modelo, retornar_modelo, deletar_modelo } from '@/controllers/modelo';
 const marcas = ref<any[] | []>([]);
 export default defineComponent({
     name: 'EdicaoModelo',
@@ -22,40 +22,30 @@ export default defineComponent({
     },
     methods: {
         async RetornarMarcas() {
-            const marcaClient = new MarcaClient();
-            this.marcas = (await marcaClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
+            console.log((await listar_marcas()));
+            this.marcas = (await listar_marcas()).map((item) => ({ title: item.nome, value: item.id }));
         },
         async RetornarModelo() {
-            const client = new ModeloClient();
-            const marcaClient = new MarcaClient();
-            const data = await client.findById(String(this.$route.params.modelo_id))
-            this.marcas = (await marcaClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
-            this.nome = data.nome;
-            this.marca = data.marca.id;
-            this.ativo = data.ativo;
-            this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1] - 1, data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:MM")
-            if (data.atualizacao) {
-                this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1] - 1, data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
+            const modelo = await retornar_modelo(String(this.$route.params.modelo_id));
+            this.nome = modelo.nome;
+            this.marca = modelo.marca.id;
+            this.ativo = modelo.ativo ? true : false;
+            this.data_cadastro = format(new Date(modelo.cadastro), "dd/MM/yyyy HH:mm")
+            if (modelo.atualizacao) {
+                this.data_atualizado = format(new Date(modelo.atualizacao), "dd/MM/yyyy HH:mm")
             }
-            console.log(data);
         },
         async EditarModelo(event: any) {
             event.preventDefault();
-            const client = new ModeloClient();
-            const marcaClient = new MarcaClient();
-            const data = await client.findById(String(this.$route.params.modelo_id))
-            const marcaData = await marcaClient.findById(String(this.marca))
-            await client.editById(Number(this.$route.params.modelo_id), {
-                ...data,
+            await editar_modelo(String(this.$route.params.modelo_id), {
                 nome: this.nome,
-                marca: marcaData,
                 ativo: this.ativo,
-            });
+                marca_id: this.marca
+            })
             this.$router.push("/modelo")
         },
-        async DeletarItem(id: string) {
-            const client = new ModeloClient();
-            await client.deleteById(id);
+        async DeletarItem() {
+            await deletar_modelo(String(this.$route.params.modelo_id));
             this.$router.push("/modelo")
         }
     }
@@ -66,7 +56,9 @@ export default defineComponent({
         <div class="container text-start">
             <form @submit="EditarModelo">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
-                    <h2>ID: {{ $route.params.modelo_id }}</h2>
+                    <a class="back d-flex justify-content-center align-items-center" @click="$router.go(-1)">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
                     <div class="d-flex justify-content-center align-items-center gap-2">
                         <button type="submit" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deletemodal">
                             <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'
@@ -76,7 +68,7 @@ export default defineComponent({
                             </svg>
                             Atualizar
                         </button>
-                        <button type="button" class="btn btn-danger" @click="DeletarItem(this.$route.params.modelo_id)">
+                        <button type="button" class="btn btn-danger" @click="DeletarItem">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-trash-fill" viewBox="0 0 16 16">
                                 <path

@@ -1,7 +1,9 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { format } from "date-fns"
-import { CondutorClient } from '@/client/condutor.client';
+import { retornar_condutor, editar_condutor, deletar_condutor } from "@/controllers/condutor";
+import { IntToTime } from '@/utils';
+import { StringToTime } from '../../utils/index';
 export default defineComponent({
     name: 'EdicaoCondutor',
     data: () => {
@@ -20,36 +22,32 @@ export default defineComponent({
     },
     methods: {
         async RetornarCondutor() {
-            const client = new CondutorClient();
-            const data = await client.findById(String(this.$route.params.condutor_id))
-            this.nome = data.nome;
-            this.cpf = data.cpf;
-            this.ativo = data.ativo;
-            this.telefone = data.telefone;
-            this.tempoGasto = data.tempoGasto < 1 ? "00:00" : data.tempoGasto;
-            this.data_cadastro = format(new Date(data.cadastro[0], data.cadastro[1] - 1, data.cadastro[2], data.cadastro[3], data.cadastro[4], data.cadastro[5]), "dd/MM/yyyy HH:MM")
-            if (data.atualizacao) {
-                this.data_atualizado = format(new Date(data.atualizacao[0], data.atualizacao[1] - 1, data.atualizacao[2], data.atualizacao[3], data.atualizacao[4], data.atualizacao[5]), "dd/MM/yyyy HH:MM")
+            const condutor = await retornar_condutor(String(this.$route.params.condutor_id))
+            this.nome = condutor.nome;
+            this.cpf = condutor.cpf;
+            this.ativo = condutor.ativo ? true : false;
+            this.telefone = condutor.telefone;
+            this.tempoGasto = String(IntToTime(Number(condutor.tempo_gasto)));
+            this.data_cadastro = format(new Date(condutor.cadastro), "dd/MM/yyyy HH:mm")
+            if (condutor.atualizacao) {
+                console.log(condutor.atualizacao);
+                this.data_atualizado = format(new Date(condutor.atualizacao), "dd/MM/yyyy HH:mm")
             }
-            console.log(data);
+            console.log(condutor);
         },
         async EditarCondutor(event: any) {
             event.preventDefault();
-            const client = new CondutorClient();
-            const data = await client.findById(String(this.$route.params.condutor_id))
-            await client.editById(Number(this.$route.params.condutor_id), {
-                ...data,
+            await editar_condutor(String(this.$route.params.condutor_id), {
                 nome: this.nome,
                 cpf: this.cpf,
                 ativo: this.ativo,
                 telefone: this.telefone,
-                tempoGasto: Number(String(this.tempoGasto).split(":")[0]) * 60 + Number(String(this.tempoGasto).split(":")[1]),
+                tempoGasto: StringToTime(String(this.tempoGasto))
             });
             this.$router.push('/condutor');
         },
         async RemoverCondutor() {
-            const client = new CondutorClient();
-            await client.deleteById(String(this.$route.params.condutor_id));
+            await deletar_condutor(String(this.$route.params.condutor_id));
             this.$router.push('/condutor');
         }
     }

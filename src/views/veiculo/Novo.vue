@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { ModeloClient } from '@/client/modelo.client';
-import { VeiculoClient } from '@/client/veiculo.client';
+import { criar_veiculo } from '@/controllers/veiculo';
+import { listar_modelos } from '@/controllers/modelo';
 const modelos = ref<any[] | []>([]);
 export default defineComponent({
     name: 'CadastroVeiculo',
@@ -21,20 +21,16 @@ export default defineComponent({
     },
     methods: {
         async RetornarModelos() {
-            const modeloClient = new ModeloClient();
-            this.modelos = (await modeloClient.getList()).map((item) => ({ title: item.nome, value: item.id }));
+            this.modelos = (await listar_modelos()).map((item) => ({ title: item.nome, value: item.id }));
         },
         async EnviarFormulario(event: any) {
             event.preventDefault();
-            const client = new VeiculoClient();
-            const modeloClient = new ModeloClient();
-            const modelo = await modeloClient.findById(String(this.modelo));
-            await client.create({
-                placa: this.placa,
+            await criar_veiculo({
                 ano: Number(this.ano),
-                modelo: modelo,
                 cor: this.cor,
-                tipo: this.tipo
+                placa: this.placa,
+                tipo: this.tipo,
+                modelo_id: this.modelo,
             });
             this.$router.push('/veiculo')
         }
@@ -65,7 +61,8 @@ export default defineComponent({
                         <label class="input-group-text" for="inputGroupSelect01">Modelo</label>
                         <select v-model="modelo" class="form-select" id="inputGroupSelect01" required>
                             <option value="null">Escolha um modelo</option>
-                            <option v-for="(item) in modelos" :key="item.value" :value="item.value">{{ item.title }}
+                            <option v-for="(item) in modelos" :key="item.value" :value="item.value">
+                                {{ item.title }}
                             </option>
                         </select>
                     </div>
@@ -74,8 +71,15 @@ export default defineComponent({
                         <select v-model="cor" class="form-select" id="inputGroupSelect01" required>
                             <option value="null">Escolha uma cor</option>
                             <option value="RED">Vermelho</option>
+                            <option value="WHITE">Branco</option>
+                            <option value="GREY">Cinza</option>
+                            <option value="SILVER">Prata</option>
+                            <option value="BLACK">Preto</option>
+                            <option value="PURPLE">Roxo</option>
+                            <option value="ORANGE">Laranja</option>
                             <option value="GREEN">Verde</option>
                             <option value="BLUE">Azul</option>
+                            <option value="OTHER">Outra cor ou estampa</option>
                         </select>
                     </div>
                     <div class="input-group mb-3">

@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { MovimentacaoClient } from '@/client/movimentacoes.client';
 import Table from '@/components/Table.vue';
-import { format, formatDuration, secondsToHours, secondsToMinutes } from 'date-fns';
+import { format } from 'date-fns';
+import { deletar_movimentacao, listar_movimentacoes_paginated } from '@/controllers/movimentacao';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
@@ -25,33 +25,12 @@ const listHeaderTopics: any[] = [
         name: "saida"
     },
     {
-        label: "Tempo desconto",
-        name: "tempo_desconto"
-    },
-    {
-        label: "Tempo Multa",
-        name: "tempo_multa"
-    },
-    {
         label: "Valor Hora",
         name: "valor_hora"
     },
     {
-        label: "Valor Desconto",
-        name: "valor_desconto"
-    },
-    {
-        label: "Valor Multa",
-        name: "valor_multa"
-    },
-    {
         label: "Valor Total",
         name: "valor_total"
-    },
-    {
-        label: "Ações",
-        name: "actions",
-        actions: true
     }
 ]
 const data = ref<any[] | []>([]);
@@ -60,6 +39,10 @@ export default defineComponent({
     data: () => {
         return {
             data,
+            items: 1,
+            page: 1,
+            pages: 1,
+            perPage: 5,
             columns: listHeaderTopics
         }
     },
@@ -70,55 +53,34 @@ export default defineComponent({
         this.ListagemDeItens();
     },
     methods: {
-        async ListagemDeItens() {
-            const client = new MovimentacaoClient();
-            this.data = (await client.getList()).map((item) => ({
+        async ListagemDeItens(page?: Number, perPage?: Number) {
+            const response = await listar_movimentacoes_paginated(Number(page ? page : this.page), 20);
+            this.pages = Number(response.totalPages);
+            this.items = Number(response.totalItems);
+            if (perPage) {
+                this.perPage = Number(perPage);
+            }
+            console.log(response);
+            // @ts-ignore
+            this.data = response?.results?.map((item) => ({
                 id: item.id,
                 condutor: item.condutor.nome,
                 veiculo: item.veiculo.placa,
                 entrada: format(new Date(
-                    item.entrada[0] ? item.entrada[0] : 0,
-                    item.entrada[1] ? item.entrada[1] - 1 : 0,
-                    item.entrada[2] ? item.entrada[2] : 0,
-                    item.entrada[3] ? item.entrada[3] : 0,
-                    item.entrada[4] ? item.entrada[4] : 0,
-                    0,
-                    0,
+                    item.entrada
                 ), "dd/MM/yyyy - HH:mm"),
-                saida: format(new Date(
-                    item.saida[0] ? item.saida[0] : 0,
-                    item.saida[1] ? item.saida[1] - 1 : 0,
-                    item.saida[2] ? item.saida[2] : 0,
-                    item.saida[3] ? item.saida[3] : 0,
-                    item.saida[4] ? item.saida[4] : 0,
-                    0,
-                    0,
-                ), "dd/MM/yyyy - HH:mm"),
-                tempo_desconto: format(new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth(),
-                    new Date().getDate(),
-                    secondsToHours(item.tempoDesconto),
-                    secondsToMinutes(item.tempoDesconto)
-                ), "HH:mm"),
-                tempo_multa: format(new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth(),
-                    new Date().getDate(),
-                    secondsToHours(item.tempoMulta),
-                    secondsToMinutes(item.tempoMulta)
-                ), "HH:mm"),
-                valor_hora: "R$ " + item.valorHora,
-                valor_desconto: "R$ " + item.valorDesconto,
-                valor_multa: "R$ " + item.valorMulta,
-                valor_total: "R$ " + item.valorTotal,
-                actions: "<div class='d-flex justify-content-center align-items-center gap-2'><a class='btn btn-warning' href='/movimentacao/" + item.id + "'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-pencil-fill' viewBox='0 0 16 16'><path d='M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z'/></svg></a><button class='btn btn-danger' @onclick='DeletarItem(" + item.id + ")'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-trash-fill' viewBox='0 0 16 16'><path d='M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z'/></svg></button></div>"
+                saida: item.saida ? format(new Date(
+                    item.saida
+                ), "dd/MM/yyyy - HH:mm") : "Sem saída",
+                valor_hora: "R$ " + Number(item.valor_hora).toFixed(2),
+                valor_total: "R$ " + Number(item.valor_total).toFixed(2),
             }));
-            console.log(this.data);
+            if (page) {
+                this.page = Number(page);
+            }
         },
         async DeletarItem(id: string) {
-            const client = new MovimentacaoClient();
-            await client.deleteById(id);
+            await deletar_movimentacao(id);
             this.data = this.data.filter((item) => item.id !== id);
             console.log(this.data);
         }
@@ -127,15 +89,72 @@ export default defineComponent({
 </script>
 <template>
     <div class="listagem-movimentacao">
-        <Table :columns="columns" :data="data" />
+        <Table :columns="columns" :data="data" :edit="String(/movimentacao/)" :remove="DeletarItem" />
         <div>
             <a class="w-100 btn btn-warning" href="/movimentacao/new">
                 Cadastrar nova Movimentação
             </a>
         </div>
+        <div class="d-flex w-100 justify-content-end">
+            <nav class="d-flex w-100 justify-content-end" aria-label="Page navigation example">
+                <div class="d-flex mx-2 mb-2 mt-3">
+                    Exibindo
+                    <select v-model="perPage" @change="ListagemDeItens()" class="form-select form-select-sm mx-2 mb-1"
+                        aria-label="Small select example">
+                        <option value="5" v-bind:selected="perPage === 5">5</option>
+                        <option value="10" v-bind:selected="perPage === 10">10</option>
+                        <option value="20" v-bind:selected="perPage === 20">20</option>
+                        <option value="50" v-bind:selected="perPage === 50">50</option>
+                    </select> de <strong class="mx-1"> {{ items }} </strong>
+                </div>
+                <ul class="pagination mt-2">
+                    <li class="page-item" v-if="pages > 1" style="border-right: none">
+                        <button v-bind:disabled="page === 1" v-bind:class="{ active: page === 1 }"
+                            class="page-link warning-color mx-0" style="border-right: none" aria-label="Previous"
+                            @click="ListagemDeItens(1)">
+                            <span aria-hidden="true">&laquo;</span>
+                        </button>
+                    </li>
+                    <li v-for="pageList in pages" key="pageList" class="page-item"
+                        style="border-left: none; border-right: none">
+                        <button class="page-link warning-color mx-0" v-bind:class="{ active: page === pageList }"
+                            style="border-left: none; border-right: none" @click="ListagemDeItens(pageList)">
+                            {{ pageList }}
+                        </button>
+                    </li>
+                    <li class="page-item" v-if="pages > 1" style="border-left: none">
+                        <button v-bind:disabled="page === pages" v-bind:class="{ active: page === pages }"
+                            class="page-link warning-color mx-0" style="border-left: none" aria-label="Next"
+                            @click="ListagemDeItens(pages)">
+                            <span aria-hidden="true">&raquo;</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </template>
 <style scoped>
+.warning-color {
+    background: #FFF;
+    color: #ffc107;
+    transition: 250ms ease-in-out;
+}
+
+.form-select-sm {
+    height: 28px;
+}
+
+.warning-color:hover {
+    background: #ffe38e;
+}
+
+.warning-color.active {
+    border-color: #dee2e6;
+    background: #ffc107;
+    color: #FFF;
+}
+
 .listagem-movimentacao {
     padding: 30px;
 }

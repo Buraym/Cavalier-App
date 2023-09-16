@@ -1,34 +1,17 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { format, intervalToDuration, isToday } from "date-fns"
-import { MovimentacaoClient } from "@/client/movimentacoes.client"
-import { ConfiguracaoClient } from "@/client/configuracao.client"
-import SQLite from 'tauri-plugin-sqlite-api';
+import { format, intervalToDuration, isToday } from "date-fns";
+import { CalcTotalTime } from '@/utils';
+import {
+  retornar_configuracao
+} from "@/controllers/configuracao";
+import {
+  retornar_movimentacao,
+  listar_movimentacoes,
+  deletar_movimentacao,
+  editar_movimentacao
+} from "@/controllers/movimentacao";
 import Table from '@/components/Table.vue';
-const db = await SQLite.open('./test.db');
-await db.execute(`
-  CREATE TABLE IF NOT EXISTS Usuarios (
-      id INTEGER PRIMARY KEY,
-      nome TEXT NOT NULL,
-      idade INTEGER,
-      email TEXT,
-      contato TEXT
-  );
-  CREATE TABLE IF NOT EXISTS marca
-  (
-      id INTEGER PRIMARY KEY,
-      ativo BOOLEAN NOT NULL,
-      atualizacao TEXT,
-      cadastro TEXT NOT NULL,
-      nome TEXT NOT NULL,
-      UNIQUE (nome)
-  );
-`);
-// await db.execute('INSERT INTO marca VALUES (?1, ?2, ?3, ?4, ?5)', [18, true, new Date(), new Date(), 'Jack']);
-/** select count */
-const rows = await db.select('SELECT * FROM marca')
-console.log(rows);
-const isClosed = await db.close()
 const listHeaderTopics: any[] = [
   {
     label: "ID",
@@ -58,11 +41,7 @@ const listHeaderTopics: any[] = [
   {
     label: "Tempo desconto",
     name: "tempo_desconto"
-  },
-  {
-    label: "Valor Total",
-    name: "valor_total"
-  },
+  }
 ]
 const listItemTopics = ref<any[] | []>([]);
 let hours = intervalToDuration({
@@ -137,21 +116,69 @@ export default defineComponent({
   },
   methods: {
     async RetornarConfiguracao() {
-      const client = new ConfiguracaoClient();
-      this.config = await client.getConfig();
+      this.config = await retornar_configuracao();
     },
     async RetornarVagas() {
-      const client = new MovimentacaoClient();
-      const list = await client.getList();
+      const list = await listar_movimentacoes();
+      this.OldMovimentations = list.filter((item: any) =>
+        item.ativo && item.saida &&
+        isToday(
+          new Date(
+            item.entrada
+          )
+        )
+      ).map((item) => ({
+        id: item.id,
+        name: item.condutor.nome,
+        cpf: item.condutor.cpf,
+        veiculo_nome: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
+        entrada: format(new Date(
+          item.entrada
+        ), 'dd/MM/yyyy - HH:mm'),
+        saida: item.saida ? format(new Date(
+          item.saida
+        ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
+        valor_total: "R$ " + Number(item.valor_total).toFixed(2)
+      }));
+      console.log(list);
+      this.UsedParkingSpots = list.filter((item: any) =>
+        item.ativo &&
+        item.saida === null
+      ).map((item) => ({
+        id: item.id,
+        condutor: String(item.condutor.nome) + " | " + String(item.condutor.cpf),
+        condutor_id: String(item.condutor.id),
+        entrada: format(new Date(
+          item.entrada
+        ), 'dd/MM/yyyy - HH:mm'),
+        duracao: new Date() < new Date(
+          item.entrada
+        ) ? "" : `${intervalToDuration({
+          start: new Date(
+            item.entrada
+          ), end: new Date()
+        }).days} dia(s), ${intervalToDuration({
+          start: new Date(
+            item.entrada
+          ), end: new Date()
+        }).hours} Hora(s) e ${intervalToDuration({
+          start: new Date(
+            item.entrada
+          ), end: new Date()
+        }).minutes} minuto(s)`,
+        veiculo: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
+        veiculo_id: String(item.veiculo.id),
+        placa: item.veiculo.placa
+      }));
+    },
+    async DeletarItem(id: string) {
+      await deletar_movimentacao(id);
+      const list = await listar_movimentacoes();
       this.OldMovimentations = list.filter((item: any) =>
         item.ativo &&
         isToday(
           new Date(
-            item.entrada[0],
-            item.entrada[1],
-            item.entrada[2],
-            item.entrada[3],
-            item.entrada[4]
+            item.entrada
           )
         )
       ).map((item) => ({
@@ -160,90 +187,99 @@ export default defineComponent({
         cpf: item.condutor.cpf,
         veiculo_nome: item.veiculo.nome,
         entrada: format(new Date(
-          item.entrada[0],
-          item.entrada[1],
-          item.entrada[2],
-          item.entrada[3],
-          item.entrada[4],
-          item.entrada[5]
+          item.entrada
         ), 'dd/MM/yyyy - HH:mm'),
-        saida: format(new Date(
-          item.saida[0],
-          item.saida[1],
-          item.saida[2],
-          item.saida[3],
-          item.saida[4],
-          item.saida[5]
-        ), 'dd/MM/yyyy - HH:mm'),
-        valor_total: "R$ " + String(item.valorTotal)
+        saida: item.saida ? format(new Date(
+          item.saida
+        ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
+        valor_total: "R$ " + Number(item.valor_total).toFixed(2)
       }));
-      this.UsedParkingSpots = list.filter((item: any) =>
-        item.ativo &&
-        !item.saida &&
-        isToday(
-          new Date(
-            item.entrada[0],
-            item.entrada[1],
-            item.entrada[2],
-            item.entrada[3],
-            item.entrada[4],
-            item.entrada[5]
-          )
-        )
-      );
-      console.log(list);
-      console.log(this.OldMovimentations);
-      console.log(this.UsedParkingSpots);
     },
-    async DesocuparVaga() {
-
+    async EncerrarEstacionamento(id: string) {
+      const saida_time = new Date();
+      const movimentacao = await retornar_movimentacao(id);
+      let calculatedData = CalcTotalTime({
+        entrada: new Date(movimentacao.entrada),
+        saida: saida_time,
+      }, this.config, null);
+      console.log(movimentacao, config, calculatedData);
+      await editar_movimentacao(String(id), {
+        ativo: true,
+        condutor_id: movimentacao.condutor.id,
+        veiculo_id: movimentacao.veiculo.id,
+        entrada: new Date(movimentacao.entrada),
+        saida: saida_time,
+        tempo: calculatedData.tempo,
+        tempo_desconto: calculatedData.tempo_desconto,
+        tempo_multa: calculatedData.tempo_multa,
+        valor_desconto: calculatedData.valor_desconto,
+        valor_multa: calculatedData.valor_multa,
+        valor_total: calculatedData.valor_total,
+        valor_hora: calculatedData.valor_hora,
+        valor_hora_multa: calculatedData.valor_hora_multa,
+      });
+      console.log(await retornar_movimentacao(id));
+      await this.RetornarVagas();
     }
   }
 });
 </script>
 <template>
   <div class="home">
-    <div class="row row-cols-1 row-cols-md-3 g-5 px-5 pt-3">
+    <div v-if="UsedParkingSpots.length > 0" class="row row-cols-1 row-cols-md-3 g-5 px-5 pt-3">
       <div class="col" v-for="(item) in UsedParkingSpots" :key="item.id">
         <div class="card">
           <div class="card-header">
-            <a :href='"/condutor/asdasdasd"' class="list-group-item list-group-item-action">
-              {{ item.condutor.nome }}
+            <a :href='"/condutor/" + item.condutor_id' class="list-group-item list-group-item-action">
+              {{ item.condutor }}
             </a>
           </div>
-          <div class="list-group m-3">
-            <a :href='"/veiculo/asdasdasd"' class="list-group-item list-group-item-action">
+          <div class="m-3 mb-1 d-flex">
+            <a :href='"/veiculo/" + item.veiculo_id' class="vehicle-link">
               <div class="d-flex w-100 justify-content-between align-items-start">
-                <p class="mb-1 text-left">
-                  {{ item.veiculo.modelo.nome }} - {{ item.veiculo.ano }} | {{ item.veiculo.cor }}
+                <p class="mb-1 w-100">
+                  {{ item.veiculo }}
                 </p>
-                <small>{{ format(new Date(
-                  item.entrada[0],
-                  item.entrada[1],
-                  item.entrada[2],
-                  item.entrada[3],
-                  item.entrada[4],
-                  item.entrada[5]
-                ), 'dd/MM/yyyy - HH:mm') }}</small>
               </div>
-              <small>{{ item.veiculo.placa }}</small>
+              <small>{{ item.placa }}</small>
             </a>
+            <button type="button" @click="EncerrarEstacionamento(item.id)" class="btn btn-warning text-white"
+              title="Encerrar vaga">
+              <i class="bi bi-explicit-fill"></i>
+            </button>
+          </div>
+          <div class="w-100 d-flex justify-content-between px-3 mb-1">
+            <small>*Entrada: {{ item.entrada }}</small>
+            <small>{{ item.duracao }}</small>
           </div>
         </div>
       </div>
-      <div class="d-flex justify-content-center align-items-center w-100 mt-5">
-        <p class="mb-0 mt-3">
-          Nenhum Carro estacionado hoje !!!
-        </p>
-      </div>
     </div>
-    <div class="container py-3 my-3">
-      <Table :columns="columns" :data="OldMovimentations" :title="'Movimentações dos condutores hoje'" />
+    <div v-if="OldMovimentations.length > 0" class="container py-3 my-3">
+      <Table :columns="columns" :data="OldMovimentations" :title="'Movimentações dos condutores hoje'"
+        :edit="String(/movimentacao/)" :remove="DeletarItem" />
     </div>
   </div>
 </template>
 <style scoped>
-.card {
-  min-height: 172px !important;
+.vehicle-link {
+  width: 90%;
+  padding: 20px;
+  text-decoration: none;
+  color: black;
+  border: 1px solid #dee2e6;
+  border-top-left-radius: 0.4rem;
+  border-bottom-left-radius: 0.4rem;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.btn-warning {
+  width: 10%;
+  min-width: 41px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 0.4rem;
+  border-bottom-right-radius: 0.4rem;
 }
 </style>
