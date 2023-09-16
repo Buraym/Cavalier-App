@@ -1,6 +1,9 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { listar_modelos, deletar_modelo } from '@/utils/database';
+import {
+    listar_modelos,
+    deletar_modelo
+} from "@/controllers/modelo";
 import Table from '@/components/Table.vue';
 const listHeaderTopics: any[] = [
     {

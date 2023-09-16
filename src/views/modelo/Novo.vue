@@ -1,5 +1,6 @@
 <script lang="ts">
-import { criar_modelo, listar_marcas } from '@/utils/database';
+import { listar_marcas } from '@/controllers/marca';
+import { criar_modelo } from '@/controllers/modelo';
 import { defineComponent, ref } from 'vue';
 const marcas = ref<any[] | []>([]);
 export default defineComponent({

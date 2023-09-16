@@ -1,6 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { listar_marcas, deletar_marca } from '@/utils/database';
+import {
+    listar_marcas, deletar_marca
+} from "@/controllers/marca";
 import Table from '@/components/Table.vue';
 const listHeaderTopics: any[] = [
     {
@@ -12,7 +14,6 @@ const listHeaderTopics: any[] = [
         name: "nome"
     }
 ];
-
 const data = ref<any[] | []>([]);
 export default defineComponent({
     name: 'ListagemMarca',

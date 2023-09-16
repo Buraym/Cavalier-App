@@ -1,6 +1,6 @@
 <script lang="ts">
 import { IMaskComponent } from 'vue-imask';
-import { criar_condutor } from '@/utils/database';
+import { criar_condutor } from "@/controllers/condutor";
 import { defineComponent } from 'vue';
 export default defineComponent({
     name: 'CadastroCondutor',

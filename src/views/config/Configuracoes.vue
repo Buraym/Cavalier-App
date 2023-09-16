@@ -112,7 +112,7 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div class="p-5">
+    <div class="px-5">
         <form @submit="EnviarFormulario" class="container">
             <h4 class="text-start mb-3  mt-5">Configurações Gerais</h4>
             <div class="d-flex w-100 align-items-center justify-content-center gap-3 mb-3">

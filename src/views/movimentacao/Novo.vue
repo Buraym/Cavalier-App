@@ -1,8 +1,11 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { criar_movimentacao, listar_condutores, listar_veiculos, retornar_configuracao } from '@/utils/database';
+import { criar_movimentacao } from '@/controllers/movimentacao';
+import { listar_veiculos } from '@/controllers/veiculo';
+import { listar_condutores } from '@/controllers/condutor';
+import { retornar_configuracao } from '@/controllers/configuracao';
 import { format } from 'date-fns';
-import { CalcTotalTime, StringToTime } from '@/utils';
+import { CalcTotalTime } from '@/utils';
 const condutores = ref<any[] | []>([]);
 const veiculos = ref<any[] | []>([]);
 export default defineComponent({

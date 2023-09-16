@@ -1,14 +1,16 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { format, intervalToDuration, isToday } from "date-fns";
-import { CalcTotalTime, StringToDate } from '@/utils';
+import { CalcTotalTime } from '@/utils';
 import {
-  retornar_configuracao,
+  retornar_configuracao
+} from "@/controllers/configuracao";
+import {
   retornar_movimentacao,
   listar_movimentacoes,
   deletar_movimentacao,
   editar_movimentacao
-} from '@/utils/database';
+} from "@/controllers/movimentacao";
 import Table from '@/components/Table.vue';
 const listHeaderTopics: any[] = [
   {

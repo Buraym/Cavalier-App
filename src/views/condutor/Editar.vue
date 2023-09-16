@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { format } from "date-fns"
-import { retornar_condutor, editar_condutor, deletar_condutor } from '@/utils/database';
+import { retornar_condutor, editar_condutor, deletar_condutor } from "@/controllers/condutor";
 import { IntToTime } from '@/utils';
 import { StringToTime } from '../../utils/index';
 export default defineComponent({

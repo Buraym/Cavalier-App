@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { listar_condutores, deletar_condutor } from "@/utils/database";
+import { listar_condutores, deletar_condutor } from "@/controllers/condutor";
 import Table from '@/components/Table.vue';
 import { formatDuration, secondsToHours, secondsToMinutes } from 'date-fns'
 import pt_BR from 'date-fns/locale/pt-BR'

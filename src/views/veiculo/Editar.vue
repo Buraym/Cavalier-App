@@ -1,7 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
-import { editar_veiculo, retornar_veiculo, deletar_veiculo, listar_modelos } from '@/utils/database';
+import { editar_veiculo, retornar_veiculo, deletar_veiculo } from '@/controllers/veiculo';
+import { listar_modelos } from '@/controllers/modelo';
 const modelos = ref<any[] | []>([]);
 export default defineComponent({
     name: 'EdicaoVeiculo',

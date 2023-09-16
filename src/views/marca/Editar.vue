@@ -1,7 +1,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { format } from "date-fns"
-import { editar_marca, retornar_marca, deletar_marca } from '@/utils/database';
+import {
+    editar_marca, retornar_marca, deletar_marca
+} from "@/controllers/marca";
 export default defineComponent({
     name: 'EdicaoMarca',
     data: () => {

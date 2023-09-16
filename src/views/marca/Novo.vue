@@ -1,6 +1,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { criar_marca } from '@/utils/database';
+import {
+    criar_marca
+} from "@/controllers/marca";
 export default defineComponent({
     name: 'CadastroMarca',
     emits: ['EnviarFormulario'],

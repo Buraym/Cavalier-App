@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { listar_modelos, criar_veiculo } from '@/utils/database';
+import { criar_veiculo } from '@/controllers/veiculo';
+import { listar_modelos } from '@/controllers/modelo';
 const modelos = ref<any[] | []>([]);
 export default defineComponent({
     name: 'CadastroVeiculo',

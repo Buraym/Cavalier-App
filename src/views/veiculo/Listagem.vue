@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { listar_veiculos, deletar_veiculo } from '@/utils/database';
+import { listar_veiculos, deletar_veiculo } from '@/controllers/veiculo';
 import Table from '@/components/Table.vue';
 import { COLORS } from '@/utils/constants';
 const listHeaderTopics: any[] = [

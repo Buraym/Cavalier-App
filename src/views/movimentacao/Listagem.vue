@@ -2,7 +2,7 @@
 import { defineComponent, ref } from 'vue';
 import Table from '@/components/Table.vue';
 import { format } from 'date-fns';
-import { deletar_movimentacao, listar_movimentacoes_paginated } from '@/utils/database';
+import { deletar_movimentacao, listar_movimentacoes_paginated } from '@/controllers/movimentacao';
 const listHeaderTopics: any[] = [
     {
         label: "ID",

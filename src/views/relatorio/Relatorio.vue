@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue';
 import DougnhnutChart from '@/components/DougnhnutChart.vue';
 import Table from '@/components/Table.vue';
-import { listar_movimentacoes_deste_mes } from '@/utils/database';
+import { listar_movimentacoes_deste_mes } from '@/controllers/movimentacao';
 export default defineComponent({
     name: 'Relatorio',
     data: () => {
