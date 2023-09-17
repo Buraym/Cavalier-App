@@ -1,5 +1,11 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { useUsersStore } from '@/stores/index'
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/auth/Login.vue')
+  },
   {
     path: '/',
     name: 'home',
@@ -99,5 +105,12 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+router.beforeEach((to, from) => {
+  if (useUsersStore().$state.user === null && to.name !== 'login') {
+    console.log("USUARIO NÃO AUTENTICADO");
+    return { name: 'login' }
+  }
+  // return false
 })
 export default router

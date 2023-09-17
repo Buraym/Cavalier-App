@@ -1,12 +1,27 @@
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { useUsersStore } from '@/stores/index'
+export default defineComponent({
+  name: "App",
+  data() {
+    return {
+      logged: Boolean(useUsersStore().$state.user)
+    }
+  }
+})
+</script>
 <template>
-  <div class="container-fluid">
+  <div :class="logged ? 'container-fluid' : 'container-fluid d-none'">
     <div class="row">
       <div class="col-sm-auto bg-light sticky-top p-3">
         <div
           class="d-flex flex-sm-column flex-row flex-nowrap bg-light justify-content-end align-items-center sticky-top h-100">
+
+          <!-- MAIN APP PAGE LINK -->
           <router-link to="/" class="mb-4 router-link">
             <img src="./assets/logo.png" alt="Logo">
           </router-link>
+          <!-- TOPICS PAGES LINKS -->
           <ul
             class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center gap-2">
             <li>
@@ -27,28 +42,24 @@
                 <i class="bi bi-building-fill"></i>
               </router-link>
             </li>
-
             <li>
               <router-link to="/modelo" class="router-link" title="Modelo" data-bs-toggle="tooltip"
                 data-bs-placement="right" data-bs-original-title="Modelo">
                 <i class="bi bi-upc"></i>
               </router-link>
             </li>
-
             <li>
               <router-link to="/movimentacao" class="router-link" title="Movimentacao" data-bs-toggle="tooltip"
                 data-bs-placement="right" data-bs-original-title="Movimentacao">
                 <i class="bi bi-arrow-left-right"></i>
               </router-link>
             </li>
-
             <li>
               <router-link to="/relatorio" class="router-link" title="Relatórios" data-bs-toggle="tooltip"
                 data-bs-placement="right" data-bs-original-title="Relatórios">
                 <i class="bi bi-clipboard-data-fill"></i>
               </router-link>
             </li>
-
             <li>
               <router-link to="/config" class="router-link" title="Configurações" data-bs-toggle="tooltip"
                 data-bs-placement="right" data-bs-original-title="Configurações">
@@ -56,11 +67,21 @@
               </router-link>
             </li>
           </ul>
+
+          <router-link to="/login" class="router-link" :title="logged ? 'Sair' : 'Entrar'" data-bs-toggle="tooltip"
+            data-bs-placement="right" data-bs-original-title="Login">
+            <i class="bi bi-door-open"></i>
+          </router-link>
         </div>
       </div>
       <div class="col-sm p-3 min-vh-100">
         <router-view />
       </div>
+    </div>
+  </div>
+  <div :class="logged ? 'container-fluid h-100 login-page d-none' : 'container-fluid h-100 login-page'">
+    <div class="row login-page" style="height: 100vh">
+      <router-view />
     </div>
   </div>
 </template>
@@ -111,5 +132,9 @@
 .back:focus {
   background: #ebbf3c;
   color: #FFF;
+}
+
+.login-page {
+  background: #ebbf3c;
 }
 </style>

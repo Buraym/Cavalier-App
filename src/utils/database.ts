@@ -143,13 +143,15 @@ export async function init_db() {
         CREATE TABLE IF NOT EXISTS usuario
         (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ativo BOOLEAN NOT NULL,
-            atualizacao TEXT,
-            cadastro TEXT NOT NULL,
-            nome VARCHAR(100) NOT NULL,
-            documento VARCHAR(20) NOT NULL,
-            contato VARCHAR(20),
-            cargo VARCHAR(50)
+            active BOOLEAN NOT NULL,
+            updated_at TEXT,
+            created_at TEXT NOT NULL,
+            name VARCHAR(100) NOT NULL,
+            email VARCHAR(100) NOT NULL,
+            password VARCHAR(100) NOT NULL,
+            document VARCHAR(20) NOT NULL,
+            contact VARCHAR(20),
+            role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'user'))
         );
     `);
     db.close();
@@ -182,7 +184,6 @@ export async function criar_marca(marca: any) {
         INSERT INTO marca (ativo, atualizacao, cadastro, nome)
         VALUES (?1, ?2, ?3, ?4)
     `, [true, null, new Date(), marca.nome]);
-    
 }
 
 // EDITAR MARCA
