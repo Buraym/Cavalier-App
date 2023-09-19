@@ -1,9 +1,5 @@
 import SQLite from 'tauri-plugin-sqlite-api';
 
-const ROLE_DICT = {
-    "ADMIN": "admin",
-    "USER": "user",
-}
 
 // USERS
 // LIST USERS
@@ -13,6 +9,25 @@ export async function list_users() {
         SELECT * FROM usuario;
     `);
     return results;
+}
+
+// RETORNAR MOVIMENTACAO PAGINADO
+export async function list_users_paginated(page: Number, perPage: Number) {
+    const db = await SQLite.open('./cavalier.db');
+    let results = await db.select<Array<any>>(`
+        SELECT *
+        FROM usuario
+        ORDER BY created_at DESC
+        LIMIT ${perPage}
+        OFFSET (${page} - 1) * ${perPage};
+    `);
+    let totalPages = await db.select<Array<any>>(`SELECT COUNT(*) AS total_rows FROM usuario;`);
+    
+    return {
+        results,
+        totalItems: Number(totalPages[0].total_rows),
+        totalPages: Math.ceil(Number(totalPages[0].total_rows) / Number(perPage))
+    };
 }
 
 // RETURN USERS
@@ -26,19 +41,32 @@ export async function return_user(id: string) {
 }
 
 // AUTHENTICATE  USER
-export async function auth_user(email: string, password: string) {
+export async function auth_user(email: string, password: string, remember: boolean) {
     const db = await SQLite.open('./cavalier.db');
     const result = await db.select<Array<any>>(`
         SELECT * FROM usuario WHERE email LIKE ?1 AND password LIKE ?2;
     `, [email, password]);
     if (result[0]) {
-        await db.execute(`
-            UPDATE usuario SET logged = 1 WHERE id = ?1;
-        `, [result[0].id]);
+        if(remember) {
+            await db.execute(`
+                UPDATE usuario SET logged = 1 WHERE id = ?1;
+            `, [result[0].id]); 
+        }
         return result[0];
     } else {
         return null;
     }
+}
+
+// CHECK IF THERE IS ANY ADMIN USER
+export async function check_admin_created() {
+    const db = await SQLite.open('./cavalier.db');
+    const result = await db.select<Array<{ admin_count: Number }>>(`
+        SELECT COUNT(*) AS admin_count
+        FROM usuario
+        WHERE role = 'admin'
+    `);
+    return Boolean(result[0].admin_count);
 }
 
 // GET REMEMBERED LOGGED USER
@@ -51,6 +79,7 @@ export async function get_logged_user() {
     return result[0];
 }
 
+// LOG OUT USER FROM THE APP
 export async function logout_user() {
     const db = await SQLite.open('./cavalier.db');
     await db.execute(`
@@ -83,6 +112,16 @@ export async function edit_user(id: string, user: any) {
         email = ?7, password = ?7,
         WHERE id = ?9;
     `, [user.name, user.active, new Date(), user.document, user.contact, user.role, user.email, user.password, id]);
+    
+}
+
+export async function switch_user_role(id: string, role: 'admin' | 'user') {
+    const db = await SQLite.open('./cavalier.db');
+    await db.execute(`
+        UPDATE usuario
+        SET role = ?1
+        WHERE id = ?2;
+    `, [role, id]);
     
 }
 

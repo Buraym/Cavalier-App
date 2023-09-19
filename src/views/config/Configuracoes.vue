@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { format } from 'date-fns';
-import { retornar_configuracao } from '@/utils/database';
+import { retornar_configuracao } from '@/controllers/configuracao';
 
 export default defineComponent({
     name: 'Configuracoes',

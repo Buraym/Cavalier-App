@@ -2,10 +2,9 @@
 import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
 import { IntToTime, StringToDate } from '../../utils/index';
-import { retornar_movimentacao, deletar_movimentacao } from '@/controllers/movimentacao';
+import { retornar_movimentacao, editar_movimentacao, deletar_movimentacao } from '@/controllers/movimentacao';
 import { listar_veiculos } from '@/controllers/veiculo';
 import { listar_condutores } from '@/controllers/condutor';
-import { editar_movimentacao } from '@/utils/database';
 const condutores = ref<any[] | []>([]);
 const veiculos = ref<any[] | []>([]);
 export default defineComponent({

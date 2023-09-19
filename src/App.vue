@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useUsersStore } from '@/stores/index'
-
-
 export default defineComponent({
   name: "App",
   data() {
@@ -18,7 +16,6 @@ export default defineComponent({
       <div class="col-sm-auto bg-light sticky-top p-3">
         <div
           class="d-flex flex-sm-column flex-row flex-nowrap bg-light justify-content-end align-items-center sticky-top h-100">
-
           <!-- MAIN APP PAGE LINK -->
           <router-link to="/" class="mb-4 router-link">
             <img src="./assets/logo.png" alt="Logo">
@@ -56,10 +53,16 @@ export default defineComponent({
                 <i class="bi bi-arrow-left-right"></i>
               </router-link>
             </li>
-            <li>
+            <li :class="String(usersStore.$state.user?.role) !== 'admin' ? 'd-none' : ''">
               <router-link to="/relatorio" class="router-link" title="Relatórios" data-bs-toggle="tooltip"
                 data-bs-placement="right" data-bs-original-title="Relatórios">
                 <i class="bi bi-clipboard-data-fill"></i>
+              </router-link>
+            </li>
+            <li :class="String(usersStore.$state.user?.role) !== 'admin' ? 'd-none' : ''">
+              <router-link to="/users" class="router-link" title="Usuarios" data-bs-toggle="tooltip"
+                data-bs-placement="right" data-bs-original-title="Usuarios">
+                <i class="bi bi-people-fill"></i>
               </router-link>
             </li>
             <li>
@@ -72,7 +75,6 @@ export default defineComponent({
           <button @click="usersStore.logout" style="border: none; background: none; border-radius: 10px" title="Sair">
             <i class="bi bi-door-open"></i>
           </button>
-
           <router-link to="/login" v-if="Boolean(usersStore.$state.user) === false" class="router-link" title="Entrar"
             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Login">
             <i class="bi bi-door-open"></i>

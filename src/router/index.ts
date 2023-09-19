@@ -7,6 +7,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/auth/Login.vue')
   },
   {
+    path: '/users',
+    name: 'users',
+    component: () => import('../views/users/List.vue')
+  },
+  {
+    path: '/user/:user_id',
+    name: 'users_editar',
+    component: () => import('../views/users/Edit.vue')
+  },
+  {
     path: '/',
     name: 'home',
     component: () => import('../views/HomeView.vue')
@@ -105,15 +115,5 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
-router.beforeEach((to, from) => {
-  if (useUsersStore().$state.user === null && to.name !== 'login') {
-    console.log("USUARIO NÃO AUTENTICADO");
-    return { name: 'login' }
-  } else if (useUsersStore().$state.user !== null && to.name === 'login') {
-    console.log("USUARIO JÁ AUTENTICADO");
-    return { name: 'home' }
-  }
-  // return false
-})
+});
 export default router

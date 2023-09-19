@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useUsersStore } from '@/stores/index'
-
 export default defineComponent({
     name: "login",
     data() {
@@ -25,7 +24,7 @@ export default defineComponent({
             ev.preventDefault();
             const usersStore = useUsersStore()
             console.log(this.email, this.password);
-            const result = await usersStore.login({ email: this.email, password: this.password });
+            const result = await usersStore.login({ email: this.email, password: this.password, remember: this.remember });
             console.log(result);
             this.$router.push("/");
         },
@@ -94,13 +93,13 @@ export default defineComponent({
             <!-- LOGIN COMPONENTS -->
             <div class="w-100 mb-3" v-if="mode === 'login'">
                 <label for="login-email-input" class="form-label w-100 text-start">Email</label>
-                <input type="email" class="form-control" id="login-email-input" v-model="email" placeholder="Email"
-                    required>
+                <input type="email" class="form-control" autocomplete="username" id="login-email-input" v-model="email"
+                    placeholder="Email" required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'login'">
                 <label for="login-password-input" class="form-label w-100 text-start">Senha</label>
-                <input type="password" class="form-control" id="login-password-input" v-model="password" placeholder="Senha"
-                    required>
+                <input type="password" class="form-control" autocomplete="current-password" id="login-password-input"
+                    v-model="password" placeholder="Senha" required>
             </div>
             <div class="form-check mb-5" v-if="mode === 'login'">
                 <input class="form-check-input" type="checkbox" v-model="remember" id="login-remember-me">
@@ -126,13 +125,13 @@ export default defineComponent({
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
                 <label for="login-email-input" class="form-label w-100 text-start">Email</label>
-                <input type="email" class="form-control" id="login-email-input" v-model="registerData.email"
-                    placeholder="Email" required>
+                <input type="email" class="form-control" autocomplete="username" id="login-email-input"
+                    v-model="registerData.email" placeholder="Email" required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
                 <label for="login-password-input" class="form-label w-100 text-start">Senha</label>
-                <input type="password" minlength="8" class="form-control" id="login-password-input"
-                    v-model="registerData.password" placeholder="Senha" required>
+                <input type="password" minlength="8" autocomplete="current-password" class="form-control"
+                    id="login-password-input" v-model="registerData.password" placeholder="Senha" required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
                 <label for="login-password-input" class="form-label w-100 text-start">Confirme sua senha</label>
