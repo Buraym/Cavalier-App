@@ -1,17 +1,19 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useUsersStore } from '@/stores/index'
+
+
 export default defineComponent({
   name: "App",
   data() {
     return {
-      logged: Boolean(useUsersStore().$state.user)
+      usersStore: useUsersStore()
     }
   }
 })
 </script>
 <template>
-  <div :class="logged ? 'container-fluid' : 'container-fluid d-none'">
+  <div :class="Boolean(usersStore.$state.user) ? 'container-fluid' : 'container-fluid d-none'">
     <div class="row">
       <div class="col-sm-auto bg-light sticky-top p-3">
         <div
@@ -67,9 +69,12 @@ export default defineComponent({
               </router-link>
             </li>
           </ul>
+          <button @click="usersStore.logout" style="border: none; background: none; border-radius: 10px" title="Sair">
+            <i class="bi bi-door-open"></i>
+          </button>
 
-          <router-link to="/login" class="router-link" :title="logged ? 'Sair' : 'Entrar'" data-bs-toggle="tooltip"
-            data-bs-placement="right" data-bs-original-title="Login">
+          <router-link to="/login" v-if="Boolean(usersStore.$state.user) === false" class="router-link" title="Entrar"
+            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Login">
             <i class="bi bi-door-open"></i>
           </router-link>
         </div>
@@ -79,7 +84,8 @@ export default defineComponent({
       </div>
     </div>
   </div>
-  <div :class="logged ? 'container-fluid h-100 login-page d-none' : 'container-fluid h-100 login-page'">
+  <div
+    :class="Boolean(usersStore.$state.user) ? 'container-fluid h-100 login-page d-none' : 'container-fluid h-100 login-page'">
     <div class="row login-page" style="height: 100vh">
       <router-view />
     </div>

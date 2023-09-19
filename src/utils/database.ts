@@ -2,7 +2,7 @@ import SQLite from 'tauri-plugin-sqlite-api';
 
 // INICIA O BANCO SE JÁ NÃO TIVER INICIADO
 export async function init_db() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         CREATE TABLE IF NOT EXISTS marca
         (
@@ -147,10 +147,11 @@ export async function init_db() {
             updated_at TEXT,
             created_at TEXT NOT NULL,
             name VARCHAR(100) NOT NULL,
-            email VARCHAR(100) NOT NULL,
+            email VARCHAR(100) UNIQUE NOT NULL,
             password VARCHAR(100) NOT NULL,
             document VARCHAR(20) NOT NULL,
             contact VARCHAR(20),
+            logged BOOLEAN,
             role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'user'))
         );
     `);
@@ -160,7 +161,7 @@ export async function init_db() {
 // MARCAS
 // LISTAR MARCAS
 export async function listar_marcas() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     const results = await db.select<Array<any>>(`
         SELECT * FROM marca;
     `);
@@ -169,7 +170,7 @@ export async function listar_marcas() {
 
 // RETORNAR MARCA
 export async function retornar_marca(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     const result = await db.select<Array<any>>(`
         SELECT * FROM marca WHERE id=?1;
     `, [id]);
@@ -179,7 +180,7 @@ export async function retornar_marca(id: string) {
 
 // CRIAR MARCA
 export async function criar_marca(marca: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         INSERT INTO marca (ativo, atualizacao, cadastro, nome)
         VALUES (?1, ?2, ?3, ?4)
@@ -188,7 +189,7 @@ export async function criar_marca(marca: any) {
 
 // EDITAR MARCA
 export async function editar_marca(id: string, marca: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         UPDATE marca
         SET nome = ?1, ativo = $2, atualizacao = ?3
@@ -199,7 +200,7 @@ export async function editar_marca(id: string, marca: any) {
 
 // DELETAR MARCA
 export async function deletar_marca(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         DELETE FROM marca
         WHERE id = ?1;
@@ -210,7 +211,7 @@ export async function deletar_marca(id: string) {
 // MODELOS
 // LISTAR MODELOS
 export async function listar_modelos() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM modelo;
@@ -233,7 +234,7 @@ export async function listar_modelos() {
 
 // RETORNAR MODELO
 export async function retornar_modelo(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let result = await db.select<Array<any>>(`
         SELECT * FROM modelo WHERE id=?1;
     `, [id]);
@@ -256,7 +257,7 @@ export async function retornar_modelo(id: string) {
 
 // CRIAR MODELO
 export async function criar_modelo(modelo: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         INSERT INTO modelo (ativo, atualizacao, cadastro, nome, marca_id)
         VALUES (?1, ?2, ?3, ?4, ?5)
@@ -266,7 +267,7 @@ export async function criar_modelo(modelo: any) {
 
 // EDITAR MODELO
 export async function editar_modelo(id: string, modelo: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         UPDATE modelo
         SET nome = ?1, ativo = ?2, marca_id = ?3, atualizacao = ?4
@@ -277,7 +278,7 @@ export async function editar_modelo(id: string, modelo: any) {
 
 // DELETAR MODELO
 export async function deletar_modelo(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         DELETE FROM modelo
         WHERE id = ?1;
@@ -288,7 +289,7 @@ export async function deletar_modelo(id: string) {
 // VEICULOS
 // LISTAR VEICULOS
 export async function listar_veiculos() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM veiculo;
@@ -324,7 +325,7 @@ export async function listar_veiculos() {
 
 // RETORNAR VEICULO
 export async function retornar_veiculo(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let result = await db.select<Array<any>>(`
         SELECT *
         FROM veiculo
@@ -363,7 +364,7 @@ export async function retornar_veiculo(id: string) {
 
 // CRIAR VEICULO
 export async function criar_veiculo(veiculo: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         INSERT INTO veiculo (ativo, atualizacao, cadastro, ano, cor, placa, tipo, modelo_id)
         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8);
@@ -373,7 +374,7 @@ export async function criar_veiculo(veiculo: any) {
 
 // EDITAR VEICULO
 export async function editar_veiculo(id: string, veiculo: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         UPDATE veiculo
         SET placa = ?1, cor = ?2, ano = ?3, tipo = ?4, ativo = ?5, atualizacao = ?6
@@ -384,7 +385,7 @@ export async function editar_veiculo(id: string, veiculo: any) {
 
 // DELETAR VEICULO
 export async function deletar_veiculo(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         DELETE FROM veiculo
         WHERE id = ?1;
@@ -395,7 +396,7 @@ export async function deletar_veiculo(id: string) {
 // CONDUTORES
 // LISTAR CONDUTORES
 export async function listar_condutores() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     const result = await db.select<Array<any>>(`
         SELECT *
         FROM condutor;
@@ -406,7 +407,7 @@ export async function listar_condutores() {
 
 // RETORNAR CONDUTOR
 export async function retornar_condutor(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     const result = await db.select<Array<any>>(`
         SELECT * FROM condutor WHERE id=?1;
     `, [id]);
@@ -416,7 +417,7 @@ export async function retornar_condutor(id: string) {
 
 // CRIAR CONDUTOR
 export async function criar_condutor(condutor: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         INSERT INTO condutor ( ativo, atualizacao, cadastro, cpf, nome, telefone, tempo_gasto )
         VALUES (?1, ?2, ?3, ?4, ?5, ?6, 0);
@@ -426,7 +427,7 @@ export async function criar_condutor(condutor: any) {
 
 // EDITAR CONDUTOR
 export async function editar_condutor(id: string, condutor: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         UPDATE condutor
         SET cpf = ?1, nome = ?2, telefone = ?3, tempo_gasto = ?4, ativo = ?5, atualizacao = ?6
@@ -437,7 +438,7 @@ export async function editar_condutor(id: string, condutor: any) {
 
 // DELETAR CONDUTOR
 export async function deletar_condutor(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         DELETE FROM condutor
         WHERE id = ?1;
@@ -448,7 +449,7 @@ export async function deletar_condutor(id: string) {
 // MOVIMENTACAO
 // LISTAR MOVIMENTACOES
 export async function listar_movimentacoes() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let results = await db.select<Array<any>>(`
             SELECT *
             FROM movimentacao
@@ -507,7 +508,7 @@ export async function listar_movimentacoes() {
 
 // RETORNAR MOVIMENTACAO PAGINADO
 export async function listar_movimentacoes_paginated(page: Number, perPage: Number) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM movimentacao
@@ -569,7 +570,7 @@ export async function listar_movimentacoes_paginated(page: Number, perPage: Numb
 
 // RETORNAR MOVIMENTACAO DESTE MÊS
 export async function listar_movimentacoes_deste_mes() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM movimentacao
@@ -628,7 +629,7 @@ export async function listar_movimentacoes_deste_mes() {
 
 // RETORNAR MOVIMENTACAO
 export async function retornar_movimentacao(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let result = await db.select<Array<any>>(`
         SELECT *
         FROM movimentacao
@@ -683,7 +684,7 @@ export async function retornar_movimentacao(id: string) {
 
 // CRIAR MOVIMENTACAO
 export async function criar_movimentacao(movimentacao: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         INSERT INTO movimentacao (ativo, atualizacao, cadastro, entrada, saida, tempo, tempo_desconto,
         tempo_multa, valor_desconto, valor_hora, valor_hora_multa, valor_multa, valor_total, condutor_id, veiculo_id)
@@ -697,7 +698,7 @@ export async function criar_movimentacao(movimentacao: any) {
 
 // EDITAR MOVIMENTACAO
 export async function editar_movimentacao(id: string, movimentacao: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         UPDATE movimentacao
         SET entrada = ?1, saida = ?2, tempo = ?3, tempo_desconto = ?4, tempo_multa = ?5, valor_desconto = ?6,
@@ -726,7 +727,7 @@ export async function editar_movimentacao(id: string, movimentacao: any) {
 
 // DELETAR MOVIMENTACAO
 export async function deletar_movimentacao(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         DELETE FROM movimentacao
         WHERE id = ?1;
@@ -737,7 +738,7 @@ export async function deletar_movimentacao(id: string) {
 // CONFIGURACOES
 // RETORNAR CONFIGURACAO
 export async function retornar_configuracao() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     const result = await db.select<Array<any>>(`
         SELECT *
         FROM configuracao
@@ -749,7 +750,7 @@ export async function retornar_configuracao() {
 
 // CRIAR CONFIGURACAO
 export async function criar_configuracao(configuracao: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         INSERT INTO configuracao (id, ativo, atualizacao, cadastro, fim_expediente, gerar_desconto, inicio_expediente,
         tempo_de_desconto, tempo_para_desconto, vagas_carro, vagas_moto, vagas_van, valor_hora, valor_minuto_hora)
@@ -763,7 +764,7 @@ export async function criar_configuracao(configuracao: any) {
 
 // EDITAR CONFIGURACAO
 export async function editar_configuracao(configuracao: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         UPDATE configuracao
         SET ativo = ?1, atualizacao = ?2, cadastro = ?3, fim_expediente = ?4, gerar_desconto = ?5, inicio_expediente = ?6,

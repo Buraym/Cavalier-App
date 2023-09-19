@@ -21,12 +21,51 @@ export default defineComponent({
         }
     },
     methods: {
-        async submitForm(ev: any) {
+        async Login(ev: any) {
             ev.preventDefault();
             const usersStore = useUsersStore()
             console.log(this.email, this.password);
-            console.log(usersStore.$state.user);
-            console.log((await usersStore.login({ email: this.email, password: this.password })));
+            const result = await usersStore.login({ email: this.email, password: this.password });
+            console.log(result);
+            this.$router.push("/");
+        },
+
+        async Register(ev: any) {
+            ev.preventDefault();
+            const usersStore = useUsersStore()
+            console.log(
+                "Aqui vai cadastrar !!!",
+                {
+                    name: this.registerData.name,
+                    email: this.registerData.email,
+                    password: this.registerData.password,
+                    document: this.registerData.document,
+                    contact: this.registerData.contact,
+                    role: 'user'
+                }
+            );
+            if (
+                String(this.registerData.password) === String(this.registerData.confirmPassword) &&
+                String(this.registerData.password).length >= 8
+            ) {
+
+            } else {
+
+            }
+            const result = await usersStore.registerUser(
+                {
+                    name: this.registerData.name,
+                    email: this.registerData.email,
+                    password: this.registerData.password,
+                    document: this.registerData.document,
+                    contact: this.registerData.contact,
+                    role: 'user'
+                }
+            );
+            this.email = result.user.email;
+            this.password = result.user.password;
+            this.mode = "login"
+            console.log(result);
         },
         async setMode(mode: "login" | "register") {
             this.mode = mode;
@@ -51,32 +90,68 @@ export default defineComponent({
             <h2 class="mb-1 pacifico">Seja muito bem-vindo !</h2>
             <small class="mooli">entre com as suas credenciais</small>
         </div>
-        <form @submit="submitForm" class="w-100">
-            <div class="w-100 mb-3">
+        <form @submit="(ev) => mode === 'login' ? Login(ev) : Register(ev)" class="w-100">
+            <!-- LOGIN COMPONENTS -->
+            <div class="w-100 mb-3" v-if="mode === 'login'">
                 <label for="login-email-input" class="form-label w-100 text-start">Email</label>
                 <input type="email" class="form-control" id="login-email-input" v-model="email" placeholder="Email"
                     required>
             </div>
-            <div class="w-100 mb-3">
+            <div class="w-100 mb-3" v-if="mode === 'login'">
                 <label for="login-password-input" class="form-label w-100 text-start">Senha</label>
                 <input type="password" class="form-control" id="login-password-input" v-model="password" placeholder="Senha"
                     required>
             </div>
-            <div class="form-check mb-5">
+            <div class="form-check mb-5" v-if="mode === 'login'">
                 <input class="form-check-input" type="checkbox" v-model="remember" id="login-remember-me">
                 <label class="form-check-label w-100 text-start" for="login-remember-me">
                     Manter-me conectado ?
                 </label>
             </div>
-            <div class="w-100">
+            <div class="w-100" v-if="mode === 'login'">
                 <button type="submit" class="btn btn-warning w-100 text-white">Entrar</button>
                 <div class="d-flex justify-content-between align-items-center mooli">
                     <hr style="width:calc(40% - 10px)">
                     ou
                     <hr style="width:calc(40% - 10px)">
                 </div>
-                <button type="button" @click="setMode(mode === 'login' ? 'register' : 'login')"
-                    class="btn btn-primary w-100 text-white" aria-disabled="true">Cadastrar-se</button>
+                <button type="button" @click="setMode('register')"
+                    class="btn btn-primary w-100 text-white">Cadastrar-se</button>
+            </div>
+            <!-- REGISTER COMPONENTS -->
+            <div class="w-100 mb-3" v-if="mode === 'register'">
+                <label for="login-email-input" class="form-label w-100 text-start">Nome completo</label>
+                <input type="text" class="form-control" id="register-name-input" v-model="registerData.name"
+                    placeholder="Nome completo" required>
+            </div>
+            <div class="w-100 mb-3" v-if="mode === 'register'">
+                <label for="login-email-input" class="form-label w-100 text-start">Email</label>
+                <input type="email" class="form-control" id="login-email-input" v-model="registerData.email"
+                    placeholder="Email" required>
+            </div>
+            <div class="w-100 mb-3" v-if="mode === 'register'">
+                <label for="login-password-input" class="form-label w-100 text-start">Senha</label>
+                <input type="password" minlength="8" class="form-control" id="login-password-input"
+                    v-model="registerData.password" placeholder="Senha" required>
+            </div>
+            <div class="w-100 mb-3" v-if="mode === 'register'">
+                <label for="login-password-input" class="form-label w-100 text-start">Confirme sua senha</label>
+                <input type="password" minlength="8" class="form-control" id="login-password-input"
+                    v-model="registerData.confirmPassword" placeholder="Confirme sua senha" required>
+            </div>
+            <div class="w-100 mb-3" v-if="mode === 'register'">
+                <label for="login-password-input" class="form-label w-100 text-start">Contato</label>
+                <input type="text" class="form-control" id="login-password-input" v-model="registerData.contact"
+                    placeholder="Contato" required>
+            </div>
+            <div class="w-100" v-if="mode === 'register'">
+                <button type="submit" class="btn btn-warning w-100 text-white">Cadastrar-se</button>
+                <div class="d-flex justify-content-between align-items-center mooli">
+                    <hr style="width:calc(40% - 10px)">
+                    ou
+                    <hr style="width:calc(40% - 10px)">
+                </div>
+                <button type="button" @click="setMode('login')" class="btn btn-primary w-100 text-white">Entrar</button>
             </div>
         </form>
     </div>

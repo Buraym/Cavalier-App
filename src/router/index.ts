@@ -110,6 +110,9 @@ router.beforeEach((to, from) => {
   if (useUsersStore().$state.user === null && to.name !== 'login') {
     console.log("USUARIO NÃO AUTENTICADO");
     return { name: 'login' }
+  } else if (useUsersStore().$state.user !== null && to.name === 'login') {
+    console.log("USUARIO JÁ AUTENTICADO");
+    return { name: 'home' }
   }
   // return false
 })
