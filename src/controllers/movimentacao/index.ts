@@ -3,7 +3,7 @@ import SQLite from 'tauri-plugin-sqlite-api';
 // MOVIMENTACAO
 // LISTAR MOVIMENTACOES
 export async function listar_movimentacoes() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let results = await db.select<Array<any>>(`
             SELECT *
             FROM movimentacao
@@ -62,7 +62,7 @@ export async function listar_movimentacoes() {
 
 // RETORNAR MOVIMENTACAO PAGINADO
 export async function listar_movimentacoes_paginated(page: Number, perPage: Number) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM movimentacao
@@ -124,7 +124,7 @@ export async function listar_movimentacoes_paginated(page: Number, perPage: Numb
 
 // RETORNAR MOVIMENTACAO DESTE MÊS
 export async function listar_movimentacoes_deste_mes() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM movimentacao
@@ -183,7 +183,7 @@ export async function listar_movimentacoes_deste_mes() {
 
 // RETORNAR MOVIMENTACAO
 export async function retornar_movimentacao(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     let result = await db.select<Array<any>>(`
         SELECT *
         FROM movimentacao
@@ -238,7 +238,7 @@ export async function retornar_movimentacao(id: string) {
 
 // CRIAR MOVIMENTACAO
 export async function criar_movimentacao(movimentacao: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         INSERT INTO movimentacao (ativo, atualizacao, cadastro, entrada, saida, tempo, tempo_desconto,
         tempo_multa, valor_desconto, valor_hora, valor_hora_multa, valor_multa, valor_total, condutor_id, veiculo_id)
@@ -252,7 +252,7 @@ export async function criar_movimentacao(movimentacao: any) {
 
 // EDITAR MOVIMENTACAO
 export async function editar_movimentacao(id: string, movimentacao: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         UPDATE movimentacao
         SET entrada = ?1, saida = ?2, tempo = ?3, tempo_desconto = ?4, tempo_multa = ?5, valor_desconto = ?6,
@@ -281,7 +281,7 @@ export async function editar_movimentacao(id: string, movimentacao: any) {
 
 // DELETAR MOVIMENTACAO
 export async function deletar_movimentacao(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         DELETE FROM movimentacao
         WHERE id = ?1;

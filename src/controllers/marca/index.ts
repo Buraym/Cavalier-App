@@ -3,7 +3,7 @@ import SQLite from 'tauri-plugin-sqlite-api';
 // MARCAS
 // LISTAR MARCAS
 export async function listar_marcas() {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     const results = await db.select<Array<any>>(`
         SELECT * FROM marca;
     `);
@@ -12,7 +12,7 @@ export async function listar_marcas() {
 
 // RETORNAR MARCA
 export async function retornar_marca(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     const result = await db.select<Array<any>>(`
         SELECT * FROM marca WHERE id=?1;
     `, [id]);
@@ -22,7 +22,7 @@ export async function retornar_marca(id: string) {
 
 // CRIAR MARCA
 export async function criar_marca(marca: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         INSERT INTO marca (ativo, atualizacao, cadastro, nome)
         VALUES (?1, ?2, ?3, ?4)
@@ -32,7 +32,7 @@ export async function criar_marca(marca: any) {
 
 // EDITAR MARCA
 export async function editar_marca(id: string, marca: any) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         UPDATE marca
         SET nome = ?1, ativo = ?2, atualizacao = ?3
@@ -43,7 +43,7 @@ export async function editar_marca(id: string, marca: any) {
 
 // DELETAR MARCA
 export async function deletar_marca(id: string) {
-    const db = await SQLite.open('./test.db');
+    const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         DELETE FROM marca
         WHERE id = ?1;

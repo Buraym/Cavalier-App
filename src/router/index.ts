@@ -1,5 +1,21 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { useUsersStore } from '@/stores/index'
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/auth/Login.vue')
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: () => import('../views/users/List.vue')
+  },
+  {
+    path: '/user/:user_id',
+    name: 'users_editar',
+    component: () => import('../views/users/Edit.vue')
+  },
   {
     path: '/',
     name: 'home',
@@ -99,5 +115,5 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
+});
 export default router

@@ -15,6 +15,7 @@
     "chart.js": "^4.3.0",
     "core-js": "^3.8.3",
     "date-fns": "^2.30.0",
+    "pinia": "^2.1.6",
     "tauri-plugin-sqlite-api": "github:lzdyes/tauri-plugin-sqlite#v0.1.1",
     "vue": "^3.2.13",
     "vue-imask": "^7.1.3",
