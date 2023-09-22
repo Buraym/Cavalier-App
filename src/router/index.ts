@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { useUsersStore } from '@/stores/index'
-const routes: Array<RouteRecordRaw> = [
+const routes: Array<RouteRecordRaw> = [ 
   {
     path: '/login',
     name: 'login',
@@ -116,4 +116,14 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 });
+router.beforeEach((to, from) => {
+  const usersStore = useUsersStore()
+  usersStore.getLoggedUser();
+  // if (useUsersStore().$state.user === null && to.name !== 'login') {
+  //   return { name: 'login' }
+  // } else if (useUsersStore().$state.user !== null && to.name === 'login') {
+  //   return { name: 'home' }
+  // }
+  // return false
+})
 export default router

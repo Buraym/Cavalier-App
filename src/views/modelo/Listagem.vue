@@ -1,10 +1,12 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import {
+    list_models_paginated,
     listar_modelos,
     deletar_modelo
 } from "@/controllers/modelo";
 import Table from '@/components/Table.vue';
+import Pagination from '@/components/Pagination.vue';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
@@ -25,28 +27,37 @@ export default defineComponent({
     data: () => {
         return {
             data,
+            items: 1,
+            page: 1,
+            pages: 1,
+            perPage: 5,
             columns: listHeaderTopics
         }
     },
     components: {
-        Table
+        Table,
+        Pagination
     },
     mounted() {
-        this.ListagemDeItens();
+        this.ListagemDeItens(this.page, this.perPage);
     },
     methods: {
-        async ListagemDeItens() {
-            this.data = (await listar_modelos()).map((item) => ({
+        async ListagemDeItens(page: Number, perPage: Number) {
+            const response = await list_models_paginated(page, perPage);
+            this.pages = Number(response.totalPages);
+            this.items = Number(response.totalItems);
+            this.data = response?.results?.map((item) => ({
                 id: item.id,
                 nome: item.nome,
                 marca: item.marca.nome,
             }));
-            console.log(this.data);
+            if (page) {
+                this.page = Number(page);
+            }
         },
         async DeletarItem(id: string) {
             await deletar_modelo(id);
             this.data = this.data.filter((item) => item.id !== id);
-            console.log(this.data);
         }
     }
 });
@@ -59,6 +70,7 @@ export default defineComponent({
                 Cadastrar novo Modelo
             </a>
         </div>
+        <Pagination :page="page" :pages="pages" :per-page="perPage" :items="items" :list-function="ListagemDeItens" />
     </div>
 </template>
 <style scoped>

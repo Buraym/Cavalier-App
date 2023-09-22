@@ -30,10 +30,8 @@ export default defineComponent({
             this.tempoGasto = String(IntToTime(Number(condutor.tempo_gasto)));
             this.data_cadastro = format(new Date(condutor.cadastro), "dd/MM/yyyy HH:mm")
             if (condutor.atualizacao) {
-                console.log(condutor.atualizacao);
                 this.data_atualizado = format(new Date(condutor.atualizacao), "dd/MM/yyyy HH:mm")
             }
-            console.log(condutor);
         },
         async EditarCondutor(event: any) {
             event.preventDefault();

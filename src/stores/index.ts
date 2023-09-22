@@ -36,9 +36,7 @@ export const useUsersStore = defineStore('users', {
     actions: {
       async login(pass: IAuthLogin) {
         const users = await list_users();
-        console.log(users);
         const hasUser =  await auth_user(pass.email, pass.password, pass.remember);
-        console.log(hasUser);
         if (hasUser) {
           this.user = hasUser;
           return { user: hasUser, status: "sucess", message: "Usuário autenticado com sucesso !"};
@@ -49,9 +47,14 @@ export const useUsersStore = defineStore('users', {
       async getLoggedUser() {
         const loggedUser = await get_logged_user();
         if (loggedUser) {
-          console.log("ACHOU UM USUARIO LOGADO")
-          this.user = loggedUser;
-          router.push("/");
+          if (this.user === null) {
+            this.user = loggedUser;
+            // router.push("/");
+          }
+        } else {
+          if (this.user === null) {
+            router.push({ path: '/login' })
+          }
         }
       },
       async logout() {

@@ -1,6 +1,26 @@
 import SQLite from 'tauri-plugin-sqlite-api';
 
 // MARCAS
+
+// RETURN PAGINATED BRANDS LIST
+export async function list_brands_paginated(page: Number, perPage: Number) {
+    const db = await SQLite.open('./cavalier.db');
+    let results = await db.select<Array<any>>(`
+        SELECT *
+        FROM marca
+        ORDER BY cadastro DESC
+        LIMIT ${perPage}
+        OFFSET (${page} - 1) * ${perPage};
+    `);
+    let totalPages = await db.select<Array<{ total_rows: Number }>>(`SELECT COUNT(*) AS total_rows FROM marca;`);
+    
+    return {
+        results,
+        totalItems: Number(totalPages[0].total_rows),
+        totalPages: Math.ceil(Number(totalPages[0].total_rows) / Number(perPage))
+    };
+}
+
 // LISTAR MARCAS
 export async function listar_marcas() {
     const db = await SQLite.open('./cavalier.db');

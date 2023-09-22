@@ -29,7 +29,6 @@ export default defineComponent({
         },
         async RetornarVeiculo() {
             const veiculo = await retornar_veiculo(String(this.$route.params.veiculo_id));
-            console.log(veiculo);
             this.placa = veiculo.placa;
             this.ano = veiculo.ano;
             this.modelo = veiculo.modelo.id;
@@ -65,7 +64,9 @@ export default defineComponent({
         <div class="container text-start">
             <form @submit="EditarVeiculo">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
-                    <h4>Código do veiculo: {{ $route.params.veiculo_id }}</h4>
+                    <a class="back d-flex justify-content-center align-items-center" @click="$router.go(-1)">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
                     <div class=" d-flex justify-content-center align-items-center gap-2">
                         <button type="submit" class="btn btn-warning">
                             <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'

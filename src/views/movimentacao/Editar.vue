@@ -41,11 +41,9 @@ export default defineComponent({
         },
         async RetornarVeiculos() {
             this.veiculos = (await listar_veiculos()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
-            console.log(this.veiculos);
         },
         async RetornarMovimentacao() {
             const data = await retornar_movimentacao(String(this.$route.params.movimentacao_id))
-            console.log(data);
             this.condutor = data.condutor.id;
             this.veiculo = data.veiculo.id;
             this.entrada = format(new Date(data.entrada), "yyyy-MM-dd HH:mm");

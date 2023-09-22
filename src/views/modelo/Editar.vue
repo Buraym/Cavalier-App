@@ -22,7 +22,6 @@ export default defineComponent({
     },
     methods: {
         async RetornarMarcas() {
-            console.log((await listar_marcas()));
             this.marcas = (await listar_marcas()).map((item) => ({ title: item.nome, value: item.id }));
         },
         async RetornarModelo() {

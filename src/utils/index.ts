@@ -5,7 +5,6 @@ export function StringToTime(time: String): Number {
 }
 
 export function CalcTotalTime(movimentation: any, config: any, custom_values: any) {
-    console.log()
     let result = {
         tempo: custom_values?.tempo ? StringToTime(custom_values?.tempo) : 0,
         tempo_desconto: custom_values?.tempo_desconto ? StringToTime(custom_values?.tempo_desconto) : 0,

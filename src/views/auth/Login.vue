@@ -9,6 +9,10 @@ export default defineComponent({
             password: "",
             remember: false,
             mode: "login",
+            errorsLogin: {
+                email: "",
+                password: ""
+            },
             registerData: {
                 name: "",
                 document: "",
@@ -16,33 +20,36 @@ export default defineComponent({
                 password: "",
                 confirmPassword: "",
                 contact: ""
-            }
+            },
+            loading: false
         }
     },
     methods: {
         async Login(ev: any) {
+            this.loading = true;
+            const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
             ev.preventDefault();
+            this.errorsLogin.email = ""
+            this.errorsLogin.password = ""
             const usersStore = useUsersStore()
-            console.log(this.email, this.password);
             const result = await usersStore.login({ email: this.email, password: this.password, remember: this.remember });
-            console.log(result);
-            this.$router.push("/");
+            if (result.user) {
+                this.$router.push("/");
+            } else {
+                this.errorsLogin.email = "Email e/ou senha incorreto(s) !"
+                this.errorsLogin.password = "Email e/ou senha incorreto(s) !"
+                await sleep(5000);
+                this.errorsLogin = {
+                    email: "",
+                    password: ""
+                }
+            }
+            this.loading = false;
         },
-
         async Register(ev: any) {
             ev.preventDefault();
+            this.loading = true;
             const usersStore = useUsersStore()
-            console.log(
-                "Aqui vai cadastrar !!!",
-                {
-                    name: this.registerData.name,
-                    email: this.registerData.email,
-                    password: this.registerData.password,
-                    document: this.registerData.document,
-                    contact: this.registerData.contact,
-                    role: 'user'
-                }
-            );
             if (
                 String(this.registerData.password) === String(this.registerData.confirmPassword) &&
                 String(this.registerData.password).length >= 8
@@ -64,11 +71,10 @@ export default defineComponent({
             this.email = result.user.email;
             this.password = result.user.password;
             this.mode = "login"
-            console.log(result);
+            this.loading = false;
         },
         async setMode(mode: "login" | "register") {
             this.mode = mode;
-            console.log(mode);
         }
     }
 })
@@ -92,14 +98,19 @@ export default defineComponent({
         <form @submit="(ev) => mode === 'login' ? Login(ev) : Register(ev)" class="w-100">
             <!-- LOGIN COMPONENTS -->
             <div class="w-100 mb-3" v-if="mode === 'login'">
-                <label for="login-email-input" class="form-label w-100 text-start">Email</label>
-                <input type="email" class="form-control" autocomplete="username" id="login-email-input" v-model="email"
-                    placeholder="Email" required>
+                <label for="login-email-input" class="form-label w-100 text-start">
+                    Email
+                    <span class="badge text-bg-danger" v-if="errorsLogin.email !== ''">{{ errorsLogin.email }}</span>
+                </label>
+                <input type="email" :class="`form-control ${errorsLogin.email !== '' ? 'is-invalid' : ''}`"
+                    autocomplete="username" id="login-email-input" v-model="email" placeholder="Email" required>
+
             </div>
             <div class="w-100 mb-3" v-if="mode === 'login'">
                 <label for="login-password-input" class="form-label w-100 text-start">Senha</label>
-                <input type="password" class="form-control" autocomplete="current-password" id="login-password-input"
-                    v-model="password" placeholder="Senha" required>
+                <input type="password" :class="`form-control ${errorsLogin.password !== '' ? 'is-invalid' : ''}`"
+                    autocomplete="current-password" id="login-password-input" v-model="password" placeholder="Senha"
+                    required>
             </div>
             <div class="form-check mb-5" v-if="mode === 'login'">
                 <input class="form-check-input" type="checkbox" v-model="remember" id="login-remember-me">
@@ -108,7 +119,7 @@ export default defineComponent({
                 </label>
             </div>
             <div class="w-100" v-if="mode === 'login'">
-                <button type="submit" class="btn btn-warning w-100 text-white">Entrar</button>
+                <button type="submit" class="btn btn-warning w-100 text-white" :disabled="loading">Entrar</button>
                 <div class="d-flex justify-content-between align-items-center mooli">
                     <hr style="width:calc(40% - 10px)">
                     ou
@@ -144,7 +155,7 @@ export default defineComponent({
                     placeholder="Contato" required>
             </div>
             <div class="w-100" v-if="mode === 'register'">
-                <button type="submit" class="btn btn-warning w-100 text-white">Cadastrar-se</button>
+                <button type="submit" class="btn btn-warning w-100 text-white" :disabled="loading">Cadastrar-se</button>
                 <div class="d-flex justify-content-between align-items-center mooli">
                     <hr style="width:calc(40% - 10px)">
                     ou

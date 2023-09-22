@@ -70,7 +70,7 @@ export async function listar_movimentacoes_paginated(page: Number, perPage: Numb
         LIMIT ${perPage}
         OFFSET (${page} - 1) * ${perPage};
     `);
-    let totalPages = await db.select<Array<any>>(`SELECT COUNT(*) AS total_rows FROM movimentacao;`);
+    let totalPages = await db.select<Array<{ total_rows: Number }>>(`SELECT COUNT(*) AS total_rows FROM movimentacao;`);
     
     if (results.length > 0) {
         let condutores = await db.select<Array<any>>(`

@@ -39,7 +39,6 @@ export default defineComponent({
     methods: {
         async RetornarConfiguracao() {
             const config = await retornar_configuracao();
-            console.log(config);
             this.config = config;
             this.valorHora = config.valor_hora;
             this.valorHoraMulta = config.valor_hora;
@@ -83,7 +82,6 @@ export default defineComponent({
                     entrada: new Date(this.entrada),
                     saida: new Date(this.saida),
                 }, this.calculoAutomatico ? this.config : null, this.calculoAutomatico ? null : customValues);
-                console.log(calculatedData);
                 data = {
                     condutor_id: this.condutor,
                     veiculo_id: this.veiculo,
@@ -99,7 +97,6 @@ export default defineComponent({
                     valor_hora_multa: calculatedData.valor_hora_multa,
                 }
             }
-            console.log(data);
             await criar_movimentacao(data);
             this.$router.push('/movimentacao');
         }
