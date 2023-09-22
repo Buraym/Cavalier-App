@@ -1,0 +1,63 @@
+{
+  "auth": {
+    "login": {
+      "slogan": "¡La mejor aplicación de estacionamiento jamás creada!",
+      "sub-slogan": "Con funciones de automatización de cuentas, informes de costos y beneficios, respaldo de datos en la nube, soporte multiplataforma para Windows, Linux, Mac OS, emisión de recibos y boletos para clientes, notificaciones por teléfono para los usuarios y muchas más funcionalidades.",
+      "welcome": "¡La mejor aplicación de estacionamiento jamás creada!",
+      "sub-welcome": "Inicie sesión con sus credenciales",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "rememberme": "¿Recordarme?",
+      "login": "Iniciar Sesión",
+      "or": "O",
+      "register": "Registrarse",
+      "complete-name": "Nombre Completo",
+      "confirm-password": "Confirme su contraseña",
+      "contact": "Contacto",
+      "register-slogan": "¡Regístrese hoy mismo!",
+      "register-sub-slogan": "¡Bienvenido a nuestra aplicación! Para comenzar a disfrutar de todas las funciones y beneficios, complete el proceso de registro a continuación.",
+      "incorrect-login": "Correo electrónico y/o contraseña incorrectos!"
+    }
+  },
+  "driver": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "config": {
+    "index": {}
+  },
+  "brands": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "models": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "movimentation": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "reports": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "users": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "vehicles": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "main": {
+    "index": {}
+  }
+}

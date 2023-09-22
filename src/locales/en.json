@@ -1,0 +1,33 @@
+{
+  "auth": {
+    "login": {
+      "slogan": "The best parking app ever made!",
+      "sub-slogan": "With account automation features, cost and profit reports, cloud data backup, cross-platform support for Windows, Linux, Mac OS, customer receipt and ticket issuance, phone notifications for users, and many more functionalities.",
+      "welcome": "The best parking app ever made!",
+      "sub-welcome": "Log in with your credentials",
+      "email": "Email",
+      "password": "Password",
+      "rememberme": "Remember Me?",
+      "login": "Log In",
+      "or": "Or",
+      "register": "Sign Up",
+      "complete-name": "Full Name",
+      "confirm-password": "Confirm your password",
+      "contact": "Contact",
+      "register-slogan": "Sign up today!",
+      "register-sub-slogan": "Welcome to our app! To start enjoying all the features and benefits, please complete the registration process on the right.",
+      "incorrect-login": "Incorrect email and/or password!"
+    }
+  },
+  "driver": {},
+  "config": {},
+  "brands": {},
+  "models": {},
+  "movimentation": {},
+  "reports": {},
+  "users": {},
+  "vehicles": {},
+  "main": {
+    "hello": "Hello World!"
+  }
+}

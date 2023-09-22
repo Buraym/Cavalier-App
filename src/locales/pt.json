@@ -1,0 +1,33 @@
+{
+  "auth": {
+    "login": {
+      "slogan": "O melhor app de estacionamento já feito !",
+      "sub-slogan": "Com funções de automatização de contas, relatórios de custos e lucros, backup dos dados na nuvem, portabilidade para Windows, Linux, Mac OS, emissão de via do cliente e ticket, notificações pelo telefone dousuario e muito mais funcionalidades.",
+      "welcome": "O melhor app de estacionamento já feito !",
+      "sub-welcome": "entre com as suas credenciais",
+      "email": "Email",
+      "password": "Senha",
+      "rememberme": "Manter-me conectado ?",
+      "login": "Entrar",
+      "or": "Ou",
+      "register": "Cadastrar-se",
+      "complete-name": "Nome completo",
+      "confirm-password": "Confirme sua senha",
+      "contact": "Contato",
+      "register-slogan": "Cadastre-se hoje mesmo !",
+      "register-sub-slogan": "Bem-vindo ao nosso aplicativo! Para começar a aproveitar todos os recursos e benefícios, por favor, complete o processo de cadastro ao lado.",
+      "incorrect-login": "Email e/ou senha incorreto(s) !"
+    }
+  },
+  "driver": {},
+  "config": {},
+  "brands": {},
+  "models": {},
+  "movimentation": {},
+  "reports": {},
+  "users": {},
+  "vehicles": {},
+  "main": {
+    "hello": "Hello World!"
+  }
+}
