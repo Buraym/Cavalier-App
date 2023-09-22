@@ -2,9 +2,7 @@
 import { defineComponent, } from 'vue';
 import { format } from "date-fns"
 import { retornar_movimentacao, editar_movimentacao, deletar_movimentacao } from '@/controllers/movimentacao';
-import { return_user } from '@/controllers/users';
-
-console.log("ESTOU NA EDIÇÃO DE USUARIO")
+import { delete_user, edit_user, return_user } from '@/controllers/users';
 export default defineComponent({
     name: 'EditUser',
     data: () => {
@@ -25,7 +23,7 @@ export default defineComponent({
     },
     methods: {
         async ReturnUser() {
-            const data = await retornar_movimentacao(String(this.$route.params.user_id));
+            const data = await return_user(String(this.$route.params.user_id));
             this.name = data.name;
             this.email = data.email;
             this.password = data.password;
@@ -33,15 +31,15 @@ export default defineComponent({
             this.document = data.document;
             this.contact = data.contact;
             this.active = data.ativo ? true : false;
-            this.date_created = format(new Date(data.cadastro), "dd/MM/yyyy HH:mm")
+            this.date_created = format(new Date(data.created_at), "dd/MM/yyyy HH:mm")
             if (data.atualizacao) {
-                this.date_updated = format(new Date(data.atualizacao), "dd/MM/yyyy HH:mm")
+                this.date_updated = format(new Date(data.updated_at), "dd/MM/yyyy HH:mm")
             }
         },
         async EditUser(event: any) {
             event.preventDefault();
             const data = await return_user(String(this.$route.params.user_id))
-            await editar_movimentacao(String(this.$route.params.user_id), {
+            await edit_user(String(this.$route.params.user_id), {
                 ...data,
                 nome: this.name,
                 email: this.email,
@@ -50,11 +48,11 @@ export default defineComponent({
                 document: this.document,
                 contact: this.contact,
             });
-            // this.$router.go(-1);
+            this.$router.go(-1);
         },
         async DeleteUser() {
-            await deletar_movimentacao(String(this.$route.params.user_id));
-            // this.$router.push("/users")
+            await delete_user(String(this.$route.params.user_id));
+            this.$router.push("/users")
         }
     }
 });
@@ -90,8 +88,8 @@ export default defineComponent({
                 <div>
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Nome Completo</span>
-                            <input type="text" v-model="name" class="form-control" aria-label="Nome Completo"
+                            <span class="input-group-text" id="basic-addon1">Complete name</span>
+                            <input type="text" v-model="name" class="form-control" aria-label="Complete name"
                                 aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-3">
@@ -103,17 +101,14 @@ export default defineComponent({
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="password-field-label">Password</span>
-                            <input type="password" v-model="password" class="form-control" aria-label="Password"
+                            <input type="password" v-model="password" min="8" class="form-control" aria-label="Password"
                                 aria-describedby="password-field-label">
-                            <div id="passwordHelpBlock" class="form-text">
-                                Your password must be at least 8 characters long, contain letters and numbers.
-                            </div>
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Numero do documento</span>
-                            <input type="text" v-model="name" class="form-control" aria-label="Numero do documento"
+                            <span class="input-group-text" id="basic-addon1">Document number</span>
+                            <input type="text" v-model="document" class="form-control" aria-label="Numero do documento"
                                 aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-3">

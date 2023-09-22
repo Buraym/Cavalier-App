@@ -1,7 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { listar_condutores, deletar_condutor } from "@/controllers/condutor";
+import { listar_condutores, list_drivers_paginated, deletar_condutor } from "@/controllers/condutor";
 import Table from '@/components/Table.vue';
+import Pagination from '@/components/Pagination.vue';
 import { formatDuration, secondsToHours, secondsToMinutes } from 'date-fns'
 import pt_BR from 'date-fns/locale/pt-BR'
 const listHeaderTopics: any[] = [
@@ -32,18 +33,29 @@ export default defineComponent({
     data: () => {
         return {
             data,
+            items: 1,
+            page: 1,
+            pages: 1,
+            perPage: 5,
             columns: listHeaderTopics
         }
     },
     components: {
-        Table
+        Table,
+        Pagination
     },
     mounted() {
-        this.ListagemDeItens();
+        this.ListagemDeItens(this.page, this.perPage);
     },
     methods: {
-        async ListagemDeItens() {
-            this.data = (await listar_condutores()).map((item) => ({
+        async ListagemDeItens(page: Number, perPage: Number) {
+            const response = await list_drivers_paginated(page, perPage);
+            this.pages = Number(response.totalPages);
+            this.items = Number(response.totalItems);
+            if (perPage) {
+                this.perPage = Number(perPage);
+            }
+            this.data = response?.results?.map((item) => ({
                 id: item.id,
                 nome: item.nome,
                 cpf: item.cpf,
@@ -58,7 +70,9 @@ export default defineComponent({
                     seconds: item.tempo_gasto
                 }, { delimiter: ', ', locale: pt_BR }),
             }));
-            console.log(this.data);
+            if (page) {
+                this.page = Number(page);
+            }
         },
         async DeletarItem(id: string) {
             await deletar_condutor(id);
@@ -75,6 +89,7 @@ export default defineComponent({
                 Cadastrar novo Condutor
             </a>
         </div>
+        <Pagination :page="page" :pages="pages" :per-page="perPage" :items="items" :list-function="ListagemDeItens" />
     </div>
 </template>
 <style scoped>

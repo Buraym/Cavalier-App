@@ -49,7 +49,7 @@ export default defineComponent({
                     </div>
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Marca</label>
-                        <select v-model="marca" class="form-select" id="inputGroupSelect01">
+                        <select v-model="marca" class="form-select" id="inputGroupSelect01" required>
                             <option value="null">Escolha uma marca</option>
                             <option v-for="(item) in marcas" :key="item.id" :value="item.value" selected>{{ item.title }}
                             </option>

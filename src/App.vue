@@ -130,6 +130,7 @@ export default defineComponent({
   height: 30px;
   width: 30px;
   transition: 350ms ease-in-out;
+  cursor: pointer;
 }
 
 .back:hover {

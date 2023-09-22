@@ -140,7 +140,6 @@ export default defineComponent({
         ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
         valor_total: "R$ " + Number(item.valor_total).toFixed(2)
       }));
-      console.log(list);
       this.UsedParkingSpots = list.filter((item: any) =>
         item.ativo &&
         item.saida === null
@@ -202,7 +201,6 @@ export default defineComponent({
         entrada: new Date(movimentacao.entrada),
         saida: saida_time,
       }, this.config, null);
-      console.log(movimentacao, config, calculatedData);
       await editar_movimentacao(String(id), {
         ativo: true,
         condutor_id: movimentacao.condutor.id,
@@ -218,7 +216,6 @@ export default defineComponent({
         valor_hora: calculatedData.valor_hora,
         valor_hora_multa: calculatedData.valor_hora_multa,
       });
-      console.log(await retornar_movimentacao(id));
       await this.RetornarVagas();
     }
   }

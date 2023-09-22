@@ -26,7 +26,6 @@ export default defineComponent({
             let data = await listar_movimentacoes_deste_mes()
             let list_vehicle_id = data.map((item) => item.veiculo.id);
             let list_driver_id = data.map((item) => item.condutor.id);
-            console.log(data);
             this.qty = String(data.length);
             this.total_hours = String(Math.floor(Number(data.reduce((acc, curr) => {
                 acc += Number(curr.tempo)

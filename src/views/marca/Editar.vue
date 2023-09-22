@@ -26,7 +26,6 @@ export default defineComponent({
             if (marca.atualizacao) {
                 this.data_atualizado = format(new Date(marca.atualizacao), "dd/MM/yyyy HH:mm")
             }
-            console.log(marca);
         },
         async EditarMarca(event: any) {
             event.preventDefault();

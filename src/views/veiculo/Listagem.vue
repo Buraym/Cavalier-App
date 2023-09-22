@@ -1,7 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { listar_veiculos, deletar_veiculo } from '@/controllers/veiculo';
+import { list_vehicles_paginated, listar_veiculos, deletar_veiculo } from '@/controllers/veiculo';
 import Table from '@/components/Table.vue';
+import Pagination from '@/components/Pagination.vue';
 import { COLORS } from '@/utils/constants';
 const listHeaderTopics: any[] = [
     {
@@ -31,24 +32,35 @@ export default defineComponent({
     data: () => {
         return {
             data,
+            items: 1,
+            page: 1,
+            pages: 1,
+            perPage: 5,
             columns: listHeaderTopics
         }
     },
     components: {
-        Table
+        Table,
+        Pagination
     },
     mounted() {
-        this.ListagemDeItens();
+        this.ListagemDeItens(this.page, this.perPage);
     },
     methods: {
-        async ListagemDeItens() {
-            this.data = (await listar_veiculos()).map((item) => ({
+        async ListagemDeItens(page: Number, perPage: Number) {
+            const response = await list_vehicles_paginated(page, perPage);
+            this.pages = Number(response.totalPages);
+            this.items = Number(response.totalItems);
+            this.data = response?.results?.map((item) => ({
                 id: item.id,
                 modelo: String(item.modelo.nome) + " - " + String(item.placa),
                 ano: item.ano,
                 placa: item.placa,
                 cor: COLORS[item.cor],
             }));
+            if (page) {
+                this.page = Number(page);
+            }
         },
         async DeletarItem(id: string) {
             await deletar_veiculo(id);
@@ -65,6 +77,7 @@ export default defineComponent({
                 Cadastrar novo Veículo
             </a>
         </div>
+        <Pagination :page="page" :pages="pages" :per-page="perPage" :items="items" :list-function="ListagemDeItens" />
     </div>
 </template>
 <style scoped>

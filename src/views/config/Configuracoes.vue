@@ -27,7 +27,6 @@ export default defineComponent({
     methods: {
         async RetornarConfiguracao() {
             const configuracao = await retornar_configuracao();
-            console.log(configuracao);
             this.vagasCarro = String(configuracao.vagas_carro);
             this.vagasMoto = String(configuracao.vagas_moto);
             this.vagasVan = String(configuracao.vagas_van);
@@ -81,19 +80,6 @@ export default defineComponent({
         },
         async EnviarFormulario(event: any) {
             event.preventDefault();
-            console.log({
-                ativo: this.ativo,
-                vagas_carro: this.vagasCarro,
-                vagas_moto: this.vagasMoto,
-                vagas_van: this.vagasVan,
-                valor_hora: this.valorHora,
-                valor_minuto_hora: this.valorMinutoHora,
-                inicio_expediente: this.inicioExpediente,
-                fim_expediente: this.fimExpediente,
-                gerar_desconto: this.gerarDesconto,
-                tempo_para_desconto: this.tempoParaDesconto,
-                tempo_de_desconto: this.tempoDeDesconto
-            })
             // await editar_configuracao({
             //     vagas_carro: this.vagasCarro,
             //     vagas_moto: this.vagasMoto,
