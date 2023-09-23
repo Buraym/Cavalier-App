@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { format, intervalToDuration, isToday } from "date-fns";
-import { CalcTotalTime } from '@/utils';
+import { CalcTotalTime, getLocalisedMessage } from '@/utils';
 import {
   retornar_configuracao
 } from "@/controllers/configuracao";
@@ -12,6 +12,7 @@ import {
   editar_movimentacao
 } from "@/controllers/movimentacao";
 import Table from '@/components/Table.vue';
+console.log(this);
 const listHeaderTopics: any[] = [
   {
     label: "ID",
@@ -43,57 +44,6 @@ const listHeaderTopics: any[] = [
     name: "tempo_desconto"
   }
 ]
-const listItemTopics = ref<any[] | []>([]);
-let hours = intervalToDuration({
-  start: new Date(2023, 6, 15, 17, 37),
-  end: new Date(2023, 6, 15, 20, 12)
-}).hours
-let minutes = intervalToDuration({
-  start: new Date(2023, 6, 15, 17, 37),
-  end: new Date(2023, 6, 15, 20, 12)
-}).minutes
-listItemTopics.value = [
-  {
-    id: "asdasdasd",
-    name: "Eriberto",
-    cpf: "xxx.xxx.xxx-xx",
-    veiculo_nome: "Vectra",
-    entrada: format(new Date(2023, 6, 15, 17, 37), 'dd/MM/yyyy - HH:mm'),
-    saida: format(new Date(2023, 6, 15, 20, 12), 'dd/MM/yyyy - HH:mm'),
-    tempo_desconto: (hours && hours < 10 ? "0" + hours : hours) + ":" + (minutes && minutes < 10 ? "0" + minutes : minutes),
-    valor_total: "R$ 45,90"
-  },
-  {
-    id: "asdasdasd",
-    name: "Claudio",
-    cpf: "xxx.xxx.xxx-xx",
-    veiculo_nome: "Jetta",
-    entrada: format(new Date(2023, 6, 15, 17, 37), 'dd/MM/yyyy - HH:mm'),
-    saida: format(new Date(2023, 6, 15, 20, 12), 'dd/MM/yyyy - HH:mm'),
-    tempo_desconto: (hours && hours < 10 ? "0" + hours : hours) + ":" + (minutes && minutes < 10 ? "0" + minutes : minutes),
-    valor_total: "R$ 45,90"
-  },
-  {
-    id: "asdasdasd",
-    name: "Vanessa",
-    cpf: "xxx.xxx.xxx-xx",
-    veiculo_nome: "Civic",
-    entrada: format(new Date(2023, 6, 15, 17, 37), 'dd/MM/yyyy - HH:mm'),
-    saida: format(new Date(2023, 6, 15, 20, 12), 'dd/MM/yyyy - HH:mm'),
-    tempo_desconto: (hours && hours < 10 ? "0" + hours : hours) + ":" + (minutes && minutes < 10 ? "0" + minutes : minutes),
-    valor_total: "R$ 45,90"
-  },
-  {
-    id: "asdasdasd",
-    name: "Alessandra",
-    cpf: "xxx.xxx.xxx-xx",
-    veiculo_nome: "Uno V3",
-    entrada: format(new Date(2023, 6, 15, 17, 37), 'dd/MM/yyyy - HH:mm'),
-    saida: format(new Date(2023, 6, 15, 20, 12), 'dd/MM/yyyy - HH:mm'),
-    tempo_desconto: (hours && hours < 10 ? "0" + hours : hours) + ":" + (minutes && minutes < 10 ? "0" + minutes : minutes),
-    valor_total: "R$ 45,90"
-  }
-]
 let OldMovimentations = ref<any[] | []>([]);
 let UsedParkingSpots = ref<any[] | []>([]);
 let config = ref<any>(null);
@@ -101,6 +51,7 @@ export default defineComponent({
   name: 'HomeView',
   data: () => {
     return {
+
       OldMovimentations,
       UsedParkingSpots,
       columns: listHeaderTopics,
@@ -111,15 +62,66 @@ export default defineComponent({
     Table
   },
   mounted() {
+    console.log(this.$i18n);
     this.RetornarConfiguracao();
     this.RetornarVagas();
   },
   methods: {
     async RetornarConfiguracao() {
       this.config = await retornar_configuracao();
+      if (String(this.$i18n.locale) !== "pt") {
+        this.columns = [
+          {
+            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-id-header")),
+            name: "id"
+          },
+          {
+            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-name-header")),
+            name: "nome"
+          },
+          {
+            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-cpf-header")),
+            name: "cpf"
+          },
+          {
+            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-vehicle-header")),
+            name: "veiculo_nome",
+            is_link: true
+          },
+          {
+            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-entertime-header")),
+            name: "entrada"
+          },
+          {
+            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-leavetime-header")),
+            name: "saida"
+          },
+          {
+            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-discount-header")),
+            name: "tempo_desconto"
+          }
+        ]
+      }
     },
     async RetornarVagas() {
       const list = await listar_movimentacoes();
+      const date_format_localised = {
+        pt: {
+          "dia(s)": "",
+          "hora(s)": "Hora(s)",
+          "minuto(s)": "Minuto(s)",
+        },
+        en: {
+          "dia(s)": "Day(s)",
+          "hora(s)": "Hour(s)",
+          "minuto(s)": "Minute(s)",
+        },
+        es: {
+          "dia(s)": "Dia(s)",
+          "hora(s)": "Hora(s)",
+          "minuto(s)": "Minuto(s)",
+        },
+      }
       this.OldMovimentations = list.filter((item: any) =>
         item.ativo && item.saida &&
         isToday(
@@ -156,15 +158,15 @@ export default defineComponent({
           start: new Date(
             item.entrada
           ), end: new Date()
-        }).days} dia(s), ${intervalToDuration({
+        }).days} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-days"))}, ${intervalToDuration({
           start: new Date(
             item.entrada
           ), end: new Date()
-        }).hours} Hora(s) e ${intervalToDuration({
+        }).hours} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-hours"))} e ${intervalToDuration({
           start: new Date(
             item.entrada
           ), end: new Date()
-        }).minutes} minuto(s)`,
+        }).minutes} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-minutes"))}`,
         veiculo: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
         veiculo_id: String(item.veiculo.id),
         placa: item.veiculo.placa
@@ -241,24 +243,28 @@ export default defineComponent({
               <small>{{ item.placa }}</small>
             </a>
             <button type="button" @click="EncerrarEstacionamento(item.id)" class="btn btn-warning text-white"
-              title="Encerrar vaga">
+              :title='$t("main.index.finish-vacancy")'>
               <i class="bi bi-explicit-fill"></i>
             </button>
           </div>
           <div class="w-100 d-flex justify-content-between px-3 mb-1">
-            <small>*Entrada: {{ item.entrada }}</small>
+            <small>{{ $t("main.index.vacancy-entertime") }}{{ item.entrada }}</small>
             <small>{{ item.duracao }}</small>
           </div>
         </div>
       </div>
     </div>
     <div v-if="OldMovimentations.length > 0" class="container py-3 my-3">
-      <Table :columns="columns" :data="OldMovimentations" :title="'Movimentações dos condutores hoje'"
+      <Table :columns="columns" :data="OldMovimentations" :title='$t("main.index.todays-movimentations")'
         :edit="String(/movimentacao/)" :remove="DeletarItem" />
     </div>
   </div>
 </template>
 <style scoped>
+.home {
+  padding: 30px;
+}
+
 .vehicle-link {
   width: 90%;
   padding: 20px;

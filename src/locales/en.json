@@ -28,6 +28,20 @@
   "users": {},
   "vehicles": {},
   "main": {
-    "hello": "Hello World!"
+    "index": {
+      "table-id-header": "ID",
+      "table-name-header": "Name",
+      "table-cpf-header": "CPF",
+      "table-vehicle-header": "Vehicle",
+      "table-entertime-header": "Entry Time",
+      "table-leavetime-header": "Exit Time",
+      "table-discount-header": "Discount Time",
+      "finish-vacancy": "Finish Vacancy",
+      "vacancy-entertime": "*Entry: ",
+      "vacancy-duration-days": "Day(s)",
+      "vacancy-duration-hours": "Hour(s)",
+      "vacancy-duration-minutes": "Minute(s)",
+      "todays-movimentations": "Today's Driver Movements"
+    }
   }
 }

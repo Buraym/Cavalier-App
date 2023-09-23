@@ -28,6 +28,20 @@
   "users": {},
   "vehicles": {},
   "main": {
-    "hello": "Hello World!"
+    "index": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome",
+      "table-cpf-header": "Veiculo",
+      "table-vehicle-header": "Veiculo",
+      "table-entertime-header": "Hora entrada",
+      "table-leavetime-header": "Hora saida",
+      "table-discount-header": "Tempo desconto",
+      "finish-vacancy": "Encerrar vaga",
+      "vacancy-entertime": "*Entrada: ",
+      "vacancy-duration-days": "Dia(s)",
+      "vacancy-duration-hours": "Horas(s)",
+      "vacancy-duration-minutes": "Minuto(s)",
+      "todays-movimentations": "Movimentações dos condutores hoje"
+    }
   }
 }

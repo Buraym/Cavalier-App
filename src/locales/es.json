@@ -58,6 +58,20 @@
     "edit": {}
   },
   "main": {
-    "index": {}
+    "index": {
+      "table-id-header": "ID",
+      "table-name-header": "Nombre",
+      "table-cpf-header": "CPF",
+      "table-vehicle-header": "Vehículo",
+      "table-entertime-header": "Hora de Entrada",
+      "table-leavetime-header": "Hora de Salida",
+      "table-discount-header": "Tiempo de Descuento",
+      "finish-vacancy": "Finalizar Vacante",
+      "vacancy-entertime": "*Entrada: ",
+      "vacancy-duration-days": "Dia(s)",
+      "vacancy-duration-hours": "Horas(s)",
+      "vacancy-duration-minutes": "Minuto(s)",
+      "todays-movimentations": "Movimientos de Conductores de Hoy"
+    }
   }
 }

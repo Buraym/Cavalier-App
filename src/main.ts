@@ -9,7 +9,7 @@ import App from './App.vue'
 import router from './router';
 
 const i18n = createI18n({
-    locale: "pt",
+    locale: "en",
     fallbackLocale: "pt",
     messages: { pt, en, es },
   });
@@ -17,4 +17,5 @@ const i18n = createI18n({
 const pinia = createPinia()
 await init_db();
 
+createApp(App).use(router).use(pinia).use(i18n).mount('#app')
 
