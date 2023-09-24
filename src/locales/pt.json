@@ -19,14 +19,56 @@
       "incorrect-login": "Email e/ou senha incorreto(s) !"
     }
   },
-  "driver": {},
-  "config": {},
-  "brands": {},
-  "models": {},
-  "movimentation": {},
-  "reports": {},
-  "users": {},
-  "vehicles": {},
+  "driver": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "config": {
+    "index": {}
+  },
+  "brands": {
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome",
+      "register-new": "Cadastrar nova Marca"
+    },
+    "add": {
+      "brand-registration": "Cadastro de Marca",
+      "brand-name": "Nome da Marca",
+      "register-brand": "Cadastrar marca"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "brand-name": "Nome da Marca",
+      "brand-active": "Ativo ?",
+      "brand-created-at": "Cadastrado em: ",
+      "brand-updated-at": "Editado em: "
+    }
+  },
+  "models": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "movimentation": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "reports": {
+    "index": {}
+  },
+  "users": {
+    "list": {},
+    "edit": {}
+  },
+  "vehicles": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
   "main": {
     "index": {
       "table-id-header": "ID",
@@ -42,6 +84,12 @@
       "vacancy-duration-hours": "Horas(s)",
       "vacancy-duration-minutes": "Minuto(s)",
       "todays-movimentations": "Movimentações dos condutores hoje"
+    }
+  },
+  "general": {
+    "index": {
+      "pagination-listing": "Exibindo",
+      "pagination-of": "de"
     }
   }
 }

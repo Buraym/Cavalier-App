@@ -28,16 +28,16 @@ export default defineComponent({
                     <a class="back d-flex justify-content-center align-items-center" @click="$router.go(-1)">
                         <i class="bi bi-arrow-left"></i>
                     </a>
-                    <h2>Cadastro de Marca</h2>
+                    <h2>{{ $t("brands.add.brand-registration") }}</h2>
                 </div>
                 <div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Nome da Marca</span>
-                        <input type="text" v-model="nome" class="form-control" placeholder="Nome da Marca"
-                            aria-label="Nome da Marca" aria-describedby="basic-addon1" required>
+                        <span class="input-group-text" id="basic-addon1">{{ $t("brands.add.brand-name") }}</span>
+                        <input type="text" v-model="nome" class="form-control" :placeholder='$t("brands.add.brand-name")'
+                            :aria-label='$t("brands.add.brand-name")' aria-describedby="basic-addon1" required>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
-                        <button type="submit" class="btn btn-warning w-100">Cadastrar marca</button>
+                        <button type="submit" class="btn btn-warning w-100">{{ $t("brands.add.register-brand") }}</button>
                     </div>
                 </div>
             </form>

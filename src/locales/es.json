@@ -28,9 +28,24 @@
     "index": {}
   },
   "brands": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome",
+      "register-new": "Cadastrar nova Marca"
+    },
+    "add": {
+      "brand-registration": "Registro de marca",
+      "brand-name": "Nombre de marca",
+      "register-brand": "Registrar marca"
+    },
+    "edit": {
+      "update-registry": "Actualizar registro",
+      "delete-registry": "¿Eliminar?",
+      "brand-name": "Nombre de marca",
+      "brand-active": "¿Activo?",
+      "brand-created-at": "Registrado en: ",
+      "brand-updated-at": "Editado en: "
+    }
   },
   "models": {
     "list": {},
@@ -43,13 +58,10 @@
     "edit": {}
   },
   "reports": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "index": {}
   },
   "users": {
     "list": {},
-    "add": {},
     "edit": {}
   },
   "vehicles": {
@@ -72,6 +84,12 @@
       "vacancy-duration-hours": "Horas(s)",
       "vacancy-duration-minutes": "Minuto(s)",
       "todays-movimentations": "Movimientos de Conductores de Hoy"
+    }
+  },
+  "general": {
+    "index": {
+      "pagination-listing": "Mostrando",
+      "pagination-of": "en"
     }
   }
 }

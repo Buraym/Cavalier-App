@@ -19,14 +19,56 @@
       "incorrect-login": "Incorrect email and/or password!"
     }
   },
-  "driver": {},
-  "config": {},
-  "brands": {},
-  "models": {},
-  "movimentation": {},
-  "reports": {},
-  "users": {},
-  "vehicles": {},
+  "driver": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "config": {
+    "index": {}
+  },
+  "brands": {
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Name",
+      "register-new": "Register new Brand"
+    },
+    "add": {
+      "brand-registration": "Brand Registration",
+      "brand-name": "Brand Name",
+      "register-brand": "Register brand"
+    },
+    "edit": {
+      "update-registry": "Update registry",
+      "delete-registry": "Delete ?",
+      "brand-name": "Brand Name",
+      "brand-active": "Active ?",
+      "brand-created-at": "Registered at: ",
+      "brand-updated-at": "Edited at: "
+    }
+  },
+  "models": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "movimentation": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
+  "reports": {
+    "index": {}
+  },
+  "users": {
+    "list": {},
+    "edit": {}
+  },
+  "vehicles": {
+    "list": {},
+    "add": {},
+    "edit": {}
+  },
   "main": {
     "index": {
       "table-id-header": "ID",
@@ -42,6 +84,12 @@
       "vacancy-duration-hours": "Hour(s)",
       "vacancy-duration-minutes": "Minute(s)",
       "todays-movimentations": "Today's Driver Movements"
+    }
+  },
+  "general": {
+    "index": {
+      "pagination-listing": "Listing",
+      "pagination-of": "of"
     }
   }
 }
