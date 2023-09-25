@@ -20,9 +20,32 @@
     }
   },
   "driver": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Name",
+      "table-cpf-header": "CPF",
+      "table-telephone-header": "Telephone",
+      "table-time-spent-header": "Time spent",
+      "register-new": "Register new Driver"
+    },
+    "add": {
+      "driver-registration": "Driver Registration",
+      "driver-name": "Full name",
+      "driver-cpf": "CPF",
+      "driver-telephone": "Telephone",
+      "register-driver": "Register driver"
+    },
+    "edit": {
+      "update-registry": "Update record",
+      "delete-registry": "Delete ?",
+      "driver-name": "Full name",
+      "driver-cpf": "CPF",
+      "driver-telephone": "Telephone",
+      "driver-time-spent": "Telephone",
+      "driver-active": "Active ?",
+      "driver-created-at": "Registered at: ",
+      "driver-updated-at": "Edited in: "
+    }
   },
   "config": {
     "index": {}
@@ -48,9 +71,29 @@
     }
   },
   "models": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Name",
+      "table-brand-name-header": "Brand",
+      "register-new": "Register new Model"
+    },
+    "add": {
+      "model-registration": "Model Registration",
+      "model-name": "Model Name",
+      "brand-name": "Brand",
+      "choose-brand-name": "Choose a brand",
+      "register-model": "Register model"
+    },
+    "edit": {
+      "update-registry": "Update record",
+      "delete-registry": "Delete ?",
+      "model-name": "Model Name",
+      "model-brand-name": "Brand",
+      "choose-model-brand-name": "Choose a brand",
+      "model-active": "Active ?",
+      "model-created-at": "Registered at: ",
+      "model-updated-at": "Edited at: "
+    }
   },
   "movimentation": {
     "list": {},
@@ -65,9 +108,41 @@
     "edit": {}
   },
   "vehicles": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-model-name-header": "Model",
+      "table-year-header": "Year",
+      "table-plate-header": "Plate",
+      "table-color-header": "Color",
+      "register-new": "Register new Vehicle"
+    },
+    "add": {
+      "vehicle-registration": "Vehicle Registration",
+      "vehicle-plate": "Vehicle plate",
+      "vehicle-year": "Version year",
+      "model-name": "Model",
+      "choose-model-name": "Choose a model",
+      "vehicle-color": "Color",
+      "choose-vehicle-color": "Choose a color",
+      "vehicle-type": "Vehicle Type",
+      "choose-vehicle-type": "Choose a type",
+      "register-vehicle": "Register vehicle"
+    },
+    "edit": {
+      "update-registry": "Update record",
+      "delete-registry": "Delete ?",
+      "vehicle-plate": "Vehicle plate",
+      "vehicle-year": "Version year",
+      "model-name": "Model",
+      "choose-model-name": "Choose a model",
+      "vehicle-color": "Color",
+      "choose-vehicle-color": "Choose a color",
+      "vehicle-type": "Vehicle Type",
+      "choose-vehicle-type": "Choose a type",
+      "vehicle-active": "Active ?",
+      "vehicle-created-at": "Registered at: ",
+      "vehicle-updated-at": "Edited in: "
+    }
   },
   "main": {
     "index": {
@@ -89,7 +164,20 @@
   "general": {
     "index": {
       "pagination-listing": "Listing",
-      "pagination-of": "of"
+      "pagination-of": "of",
+      "color-red": "Red",
+      "color-white": "White",
+      "color-grey": "Gray",
+      "color-silver": "Silver",
+      "color-black": "Black",
+      "color-purple": "Purple",
+      "color-orange": "Orange",
+      "color-green": "Green",
+      "color-blue": "Blue",
+      "color-other": "Another color or print",
+      "vehicle-car": "Car",
+      "vehicle-motorcycle": "Motorcycle",
+      "vehicle-van": "Van"
     }
   }
 }

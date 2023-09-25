@@ -20,9 +20,32 @@
     }
   },
   "driver": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome",
+      "table-cpf-header": "CPF",
+      "table-telephone-header": "Telefone",
+      "table-time-spent-header": "Tempo gasto",
+      "register-new": "Cadastrar novo Condutor"
+    },
+    "add": {
+      "driver-registration": "Cadastro de Condutor",
+      "driver-name": "Nome Completo",
+      "driver-cpf": "CPF",
+      "driver-telephone": "Telefone",
+      "register-driver": "Cadastrar condutor"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "driver-name": "Nome Completo",
+      "driver-cpf": "CPF",
+      "driver-telephone": "Telefone",
+      "driver-time-spent": "Tempo Gasto",
+      "driver-active": "Ativo ?",
+      "driver-created-at": "Cadastrado em: ",
+      "driver-updated-at": "Editado em: "
+    }
   },
   "config": {
     "index": {}
@@ -48,9 +71,29 @@
     }
   },
   "models": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome",
+      "table-brand-name-header": "Marca",
+      "register-new": "Cadastrar novo Modelo"
+    },
+    "add": {
+      "model-registration": "Cadastro de Modelo",
+      "model-name": "Nome da Modelo",
+      "brand-name": "Marca",
+      "choose-brand-name": "Escolha uma marca",
+      "register-model": "Cadastrar modelo"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "model-name": "Nome do Modelo",
+      "model-brand-name": "Marca",
+      "choose-model-brand-name": "Escolha uma marca",
+      "model-active": "Ativo ?",
+      "model-created-at": "Cadastrado em: ",
+      "model-updated-at": "Editado em: "
+    }
   },
   "movimentation": {
     "list": {},
@@ -65,9 +108,41 @@
     "edit": {}
   },
   "vehicles": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-model-name-header": "Modelo",
+      "table-year-header": "Ano",
+      "table-plate-header": "Placa",
+      "table-color-header": "Cor",
+      "register-new": "Cadastrar novo Veículo"
+    },
+    "add": {
+      "vehicle-registration": "Cadastro de Veiculo",
+      "vehicle-plate": "Placa do veiculo",
+      "vehicle-year": "Ano da versão",
+      "model-name": "Modelo",
+      "choose-model-name": "Escolha um modelo",
+      "vehicle-color": "Cor",
+      "choose-vehicle-color": "Escolha uma cor",
+      "vehicle-type": "Tipo de Veiculo",
+      "choose-vehicle-type": "Escolha uma tipo",
+      "register-vehicle": "Cadastrar veiculo"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "vehicle-plate": "Placa do veiculo",
+      "vehicle-year": "Ano da versão",
+      "model-name": "Modelo",
+      "choose-model-name": "Escolha um modelo",
+      "vehicle-color": "Cor",
+      "choose-vehicle-color": "Escolha uma cor",
+      "vehicle-type": "Tipo de Veiculo",
+      "choose-vehicle-type": "Escolha uma tipo",
+      "vehicle-active": "Ativo ?",
+      "vehicle-created-at": "Cadastrado em: ",
+      "vehicle-updated-at": "Editado em: "
+    }
   },
   "main": {
     "index": {
@@ -89,7 +164,20 @@
   "general": {
     "index": {
       "pagination-listing": "Exibindo",
-      "pagination-of": "de"
+      "pagination-of": "de",
+      "color-red": "Vermelho",
+      "color-white": "Branco",
+      "color-grey": "Cinza",
+      "color-silver": "Prata",
+      "color-black": "Preto",
+      "color-purple": "Roxo",
+      "color-orange": "Laranja",
+      "color-green": "Verde",
+      "color-blue": "Azul",
+      "color-other": "Outra cor ou estampa",
+      "vehicle-car": "Carro",
+      "vehicle-motorcycle": "Moto",
+      "vehicle-van": "Van"
     }
   }
 }

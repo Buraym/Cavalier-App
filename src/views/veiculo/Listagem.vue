@@ -4,6 +4,7 @@ import { list_vehicles_paginated, listar_veiculos, deletar_veiculo } from '@/con
 import Table from '@/components/Table.vue';
 import Pagination from '@/components/Pagination.vue';
 import { COLORS } from '@/utils/constants';
+import { getLocalisedMessage } from '../../utils/index';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
@@ -44,6 +45,7 @@ export default defineComponent({
         Pagination
     },
     mounted() {
+        this.updateColumnHeadersLocalization();
         this.ListagemDeItens(this.page, this.perPage);
     },
     methods: {
@@ -62,6 +64,32 @@ export default defineComponent({
                 this.page = Number(page);
             }
         },
+        updateColumnHeadersLocalization() {
+            if (String(this.$i18n.locale) !== "pt") {
+                this.columns = [
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-id-header")),
+                        name: "id"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-model-name-header")),
+                        name: "modelo"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-year-header")),
+                        name: "ano"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-plate-header")),
+                        name: "placa"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-color-header")),
+                        name: "cor"
+                    }
+                ]
+            }
+        },
         async DeletarItem(id: string) {
             await deletar_veiculo(id);
             this.data = this.data.filter((item) => item.id !== id);
@@ -74,7 +102,7 @@ export default defineComponent({
         <Table :columns="columns" :data="data" :edit="String(/veiculo/)" :remove="DeletarItem" />
         <div>
             <a class="w-100 btn btn-warning" href="/veiculo/new">
-                Cadastrar novo Veículo
+                {{ $t("vehicles.list.register-new") }}
             </a>
         </div>
         <Pagination :page="page" :pages="pages" :per-page="perPage" :items="items" :list-function="ListagemDeItens" />

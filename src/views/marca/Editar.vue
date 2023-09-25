@@ -4,7 +4,6 @@ import { format } from "date-fns"
 import {
     editar_marca, retornar_marca, deletar_marca
 } from "@/controllers/marca";
-import { getLocalisedMessage } from '@/utils';
 export default defineComponent({
     name: 'EdicaoMarca',
     data: () => {
@@ -84,11 +83,13 @@ export default defineComponent({
                             </label>
                         </div>
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <h5 v-if="data_cadastro !== ''" class="mb-0">{{ $t("brands.edit.brand-created-at") }}<span
-                                    class="badge text-bg-warning">{{ data_cadastro }}</span>
+                            <h5 v-if="data_cadastro !== ''" class="mb-0">
+                                {{ $t("brands.edit.brand-created-at") }}
+                                <span class="badge text-bg-warning">{{ data_cadastro }}</span>
                             </h5>
-                            <h5 v-if="data_atualizado !== ''" class="mb-0">{{ $t("brands.edit.brand-updated-at") }}<span
-                                    class="badge text-bg-warning">{{ data_atualizado }}</span>
+                            <h5 v-if="data_atualizado !== ''" class="mb-0">
+                                {{ $t("brands.edit.brand-updated-at") }}
+                                <span class="badge text-bg-warning">{{ data_atualizado }}</span>
                             </h5>
                         </div>
                     </div>
