@@ -37,7 +37,7 @@ export default defineComponent({
     <div class="d-flex w-100 justify-content-end" v-bind:class="{ 'mt-2': Number(pages) === 0 }">
         <nav class="d-flex w-100 justify-content-between" aria-label="Page navigation example">
             <div class="d-flex align-items-center mx-2">
-                Exibindo
+                {{ $t("general.index.pagination-listing") }}
                 <!-- @vue-ignore -->
                 <select @change="(ev: Event) => list(Number(page), Number(ev?.target?.value))"
                     class="form-select form-select-sm mx-2 mb-1" aria-label="Small select example">
@@ -45,7 +45,7 @@ export default defineComponent({
                     <option value="10" v-bind:selected="perPage === 10">10</option>
                     <option value="20" v-bind:selected="perPage === 20">20</option>
                     <option value="50" v-bind:selected="perPage === 50">50</option>
-                </select> de <strong class="mx-1"> {{ items }} </strong>
+                </select> {{ $t("general.index.pagination-of") }} <strong class="mx-1"> {{ items }} </strong>
             </div>
             <ul class="pagination mt-2">
                 <li class="page-item" v-if="Number(pages) > 1" style="border-right: none">

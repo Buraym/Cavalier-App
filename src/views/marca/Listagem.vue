@@ -5,14 +5,15 @@ import {
 } from "@/controllers/marca";
 import Table from '@/components/Table.vue';
 import Pagination from '@/components/Pagination.vue';
+import { getLocalisedMessage } from '@/utils';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id",
+        field: "brands.list.table-id-header"
     },
     {
         label: "Nome",
-        name: "nome"
+        field: "brands.list.table-name-header"
     }
 ];
 const data = ref<any[] | []>([]);
@@ -32,6 +33,7 @@ export default defineComponent({
         Table, Pagination
     },
     mounted() {
+        this.updateColumnHeadersLocalization();
         this.ListagemDeItens(this.page, this.perPage);
     },
     methods: {
@@ -51,6 +53,20 @@ export default defineComponent({
                 this.page = Number(page);
             }
         },
+        updateColumnHeadersLocalization() {
+            if (String(this.$i18n.locale) !== "pt") {
+                this.columns = [
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "brands", "list", "table-id-header")),
+                        field: "brands.list.table-id-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "brands", "list", "table-name-header")),
+                        field: "brands.list.table-name-header"
+                    },
+                ]
+            }
+        },
         async DeletarItem(id: string) {
             await deletar_marca(id);
             this.data = this.data.filter((item) => item.id !== id);
@@ -59,16 +75,16 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div class="listagem-marca">
+    <div class="brands-list">
         <Table :columns="columns" :data="data" :edit="String(/marca/)" :remove="DeletarItem" />
         <div>
-            <router-link class="w-100 btn btn-warning" to="/marca/new">Cadastrar nova Marca </router-link>
+            <router-link class="w-100 btn btn-warning" to="/marca/new">{{ $t("brands.list.register-new") }}</router-link>
         </div>
         <Pagination :page="page" :pages="pages" :per-page="perPage" :items="items" :list-function="ListagemDeItens" />
     </div>
 </template>
 <style scoped>
-.listagem-marca {
+.brands-list {
     padding: 30px;
 }
 </style>

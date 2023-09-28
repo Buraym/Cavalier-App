@@ -1,0 +1,263 @@
+{
+  "auth": {
+    "login": {
+      "slogan": "O melhor app de estacionamento já feito !",
+      "sub-slogan": "Com funções de automatização de contas, relatórios de custos e lucros, backup dos dados na nuvem, portabilidade para Windows, Linux, Mac OS, emissão de via do cliente e ticket, notificações pelo telefone dousuario e muito mais funcionalidades.",
+      "welcome": "O melhor app de estacionamento já feito !",
+      "sub-welcome": "entre com as suas credenciais",
+      "email": "Email",
+      "password": "Senha",
+      "rememberme": "Manter-me conectado ?",
+      "login": "Entrar",
+      "or": "Ou",
+      "register": "Cadastrar-se",
+      "complete-name": "Nome completo",
+      "confirm-password": "Confirme sua senha",
+      "contact": "Contato",
+      "register-slogan": "Cadastre-se hoje mesmo !",
+      "register-sub-slogan": "Bem-vindo ao nosso aplicativo! Para começar a aproveitar todos os recursos e benefícios, por favor, complete o processo de cadastro ao lado.",
+      "incorrect-login": "Email e/ou senha incorreto(s) !"
+    }
+  },
+  "driver": {
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome",
+      "table-cpf-header": "CPF",
+      "table-telephone-header": "Telefone",
+      "table-time-spent-header": "Tempo gasto",
+      "register-new": "Cadastrar novo Condutor"
+    },
+    "add": {
+      "driver-registration": "Cadastro de Condutor",
+      "driver-name": "Nome Completo",
+      "driver-cpf": "CPF",
+      "driver-telephone": "Telefone",
+      "register-driver": "Cadastrar condutor"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "driver-name": "Nome Completo",
+      "driver-cpf": "CPF",
+      "driver-telephone": "Telefone",
+      "driver-time-spent": "Tempo Gasto",
+      "driver-active": "Ativo ?",
+      "driver-created-at": "Cadastrado em: ",
+      "driver-updated-at": "Editado em: "
+    }
+  },
+  "config": {
+    "index": {
+      "main-title": "Configurações Gerais",
+      "car-vacancies-qty": "QTD. de vagas para carros",
+      "motorcycle-vacancies-qty": "QTD. de vagas para motos",
+      "van-vacancies-qty": "QTD. de vagas para vans",
+      "hourly-time": "Valor da Hora (R$)",
+      "minute-time": "Valor do Minuto (R$)",
+      "save-changes": "Salvar mudanças"
+    }
+  },
+  "brands": {
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome",
+      "register-new": "Cadastrar nova Marca"
+    },
+    "add": {
+      "brand-registration": "Cadastro de Marca",
+      "brand-name": "Nome da Marca",
+      "register-brand": "Cadastrar marca"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "brand-name": "Nome da Marca",
+      "brand-active": "Ativo ?",
+      "brand-created-at": "Cadastrado em: ",
+      "brand-updated-at": "Editado em: "
+    }
+  },
+  "models": {
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome",
+      "table-brand-name-header": "Marca",
+      "register-new": "Cadastrar novo Modelo"
+    },
+    "add": {
+      "model-registration": "Cadastro de Modelo",
+      "model-name": "Nome da Modelo",
+      "brand-name": "Marca",
+      "choose-brand-name": "Escolha uma marca",
+      "register-model": "Cadastrar modelo"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "model-name": "Nome do Modelo",
+      "model-brand-name": "Marca",
+      "choose-model-brand-name": "Escolha uma marca",
+      "model-active": "Ativo ?",
+      "model-created-at": "Cadastrado em: ",
+      "model-updated-at": "Editado em: "
+    }
+  },
+  "movimentation": {
+    "list": {
+      "table-id-header": "ID",
+      "table-driver-name-header": "Condutor",
+      "table-vehicle-name-header": "Veículo",
+      "table-enter-time-header": "Entrada",
+      "table-exit-time-header": "Saída",
+      "table-hourly-value-header": "Valor Hora",
+      "table-total-value-header": "Valor Total",
+      "register-new": "Cadastrar nova Movimentação"
+    },
+    "add": {
+      "movimentation-registration": "Cadastro de Movimentação",
+      "driver-name": "Condutor",
+      "choose-driver-name": "Escolha uma condutor",
+      "vehicle-name": "Veículo",
+      "choose-vehicle-name": "Escolha uma veículo",
+      "enter-time": "Hora Entrada",
+      "exit-time": "Hora Saída",
+      "total-duration": "Tempo total decorrido",
+      "discount-time": "Tempo desconto",
+      "fee-time": "Tempo multa",
+      "discount-value": "Valor desconto (R$)",
+      "fee-value": "Valor multa (R$)",
+      "fee-hour-value": "Valor da multa por hora (R$)",
+      "unit-hour-value": "Valor unitario por hora (R$)",
+      "total-value": "Valor total (R$)",
+      "automatic-calculation": "Calculo automatico ?",
+      "register-movimentation": "Cadastrar movimentação"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "driver-name": "Condutor",
+      "choose-driver-name": "Escolha uma condutor",
+      "vehicle-name": "Veículo",
+      "choose-vehicle-name": "Escolha uma veículo",
+      "enter-time": "Hora Entrada",
+      "exit-time": "Hora Saída",
+      "total-duration": "Tempo total decorrido",
+      "discount-time": "Tempo desconto",
+      "fee-time": "Tempo multa",
+      "discount-value": "Valor desconto (R$)",
+      "fee-value": "Valor multa (R$)",
+      "fee-hour-value": "Valor da multa por hora (R$)",
+      "unit-hour-value": "Valor unitario por hora (R$)",
+      "total-value": "Valor total (R$)",
+      "automatic-calculation": "Calculo automatico ?",
+      "movimentation-active": "Ativo ?",
+      "movimentation-created-at": "Cadastrado em: ",
+      "movimentation-updated-at": "Editado em: "
+    }
+  },
+  "reports": {
+    "index": {
+      "monthly-resuls": "Resultados deste mês",
+      "total-movimentations": "Movimentações",
+      "total-hours": " Horas e",
+      "total-minutes": "Minutos",
+      "total-vehicles": " Veiculos e ",
+      "total-drivers": "Condutores"
+    }
+  },
+  "users": {
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome Completo",
+      "table-role-header": "Cargo",
+      "table-created-at-header": "Cadastrado em",
+      "role-admin": "Administrador",
+      "role-user": "Usuario"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "complete-name": "Nome Completo",
+      "email": "Email",
+      "password": "Senha",
+      "document": "Numero de documento",
+      "user-active": "Ativo ?",
+      "user-created-at": "Cadastrado em: ",
+      "user-updated-at": "Editado em: "
+    }
+  },
+  "vehicles": {
+    "list": {
+      "table-id-header": "ID",
+      "table-model-name-header": "Modelo",
+      "table-year-header": "Ano",
+      "table-plate-header": "Placa",
+      "table-color-header": "Cor",
+      "register-new": "Cadastrar novo Veículo"
+    },
+    "add": {
+      "vehicle-registration": "Cadastro de Veiculo",
+      "vehicle-plate": "Placa do veiculo",
+      "vehicle-year": "Ano da versão",
+      "model-name": "Modelo",
+      "choose-model-name": "Escolha um modelo",
+      "vehicle-color": "Cor",
+      "choose-vehicle-color": "Escolha uma cor",
+      "vehicle-type": "Tipo de Veiculo",
+      "choose-vehicle-type": "Escolha uma tipo",
+      "register-vehicle": "Cadastrar veiculo"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "vehicle-plate": "Placa do veiculo",
+      "vehicle-year": "Ano da versão",
+      "model-name": "Modelo",
+      "choose-model-name": "Escolha um modelo",
+      "vehicle-color": "Cor",
+      "choose-vehicle-color": "Escolha uma cor",
+      "vehicle-type": "Tipo de Veiculo",
+      "choose-vehicle-type": "Escolha uma tipo",
+      "vehicle-active": "Ativo ?",
+      "vehicle-created-at": "Cadastrado em: ",
+      "vehicle-updated-at": "Editado em: "
+    }
+  },
+  "main": {
+    "index": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome",
+      "table-cpf-header": "Veiculo",
+      "table-vehicle-header": "Veiculo",
+      "table-entertime-header": "Hora entrada",
+      "table-leavetime-header": "Hora saida",
+      "table-discount-header": "Tempo desconto",
+      "finish-vacancy": "Encerrar vaga",
+      "vacancy-entertime": "*Entrada: ",
+      "vacancy-duration-days": "Dia(s)",
+      "vacancy-duration-hours": "Horas(s)",
+      "vacancy-duration-minutes": "Minuto(s)",
+      "todays-movimentations": "Movimentações dos condutores hoje"
+    }
+  },
+  "general": {
+    "index": {
+      "pagination-listing": "Exibindo",
+      "pagination-of": "de",
+      "color-red": "Vermelho",
+      "color-white": "Branco",
+      "color-grey": "Cinza",
+      "color-silver": "Prata",
+      "color-black": "Preto",
+      "color-purple": "Roxo",
+      "color-orange": "Laranja",
+      "color-green": "Verde",
+      "color-blue": "Azul",
+      "color-other": "Outra cor ou estampa",
+      "vehicle-car": "Carro",
+      "vehicle-motorcycle": "Moto",
+      "vehicle-van": "Van"
+    }
+  }
+}

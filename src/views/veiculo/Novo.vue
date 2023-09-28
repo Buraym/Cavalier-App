@@ -42,57 +42,63 @@ export default defineComponent({
         <div class="container text-start">
             <form @submit="EnviarFormulario">
                 <div class="d-flex align-items-center justify-content-between gap-2 mt-5 mb-3">
-                    <h2>Cadastro de Veiculo</h2>
+                    <h2>{{ $t("vehicles.add.vehicle-registration") }}</h2>
                 </div>
                 <div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Placa do veiculo</span>
+                        <span class="input-group-text" id="basic-addon1">{{ $t("vehicles.add.vehicle-plate") }}</span>
                         <input type="text" v-model="placa" class="form-control" min="8" max="10"
-                            placeholder="Placa do veiculo" aria-label="Placa do veiculo" aria-describedby="basic-addon1"
-                            required>
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Ano da versão</span>
-                        <input type="number" v-model="ano" class="form-control" placeholder="Ano da versão"
-                            :max="new Date().getFullYear()" :min="1900" aria-label="Ano da versão"
+                            :placeholder='$t("vehicles.add.vehicle-plate")' :aria-label='$t("vehicles.add.vehicle-plate")'
                             aria-describedby="basic-addon1" required>
                     </div>
                     <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Modelo</label>
+                        <span class="input-group-text" id="basic-addon1">{{ $t("vehicles.add.vehicle-year") }}</span>
+                        <input type="number" v-model="ano" class="form-control"
+                            :placeholder='$t("vehicles.add.vehicle-year")' :max="new Date().getFullYear()" :min="1900"
+                            :aria-label='$t("vehicles.add.vehicle-year")' aria-describedby="basic-addon1" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="inputGroupSelect01">{{ $t("vehicles.add.model-name") }}</label>
                         <select v-model="modelo" class="form-select" id="inputGroupSelect01" required>
-                            <option value="null">Escolha um modelo</option>
+                            <option value="null">{{ $t("vehicles.add.choose-model-name") }}</option>
                             <option v-for="(item) in modelos" :key="item.value" :value="item.value">
                                 {{ item.title }}
                             </option>
                         </select>
                     </div>
                     <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Cor</label>
+                        <label class="input-group-text" for="inputGroupSelect01">
+                            {{ $t("vehicles.add.vehicle-color") }}
+                        </label>
                         <select v-model="cor" class="form-select" id="inputGroupSelect01" required>
-                            <option value="null">Escolha uma cor</option>
-                            <option value="RED">Vermelho</option>
-                            <option value="WHITE">Branco</option>
-                            <option value="GREY">Cinza</option>
-                            <option value="SILVER">Prata</option>
-                            <option value="BLACK">Preto</option>
-                            <option value="PURPLE">Roxo</option>
-                            <option value="ORANGE">Laranja</option>
-                            <option value="GREEN">Verde</option>
-                            <option value="BLUE">Azul</option>
-                            <option value="OTHER">Outra cor ou estampa</option>
+                            <option value="null">{{ $t("vehicles.add.choose-vehicle-color") }}</option>
+                            <option value="RED">{{ $t("general.index.color-red") }}</option>
+                            <option value="WHITE">{{ $t("general.index.color-white") }}</option>
+                            <option value="GREY">{{ $t("general.index.color-grey") }}</option>
+                            <option value="SILVER">{{ $t("general.index.color-silver") }}</option>
+                            <option value="BLACK">{{ $t("general.index.color-black") }}</option>
+                            <option value="PURPLE">{{ $t("general.index.color-purple") }}</option>
+                            <option value="ORANGE">{{ $t("general.index.color-orange") }}</option>
+                            <option value="GREEN">{{ $t("general.index.color-green") }}</option>
+                            <option value="BLUE">{{ $t("general.index.color-blue") }}</option>
+                            <option value="OTHER">{{ $t("general.index.color-other") }}</option>
                         </select>
                     </div>
                     <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Tipo de Veiculo</label>
+                        <label class="input-group-text" for="inputGroupSelect01">
+                            {{ $t("vehicles.add.vehicle-type") }}
+                        </label>
                         <select v-model="tipo" class="form-select" id="inputGroupSelect01" required>
-                            <option value="null">Escolha uma tipo</option>
-                            <option value="CARRO">Carro</option>
-                            <option value="MOTO">Moto</option>
-                            <option value="VAN">Van</option>
+                            <option value="null">{{ $t("vehicles.add.choose-vehicle-type") }}</option>
+                            <option value="CARRO">{{ $t("general.index.vehicle-car") }}</option>
+                            <option value="MOTO">{{ $t("general.index.vehicle-motorcycle") }}</option>
+                            <option value="VAN">{{ $t("general.index.vehicle-van") }}</option>
                         </select>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
-                        <button type="submit" class="btn btn-warning w-100">Cadastrar veiculo</button>
+                        <button type="submit" class="btn btn-warning w-100">
+                            {{ $t("general.index.register-vehicle") }}
+                        </button>
                     </div>
                 </div>
             </form>

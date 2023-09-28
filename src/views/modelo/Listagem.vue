@@ -7,18 +7,19 @@ import {
 } from "@/controllers/modelo";
 import Table from '@/components/Table.vue';
 import Pagination from '@/components/Pagination.vue';
+import { getLocalisedMessage } from '../../utils/index';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id"
+        field: "models.list.table-id-header"
     },
     {
         label: "Nome",
-        name: "nome"
+        field: "models.list.table-name-header"
     },
     {
         label: "Marca",
-        name: "marca"
+        field: "models.list.table-brand-name-header"
     }
 ]
 const data = ref<any[] | []>([]);
@@ -39,6 +40,7 @@ export default defineComponent({
         Pagination
     },
     mounted() {
+        this.updateColumnHeadersLocalization();
         this.ListagemDeItens(this.page, this.perPage);
     },
     methods: {
@@ -55,6 +57,24 @@ export default defineComponent({
                 this.page = Number(page);
             }
         },
+        updateColumnHeadersLocalization() {
+            if (String(this.$i18n.locale) !== "pt") {
+                this.columns = [
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "models", "list", "table-id-header")),
+                        field: "models.list.table-id-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "models", "list", "table-name-header")),
+                        field: "models.list.table-name-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "models", "list", "table-brand-name-header")),
+                        field: "models.list.table-brand-name-header"
+                    }
+                ]
+            }
+        },
         async DeletarItem(id: string) {
             await deletar_modelo(id);
             this.data = this.data.filter((item) => item.id !== id);
@@ -67,7 +87,7 @@ export default defineComponent({
         <Table :columns="columns" :data="data" :edit="String(/modelo/)" :remove="DeletarItem" />
         <div>
             <a class="w-100 btn btn-warning" href="/modelo/new">
-                Cadastrar novo Modelo
+                {{ $t("models.list.register-new") }}
             </a>
         </div>
         <Pagination :page="page" :pages="pages" :per-page="perPage" :items="items" :list-function="ListagemDeItens" />

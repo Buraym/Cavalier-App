@@ -4,22 +4,27 @@ import Table from '@/components/Table.vue';
 import Pagination from '@/components/Pagination.vue';
 import { format } from 'date-fns';
 import { delete_user, list_users_paginated, switch_user_role } from '@/controllers/users';
+import { getLocalisedMessage } from '../../utils/index';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id"
+        field: "users.list.table-id-header"
     },
     {
-        label: "Complete name",
-        name: "nome"
+        label: "Nome Completo",
+        field: "users.list.table-name-header"
     },
     {
         label: "Role",
-        name: "role"
+        field: "users.list.table-role-header"
     },
     {
         label: "Created at",
-        name: "created_at"
+        field: "users.list.table-created-at-header"
+    },
+    {
+        label: "",
+        field: ""
     }
 ]
 const data = ref<any[] | []>([]);
@@ -61,6 +66,32 @@ export default defineComponent({
             }));
             if (page) {
                 this.page = Number(page);
+            }
+        },
+        updateColumnHeadersLocalization() {
+            if (String(this.$i18n.locale) !== "pt") {
+                this.columns = [
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "users", "list", "table-id-header")),
+                        field: "users.list.table-id-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "users", "list", "table-name-header")),
+                        field: "users.list.table-name-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "users", "list", "table-role-header")),
+                        field: "users.list.table-role-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "users", "list", "table-created-at-header")),
+                        field: "users.list.table-created-at-header"
+                    },
+                    {
+                        label: "",
+                        field: ""
+                    }
+                ]
             }
         },
         async DeletarItem(id: string) {

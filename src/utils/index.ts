@@ -1,4 +1,7 @@
 import { intervalToDuration, isAfter, isBefore } from "date-fns";
+import es from "@/locales/es.json";
+import en from "@/locales/en.json";
+import pt from "@/locales/pt.json";
 
 export function StringToTime(time: String): Number {
     return Number(String(time).split(":")[0]) * 60 + Number(String(time).split(":")[1]);
@@ -52,4 +55,24 @@ export function StringToDate(time: String): Date {
     date.setUTCHours(Number(date.getHours()) + 3);
     date.setUTCDate(Number(date.getDate()));
     return date;
+}
+
+export function getLocalisedMessage(
+    locale: String,
+    page_module: "auth" | "driver" | "config" | "brands" | "models" | "es" | "movimentation" | "reports" | "users" | "vehicles" | "main" | "general",
+    page: "login" | "list" | "add" | "edit" | "index",
+    message: string
+) {
+    const lang = {
+        es,
+        en,
+        pt
+    }
+    // @ts-ignore
+    const result = lang[locale][page_module][page][message]
+    if (result) {
+        return String(result);
+    } else {
+        return null;
+    }
 }

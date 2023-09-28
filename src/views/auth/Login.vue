@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useUsersStore } from '@/stores/index'
+import { getLocalisedMessage } from '../../utils/index';
 export default defineComponent({
     name: "login",
     data() {
@@ -36,8 +37,8 @@ export default defineComponent({
             if (result.user) {
                 this.$router.push("/");
             } else {
-                this.errorsLogin.email = "Email e/ou senha incorreto(s) !"
-                this.errorsLogin.password = "Email e/ou senha incorreto(s) !"
+                this.errorsLogin.email = String(getLocalisedMessage(String(this.$i18n.locale), "auth", "login", "incorrect-login"));
+                this.errorsLogin.password = String(getLocalisedMessage(String(this.$i18n.locale), "auth", "login", "incorrect-login"));
                 await sleep(5000);
                 this.errorsLogin = {
                     email: "",
@@ -82,95 +83,111 @@ export default defineComponent({
 <template>
     <div :class="mode === 'login' ? 'login-helper-box' : 'login-helper-box closed'">
         <div class="w-100" style="margin-bottom: 100px">
-            <h2 class="mb-5 pacifico text-white text-start title">O melhor app de estacionamento gratuíto já feito !</h2>
+            <h2 class="mb-5 pacifico text-white text-start title">
+                {{ $t("auth.login.slogan") }}
+            </h2>
             <p class="text-white text-start mooli subtitle">
-                Com funções de automatização de contas, relatórios de custos e lucros, backup dos dados na nuvem,
-                portabilidade para Windows, Linux, Mac OS, emissão de via do cliente e ticket, notificações pelo telefone do
-                usuario e muito mais funcionalidades.
+                {{ $t("auth.login.sub-slogan") }}
             </p>
         </div>
     </div>
     <div :class="mode === 'login' ? 'form-box' : 'form-box changed'">
         <div class="w-100" style="margin-bottom: 100px">
-            <h2 class="mb-1 pacifico">Seja muito bem-vindo !</h2>
-            <small class="mooli">entre com as suas credenciais</small>
+            <h2 class="mb-1 pacifico">
+                {{ $t("auth.login.welcome") }}
+            </h2>
+            <small class="mooli">
+                {{ $t("auth.login.sub-welcome") }}
+            </small>
         </div>
         <form @submit="(ev) => mode === 'login' ? Login(ev) : Register(ev)" class="w-100">
             <!-- LOGIN COMPONENTS -->
             <div class="w-100 mb-3" v-if="mode === 'login'">
                 <label for="login-email-input" class="form-label w-100 text-start">
-                    Email
+                    {{ $t("auth.login.email") }}
                     <span class="badge text-bg-danger" v-if="errorsLogin.email !== ''">{{ errorsLogin.email }}</span>
                 </label>
                 <input type="email" :class="`form-control ${errorsLogin.email !== '' ? 'is-invalid' : ''}`"
-                    autocomplete="username" id="login-email-input" v-model="email" placeholder="Email" required>
+                    autocomplete="username" id="login-email-input" v-model="email" :placeholder='$t("auth.login.email")'
+                    required>
 
             </div>
             <div class="w-100 mb-3" v-if="mode === 'login'">
-                <label for="login-password-input" class="form-label w-100 text-start">Senha</label>
+                <label for="login-password-input" class="form-label w-100 text-start">
+                    {{ $t("auth.login.password") }}
+                </label>
                 <input type="password" :class="`form-control ${errorsLogin.password !== '' ? 'is-invalid' : ''}`"
-                    autocomplete="current-password" id="login-password-input" v-model="password" placeholder="Senha"
-                    required>
+                    autocomplete="current-password" id="login-password-input" v-model="password"
+                    :placeholder='$t("auth.login.password")' required>
             </div>
             <div class="form-check mb-5" v-if="mode === 'login'">
                 <input class="form-check-input" type="checkbox" v-model="remember" id="login-remember-me">
                 <label class="form-check-label w-100 text-start" for="login-remember-me">
-                    Manter-me conectado ?
+                    {{ $t("auth.login.rememberme") }}
                 </label>
             </div>
             <div class="w-100" v-if="mode === 'login'">
-                <button type="submit" class="btn btn-warning w-100 text-white" :disabled="loading">Entrar</button>
+                <button type="submit" class="btn btn-warning w-100 text-white" :disabled="loading">{{ $t("auth.login.login")
+                }}</button>
                 <div class="d-flex justify-content-between align-items-center mooli">
                     <hr style="width:calc(40% - 10px)">
-                    ou
+                    {{ $t("auth.login.or") }}
                     <hr style="width:calc(40% - 10px)">
                 </div>
-                <button type="button" @click="setMode('register')"
-                    class="btn btn-primary w-100 text-white">Cadastrar-se</button>
+                <button type="button" @click="setMode('register')" class="btn btn-primary w-100 text-white">
+                    {{ $t("auth.login.register") }}
+                </button>
             </div>
             <!-- REGISTER COMPONENTS -->
             <div class="w-100 mb-3" v-if="mode === 'register'">
-                <label for="login-email-input" class="form-label w-100 text-start">Nome completo</label>
+                <label for="login-email-input" class="form-label w-100 text-start">{{ $t("auth.login.complete-name")
+                }}</label>
                 <input type="text" class="form-control" id="register-name-input" v-model="registerData.name"
-                    placeholder="Nome completo" required>
+                    :placeholder='$t("auth.login.complete-name")' required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
-                <label for="login-email-input" class="form-label w-100 text-start">Email</label>
+                <label for="login-email-input" class="form-label w-100 text-start">{{ $t("auth.login.email") }}</label>
                 <input type="email" class="form-control" autocomplete="username" id="login-email-input"
-                    v-model="registerData.email" placeholder="Email" required>
+                    v-model="registerData.email" :placeholder='$t("auth.login.email")' required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
-                <label for="login-password-input" class="form-label w-100 text-start">Senha</label>
+                <label for="login-password-input" class="form-label w-100 text-start">{{ $t("auth.login.password")
+                }}</label>
                 <input type="password" minlength="8" autocomplete="current-password" class="form-control"
-                    id="login-password-input" v-model="registerData.password" placeholder="Senha" required>
+                    id="login-password-input" v-model="registerData.password" :placeholder='$t("auth.login.password")'
+                    required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
-                <label for="login-password-input" class="form-label w-100 text-start">Confirme sua senha</label>
+                <label for="login-password-input" class="form-label w-100 text-start">{{ $t("auth.login.confirm-password")
+                }}</label>
                 <input type="password" minlength="8" class="form-control" id="login-password-input"
-                    v-model="registerData.confirmPassword" placeholder="Confirme sua senha" required>
+                    v-model="registerData.confirmPassword" :placeholder='$t("auth.login.confirm-password")' required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
-                <label for="login-password-input" class="form-label w-100 text-start">Contato</label>
+                <label for="login-password-input" class="form-label w-100 text-start">{{ $t("auth.login.contact") }}</label>
                 <input type="text" class="form-control" id="login-password-input" v-model="registerData.contact"
-                    placeholder="Contato" required>
+                    :placeholder='$t("auth.login.contact")' required>
             </div>
             <div class="w-100" v-if="mode === 'register'">
-                <button type="submit" class="btn btn-warning w-100 text-white" :disabled="loading">Cadastrar-se</button>
+                <button type="submit" class="btn btn-warning w-100 text-white" :disabled="loading">{{
+                    $t("auth.login.register") }}</button>
                 <div class="d-flex justify-content-between align-items-center mooli">
                     <hr style="width:calc(40% - 10px)">
-                    ou
+                    {{ $t("auth.login.or") }}
                     <hr style="width:calc(40% - 10px)">
                 </div>
-                <button type="button" @click="setMode('login')" class="btn btn-primary w-100 text-white">Entrar</button>
+                <button type="button" @click="setMode('login')" class="btn btn-primary w-100 text-white">{{
+                    $t("auth.login.login") }}</button>
             </div>
         </form>
     </div>
     <div :class="mode === 'login' ? 'register-box' : 'register-box opened'">
-        <div class="w-100" style="margin-bottom: 100px">
-            <h2 class="mb-5 pacifico text-white text-start title">Cadastre-se hoje mesmo !</h2>
+        <div class="w-100" style="margin-bottom: 50px">
+            <h2 class="mb-5 pacifico text-white text-start title">
+                {{ $t("auth.login.register-slogan") }}
+            </h2>
             <p class="text-white text-start mooli subtitle">
-                Bem-vindo ao nosso aplicativo! Para começar a aproveitar todos os recursos e benefícios, por favor, complete
-                o processo de cadastro ao lado.
+                {{ $t("auth.login.register-sub-slogan") }}
             </p>
         </div>
     </div>

@@ -4,26 +4,27 @@ import { list_vehicles_paginated, listar_veiculos, deletar_veiculo } from '@/con
 import Table from '@/components/Table.vue';
 import Pagination from '@/components/Pagination.vue';
 import { COLORS } from '@/utils/constants';
+import { getLocalisedMessage } from '../../utils/index';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id"
+        field: "vehicles.list.table-id-header"
     },
     {
         label: "Modelo",
-        name: "modelo"
+        field: "vehicles.list.table-model-name-header"
     },
     {
         label: "Ano",
-        name: "ano"
+        field: "vehicles.list.table-year-header"
     },
     {
         label: "Placa",
-        name: "placa"
+        field: "vehicles.list.table-plate-header"
     },
     {
         label: "Cor",
-        name: "cor"
+        field: "vehicles.list.table-color-header"
     }
 ]
 const data = ref<any[] | []>([]);
@@ -44,6 +45,7 @@ export default defineComponent({
         Pagination
     },
     mounted() {
+        this.updateColumnHeadersLocalization();
         this.ListagemDeItens(this.page, this.perPage);
     },
     methods: {
@@ -62,6 +64,32 @@ export default defineComponent({
                 this.page = Number(page);
             }
         },
+        updateColumnHeadersLocalization() {
+            if (String(this.$i18n.locale) !== "pt") {
+                this.columns = [
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-id-header")),
+                        field: "vehicles.list.table-id-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-model-name-header")),
+                        field: "vehicles.list.table-model-name-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-year-header")),
+                        field: "vehicles.list.table-year-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-plate-header")),
+                        field: "vehicles.list.table-plate-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-color-header")),
+                        field: "vehicles.list.table-color-header"
+                    }
+                ]
+            }
+        },
         async DeletarItem(id: string) {
             await deletar_veiculo(id);
             this.data = this.data.filter((item) => item.id !== id);
@@ -74,7 +102,7 @@ export default defineComponent({
         <Table :columns="columns" :data="data" :edit="String(/veiculo/)" :remove="DeletarItem" />
         <div>
             <a class="w-100 btn btn-warning" href="/veiculo/new">
-                Cadastrar novo Veículo
+                {{ $t("vehicles.list.register-new") }}
             </a>
         </div>
         <Pagination :page="page" :pages="pages" :per-page="perPage" :items="items" :list-function="ListagemDeItens" />
