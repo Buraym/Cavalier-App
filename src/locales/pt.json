@@ -48,7 +48,15 @@
     }
   },
   "config": {
-    "index": {}
+    "index": {
+      "main-title": "Configurações Gerais",
+      "car-vacancies-qty": "QTD. de vagas para carros",
+      "motorcycle-vacancies-qty": "QTD. de vagas para motos",
+      "van-vacancies-qty": "QTD. de vagas para vans",
+      "hourly-time": "Valor da Hora (R$)",
+      "minute-time": "Valor do Minuto (R$)",
+      "save-changes": "Salvar mudanças"
+    }
   },
   "brands": {
     "list": {
@@ -96,16 +104,88 @@
     }
   },
   "movimentation": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-driver-name-header": "Condutor",
+      "table-vehicle-name-header": "Veículo",
+      "table-enter-time-header": "Entrada",
+      "table-exit-time-header": "Saída",
+      "table-hourly-value-header": "Valor Hora",
+      "table-total-value-header": "Valor Total",
+      "register-new": "Cadastrar nova Movimentação"
+    },
+    "add": {
+      "movimentation-registration": "Cadastro de Movimentação",
+      "driver-name": "Condutor",
+      "choose-driver-name": "Escolha uma condutor",
+      "vehicle-name": "Veículo",
+      "choose-vehicle-name": "Escolha uma veículo",
+      "enter-time": "Hora Entrada",
+      "exit-time": "Hora Saída",
+      "total-duration": "Tempo total decorrido",
+      "discount-time": "Tempo desconto",
+      "fee-time": "Tempo multa",
+      "discount-value": "Valor desconto (R$)",
+      "fee-value": "Valor multa (R$)",
+      "fee-hour-value": "Valor da multa por hora (R$)",
+      "unit-hour-value": "Valor unitario por hora (R$)",
+      "total-value": "Valor total (R$)",
+      "automatic-calculation": "Calculo automatico ?",
+      "register-movimentation": "Cadastrar movimentação"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "driver-name": "Condutor",
+      "choose-driver-name": "Escolha uma condutor",
+      "vehicle-name": "Veículo",
+      "choose-vehicle-name": "Escolha uma veículo",
+      "enter-time": "Hora Entrada",
+      "exit-time": "Hora Saída",
+      "total-duration": "Tempo total decorrido",
+      "discount-time": "Tempo desconto",
+      "fee-time": "Tempo multa",
+      "discount-value": "Valor desconto (R$)",
+      "fee-value": "Valor multa (R$)",
+      "fee-hour-value": "Valor da multa por hora (R$)",
+      "unit-hour-value": "Valor unitario por hora (R$)",
+      "total-value": "Valor total (R$)",
+      "automatic-calculation": "Calculo automatico ?",
+      "movimentation-active": "Ativo ?",
+      "movimentation-created-at": "Cadastrado em: ",
+      "movimentation-updated-at": "Editado em: "
+    }
   },
   "reports": {
-    "index": {}
+    "index": {
+      "monthly-resuls": "Resultados deste mês",
+      "total-movimentations": "Movimentações",
+      "total-hours": " Horas e",
+      "total-minutes": "Minutos",
+      "total-vehicles": " Veiculos e ",
+      "total-drivers": "Condutores"
+    }
   },
   "users": {
-    "list": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Nome Completo",
+      "table-role-header": "Cargo",
+      "table-created-at-header": "Cadastrado em",
+      "role-admin": "Administrador",
+      "role-user": "Usuario"
+    },
+    "edit": {
+      "update-registry": "Atualizar registro",
+      "delete-registry": "Deletar ?",
+      "complete-name": "Nome Completo",
+      "email": "Email",
+      "password": "Senha",
+      "document": "Numero de documento",
+      "user-active": "Ativo ?",
+      "user-created-at": "Cadastrado em: ",
+      "user-updated-at": "Editado em: "
+    }
   },
   "vehicles": {
     "list": {

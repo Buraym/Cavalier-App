@@ -9,23 +9,23 @@ import { getLocalisedMessage } from '../../utils/index';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id"
+        field: "driver.list.table-id-header"
     },
     {
         label: "Nome",
-        name: "nome"
+        field: "driver.list.table-name-header"
     },
     {
         label: "CPF",
-        name: "cpf"
+        field: "driver.list.table-cpf-header"
     },
     {
         label: "Telefone",
-        name: "telefone"
+        field: "driver.list.table-telephone-header"
     },
     {
         label: "Tempo Gasto",
-        name: "tempo_gasto"
+        field: "driver.list.table-time-spent-header"
     }
 ]
 const data = ref<any[] | []>([]);
@@ -81,23 +81,23 @@ export default defineComponent({
                 this.columns = [
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "driver", "list", "table-id-header")),
-                        name: "id"
+                        field: "driver.list.table-id-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "driver", "list", "table-name-header")),
-                        name: "nome"
+                        field: "driver.list.table-name-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "driver", "list", "table-cpf-header")),
-                        name: "cpf"
+                        field: "driver.list.table-cpf-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "driver", "list", "table-telephone-header")),
-                        name: "telefone"
+                        field: "driver.list.table-telephone-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "driver", "list", "table-time-spent-header")),
-                        name: "tempo_gasto"
+                        field: "driver.list.table-time-spent-header"
                     }
                 ]
             }

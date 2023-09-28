@@ -8,23 +8,23 @@ import { getLocalisedMessage } from '../../utils/index';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id"
+        field: "vehicles.list.table-id-header"
     },
     {
         label: "Modelo",
-        name: "modelo"
+        field: "vehicles.list.table-model-name-header"
     },
     {
         label: "Ano",
-        name: "ano"
+        field: "vehicles.list.table-year-header"
     },
     {
         label: "Placa",
-        name: "placa"
+        field: "vehicles.list.table-plate-header"
     },
     {
         label: "Cor",
-        name: "cor"
+        field: "vehicles.list.table-color-header"
     }
 ]
 const data = ref<any[] | []>([]);
@@ -69,23 +69,23 @@ export default defineComponent({
                 this.columns = [
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-id-header")),
-                        name: "id"
+                        field: "vehicles.list.table-id-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-model-name-header")),
-                        name: "modelo"
+                        field: "vehicles.list.table-model-name-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-year-header")),
-                        name: "ano"
+                        field: "vehicles.list.table-year-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-plate-header")),
-                        name: "placa"
+                        field: "vehicles.list.table-plate-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "vehicles", "list", "table-color-header")),
-                        name: "cor"
+                        field: "vehicles.list.table-color-header"
                     }
                 ]
             }

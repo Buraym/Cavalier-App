@@ -48,13 +48,21 @@
     }
   },
   "config": {
-    "index": {}
+    "index": {
+      "main-title": "Configuración general",
+      "car-vacancies-qty": "CANT. de espacios para auto",
+      "motorcycle-vacancies-qty": "CANT. de espacios para motos",
+      "van-vacancies-qty": "CANT. de espacios para camionetas",
+      "hourly-time": "Valor por hora (R$)",
+      "minute-time": "Valor Minuto (R$)",
+      "save-changes": "Guardar cambios"
+    }
   },
   "brands": {
     "list": {
       "table-id-header": "ID",
-      "table-name-header": "Nome",
-      "register-new": "Cadastrar nova Marca"
+      "table-name-header": "Nombre",
+      "register-new": "Registrar nueva Marca"
     },
     "add": {
       "brand-registration": "Registro de marca",
@@ -96,16 +104,90 @@
     }
   },
   "movimentation": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-driver-name-header": "Condutor",
+      "table-vehicle-name-header": "Veículo",
+      "table-enter-time-header": "Entrada",
+      "table-exit-time-header": "Saída",
+      "table-hourly-value-header": "Valor Hora",
+      "table-total-value-header": "Valor Total",
+      "register-new": "Cadastrar nova Movimentação"
+    },
+    "add": {
+      "movimentation-registration": "Registro de Movimiento",
+      "driver-name": "Conductor",
+      "choose-driver-name": "Elija un conductor",
+      "vehicle-name": "Vehículo",
+      "choose-vehicle-name": "Elige un vehículo",
+      "enter-time": "Hora de entrada",
+      "exit-time": "Hora de salida",
+      "total-duration": "Tiempo total transcurrido",
+      "discount-time": "Tiempo de descuento",
+      "fee-time": "Tiempo de multa",
+      "discount-value": "Valor de descuento (R$)",
+      "fee-value": "Monto de la multa (R$)",
+      "fee-hour-value": "Valor de la multa por hora (R$)",
+      "unit-hour-value": "Precio unitario por hora (R$)",
+      "total-value": "Valor total (R$)",
+      "automatic-calculation": "¿Cálculo automático?",
+      "register-movimentation": "Registrar movimiento"
+    },
+    "edit": {
+      "update-registry": "Actualizar registro",
+      "delete-registry": "¿Eliminar?",
+      "movimentation-registration": "Registro de Movimiento",
+      "driver-name": "Conductor",
+      "choose-driver-name": "Elija un conductor",
+      "vehicle-name": "Vehículo",
+      "choose-vehicle-name": "Elige un vehículo",
+      "enter-time": "Hora de entrada",
+      "exit-time": "Hora de salida",
+      "total-duration": "Tiempo total transcurrido",
+      "discount-time": "Tiempo de descuento",
+      "fee-time": "Tiempo de multa",
+      "discount-value": "Valor de descuento (R$)",
+      "fee-value": "Monto de la multa (R$)",
+      "fee-hour-value": "Valor de la multa por hora (R$)",
+      "unit-hour-value": "Precio unitario por hora (R$)",
+      "total-value": "Valor total (R$)",
+      "automatic-calculation": "¿Cálculo automático?",
+      "register-movimentation": "Registrar movimiento",
+      "movimentation-active": "¿Activo?",
+      "movimentation-created-at": "Registrado en: ",
+      "movimentation-updated-at": "Editado en: "
+    }
   },
   "reports": {
-    "index": {}
+    "index": {
+      "monthly-resuls": "Resultados de este mes",
+      "total-movimentations": "Movimientos",
+      "total-hours": " Horas y",
+      "total-minutes": "Minutos",
+      "total-vehicles": " Vehículos y ",
+      "total-drivers": "Conductores"
+    }
   },
   "users": {
-    "list": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Nombre completo",
+      "table-role-header": "Oficina",
+      "table-created-at-header": "Registrado en",
+      "role-admin": "Administrador",
+      "role-user": "Usuario"
+    },
+    "edit": {
+      "update-registry": "Actualizar registro",
+      "delete-registry": "Deletar ?",
+      "complete-name": "Nome Completo",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "document": "Número del Documento",
+      "user-active": "¿Activo?",
+      "user-created-at": "Registrado en: ",
+      "user-updated-at": "Editado en: "
+    }
   },
   "vehicles": {
     "list": {

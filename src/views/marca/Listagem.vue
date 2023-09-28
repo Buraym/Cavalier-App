@@ -9,11 +9,11 @@ import { getLocalisedMessage } from '@/utils';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id",
+        field: "brands.list.table-id-header"
     },
     {
         label: "Nome",
-        name: "nome"
+        field: "brands.list.table-name-header"
     }
 ];
 const data = ref<any[] | []>([]);
@@ -58,11 +58,11 @@ export default defineComponent({
                 this.columns = [
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "brands", "list", "table-id-header")),
-                        name: "id"
+                        field: "brands.list.table-id-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "brands", "list", "table-name-header")),
-                        name: "nome"
+                        field: "brands.list.table-name-header"
                     },
                 ]
             }

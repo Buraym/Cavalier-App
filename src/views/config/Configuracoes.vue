@@ -100,31 +100,31 @@ export default defineComponent({
 <template>
     <div class="px-5">
         <form @submit="EnviarFormulario" class="container">
-            <h4 class="text-start mb-3  mt-5">Configurações Gerais</h4>
+            <h4 class="text-start mb-3  mt-5">{{ $t("config.index.main-title") }}s</h4>
             <div class="d-flex w-100 align-items-center justify-content-center gap-3 mb-3">
                 <div class="input-group m-0">
-                    <span class="input-group-text">QTD. de vagas para carros</span>
+                    <span class="input-group-text">{{ $t("config.index.car-vacancies-qty") }}</span>
                     <input type="number" v-model="vagasCarro" class="form-control">
                 </div>
                 <div class="input-group m-0">
-                    <span class="input-group-text">QTD. de vagas para motos</span>
+                    <span class="input-group-text">{{ $t("config.index.motorcycle-vacancies-qty") }}</span>
                     <input type="number" v-model="vagasMoto" class="form-control">
                 </div>
                 <div class="input-group m-0">
-                    <span class="input-group-text">QTD. de vagas para vans</span>
+                    <span class="input-group-text">{{ $t("config.index.van-vacancies-qty") }}</span>
                     <input type="number" v-model="vagasVan" class="form-control">
                 </div>
             </div>
             <div class="d-flex w-100 align-items-center justify-content-center gap-3 mb-3">
                 <div class="input-group m-0">
-                    <span class="input-group-text">Valor da Hora (R$)</span>
-                    <input type="number" v-model="valorHora" step="0.01" class="form-control" placeholder="Valor da Hora"
-                        aria-label="Valor Hora">
+                    <span class="input-group-text">{{ $t("config.index.hourly-time") }}</span>
+                    <input type="number" v-model="valorHora" step="0.01" class="form-control"
+                        :placeholder='$t("config.index.hourly-time")' :aria-label='$t("config.index.hourly-time")'>
                 </div>
                 <div class="input-group m-0">
-                    <span class="input-group-text">Valor do Minuto (R$)</span>
+                    <span class="input-group-text">{{ $t("config.index.minute-time") }}</span>
                     <input type="number" v-model="valorMinutoHora" step="0.01" class="form-control"
-                        placeholder="Valor do Minuto" aria-label="Valor Minuto">
+                        :placeholder='$t("config.index.minute-time")' :aria-label='$t("config.index.minute-time")'>
                 </div>
                 <!-- <div class="input-group m-0">
                     <span class="input-group-text">Inicio do expediente</span>
@@ -137,37 +137,7 @@ export default defineComponent({
                         aria-label="Fim do expediente">
                 </div> -->
             </div>
-            <!-- <h4 class="text-start mb-3 mt-5">Configurações de descontos</h4>
-            <div class="d-flex w-100 align-items-center justify-content-center gap-3 mb-3">
-                <div class="form-check">
-                    <input class="form-check-input form-check-input-warning" v-model="gerarDesconto" type="checkbox"
-                        value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Descontar
-                    </label>
-                </div>
-                <div class="input-group m-0">
-                    <span class="input-group-text">Tempo Minimo de desconto</span>
-                    <input type="time" v-model="tempoParaDesconto" step="1" class="form-control"
-                        placeholder="Tempo Minimo de desconto" aria-label="Tempo Minimo de desconto">
-                </div>
-                <div class="input-group m-0">
-                    <span class="input-group-text">Tempo de desconto</span>
-                    <input type="time" v-model="tempoDeDesconto" step="1" class="form-control"
-                        placeholder="Tempo Minimo de desconto" aria-label="Tempo Minimo de desconto">
-                </div>
-            </div>
-            <div class="d-flex w-100 align-items-center justify-content-start gap-3 mb-5">
-                <div class="form-check">
-                    <input class="form-check-input form-check-input-warning" v-model="ativo" type="checkbox"
-                        id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Configuração automatica de preços e horarios ativa ?
-                    </label>
-                </div>
-
-            </div> -->
-            <button type="submit" class="btn btn-warning w-100">Atualizar</button>
+            <button type="submit" class="btn btn-warning w-100">{{ $t("config.index.save-changes") }}</button>
         </form>
     </div>
 </template>

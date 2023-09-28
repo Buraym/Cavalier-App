@@ -11,13 +11,12 @@ export interface ITableColumn {
     link?: String | "";
     actions?: boolean | false,
 }
+
 export interface ITableData {
     id: string,
     role?: 'admin' | 'user',
     [x: string]: any;
 }
-
-
 
 export default defineComponent({
     name: 'Table',
@@ -48,7 +47,7 @@ export default defineComponent({
                 </tr>
                 <tr class="table-header">
                     <th v-for="(header, indexHeader) in columns" :key="indexHeader" scope="col" style="text-align: center;">
-                        {{ header.label }}
+                        {{ $t(`${header.field}`) }}
                     </th>
                     <th scope="col"></th>
                 </tr>
@@ -60,7 +59,7 @@ export default defineComponent({
                             v-if="columns?.findIndex((obj) => obj.actions) !== -1 && key === 'actions'" v-html="value">
                         </p>
                         <p class="mb-0" v-else-if="key !== 'actions'">
-                            {{ value }}
+                            {{ key === "role" ? $t(`users.list.role-${value}`) : value }}
                         </p>
                     </td>
                     <td style="text-align: center;">

@@ -11,15 +11,15 @@ import { getLocalisedMessage } from '../../utils/index';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id"
+        field: "models.list.table-id-header"
     },
     {
         label: "Nome",
-        name: "nome"
+        field: "models.list.table-name-header"
     },
     {
         label: "Marca",
-        name: "marca"
+        field: "models.list.table-brand-name-header"
     }
 ]
 const data = ref<any[] | []>([]);
@@ -62,15 +62,15 @@ export default defineComponent({
                 this.columns = [
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "models", "list", "table-id-header")),
-                        name: "id"
+                        field: "models.list.table-id-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "models", "list", "table-name-header")),
-                        name: "nome"
+                        field: "models.list.table-name-header"
                     },
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "models", "list", "table-brand-name-header")),
-                        name: "marca"
+                        field: "models.list.table-brand-name-header"
                     }
                 ]
             }

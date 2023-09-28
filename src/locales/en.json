@@ -48,7 +48,15 @@
     }
   },
   "config": {
-    "index": {}
+    "index": {
+      "main-title": "General Settings",
+      "car-vacancies-qty": "QTY. of parking spaces for cars",
+      "motorcycle-vacancies-qty": "QTY. of spaces for motorcycles",
+      "van-vacancies-qty": "QTY. of spaces for vans",
+      "hourly-time": "Hourly Value (R$)",
+      "minute-time": "Minute Value (R$)",
+      "save-changes": "Save changes"
+    }
   },
   "brands": {
     "list": {
@@ -96,16 +104,89 @@
     }
   },
   "movimentation": {
-    "list": {},
-    "add": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-driver-name-header": "Condutor",
+      "table-vehicle-name-header": "Veículo",
+      "table-enter-time-header": "Entrada",
+      "table-exit-time-header": "Saída",
+      "table-hourly-value-header": "Valor Hora",
+      "table-total-value-header": "Valor Total",
+      "register-new": "Cadastrar nova Movimentação"
+    },
+    "add": {
+      "movimentation-registration": "Movimentation Registration",
+      "driver-name": "Driver",
+      "choose-driver-name": "Choose a driver",
+      "vehicle-name": "Vehicle",
+      "choose-vehicle-name": "Choose a vehicle",
+      "enter-time": "Enter Time",
+      "exit-time": "Exit Time",
+      "total-duration": "Total elapsed time",
+      "discount-time": "Discount time",
+      "fee-time": "Fine-time",
+      "discount-value": "Discount value (R$)",
+      "fee-value": "Fine value (R$)",
+      "fee-hour-value": "Amount of fine per hour (R$)",
+      "unit-hour-value": "Unit value per hour (R$)",
+      "total-value": "Total value (R$)",
+      "automatic-calculation": "Automatic calculation ?",
+      "register-movimentation": "Register movement"
+    },
+    "edit": {
+      "update-registry": "Update record",
+      "delete-registry": "Delete ?",
+      "movimentation-registration": "Movimentation Registration",
+      "driver-name": "Driver",
+      "choose-driver-name": "Choose a driver",
+      "vehicle-name": "Vehicle",
+      "choose-vehicle-name": "Choose a vehicle",
+      "enter-time": "Enter Time",
+      "exit-time": "Exit Time",
+      "total-duration": "Total elapsed time",
+      "discount-time": "Discount time",
+      "fee-time": "Fine-time",
+      "discount-value": "Discount value (R$)",
+      "fee-value": "Fine value (R$)",
+      "fee-hour-value": "Amount of fine per hour (R$)",
+      "unit-hour-value": "Unit value per hour (R$)",
+      "total-value": "Total value (R$)",
+      "automatic-calculation": "Automatic calculation ?",
+      "movimentation-active": "Active ?",
+      "movimentation-created-at": "Registered at: ",
+      "movimentation-updated-at": "Edited in: "
+    }
   },
   "reports": {
-    "index": {}
+    "index": {
+      "monthly-resuls": "Results of this month",
+      "total-movimentations": "Movimentations",
+      "total-hours": " Hours and",
+      "total-minutes": "Minutes",
+      "total-vehicles": " Vehicles and ",
+      "total-drivers": "Drivers"
+    }
   },
   "users": {
-    "list": {},
-    "edit": {}
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Full name",
+      "table-role-header": "Role",
+      "table-created-at-header": "Created at",
+      "role-admin": "Administrator",
+      "role-user": "User"
+    },
+    "edit": {
+      "update-registry": "Update registration",
+      "delete-registry": "Delete ?",
+      "complete-name": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "document": "Document number",
+      "user-active": "Active ?",
+      "user-created-at": "Registered at: ",
+      "user-updated-at": "Edited in: "
+    }
   },
   "vehicles": {
     "list": {
