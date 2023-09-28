@@ -1,6 +1,26 @@
 import SQLite from 'tauri-plugin-sqlite-api';
 
 // CONDUTORES
+
+// RETURN PAGINATED DRIvERS LIST
+export async function list_drivers_paginated(page: Number, perPage: Number) {
+    const db = await SQLite.open('./cavalier.db');
+    let results = await db.select<Array<any>>(`
+        SELECT *
+        FROM condutor
+        ORDER BY cadastro DESC
+        LIMIT ${perPage}
+        OFFSET (${page} - 1) * ${perPage};
+    `);
+    let totalPages = await db.select<Array<{ total_rows: Number }>>(`SELECT COUNT(*) AS total_rows FROM condutor;`);
+    
+    return {
+        results,
+        totalItems: Number(totalPages[0].total_rows),
+        totalPages: Math.ceil(Number(totalPages[0].total_rows) / Number(perPage))
+    };
+}
+
 // LISTAR CONDUTORES
 export async function listar_condutores() {
     const db = await SQLite.open('./cavalier.db');

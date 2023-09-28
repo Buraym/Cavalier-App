@@ -1,17 +1,19 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import {
-    listar_marcas, deletar_marca
+    deletar_marca, list_brands_paginated
 } from "@/controllers/marca";
 import Table from '@/components/Table.vue';
+import Pagination from '@/components/Pagination.vue';
+import { getLocalisedMessage } from '@/utils';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id",
+        field: "brands.list.table-id-header"
     },
     {
         label: "Nome",
-        name: "nome"
+        field: "brands.list.table-name-header"
     }
 ];
 const data = ref<any[] | []>([]);
@@ -20,43 +22,69 @@ export default defineComponent({
     data: () => {
         return {
             data,
+            items: 1,
+            page: 1,
+            pages: 1,
+            perPage: 5,
             columns: listHeaderTopics
         }
     },
     components: {
-        Table
+        Table, Pagination
     },
     mounted() {
-        this.ListagemDeItens();
+        this.updateColumnHeadersLocalization();
+        this.ListagemDeItens(this.page, this.perPage);
     },
     methods: {
-        async ListagemDeItens() {
-            this.data = (await listar_marcas()).map((item) => ({
+        async ListagemDeItens(page: Number, perPage: Number) {
+            const response = await list_brands_paginated(Number(page ? page : this.page), perPage);
+            this.pages = Number(response.totalPages);
+            this.items = Number(response.totalItems);
+            if (perPage) {
+                this.perPage = Number(perPage);
+            }
+            // @ts-ignore
+            this.data = response?.results?.map((item) => ({
                 id: item.id,
                 nome: item.nome,
             }));
-            console.log(this.data);
+            if (page) {
+                this.page = Number(page);
+            }
+        },
+        updateColumnHeadersLocalization() {
+            if (String(this.$i18n.locale) !== "pt") {
+                this.columns = [
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "brands", "list", "table-id-header")),
+                        field: "brands.list.table-id-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "brands", "list", "table-name-header")),
+                        field: "brands.list.table-name-header"
+                    },
+                ]
+            }
         },
         async DeletarItem(id: string) {
             await deletar_marca(id);
             this.data = this.data.filter((item) => item.id !== id);
-            console.log(this.data);
         }
     }
 });
 </script>
 <template>
-    <div class="listagem-marca">
+    <div class="brands-list">
         <Table :columns="columns" :data="data" :edit="String(/marca/)" :remove="DeletarItem" />
         <div>
-            <a class="w-100 btn btn-warning" href="/marca/new">
-                Cadastrar nova Marca
-            </a>
+            <router-link class="w-100 btn btn-warning" to="/marca/new">{{ $t("brands.list.register-new") }}</router-link>
         </div>
+        <Pagination :page="page" :pages="pages" :per-page="perPage" :items="items" :list-function="ListagemDeItens" />
     </div>
 </template>
 <style scoped>
-.listagem-marca {
+.brands-list {
     padding: 30px;
 }
 </style>

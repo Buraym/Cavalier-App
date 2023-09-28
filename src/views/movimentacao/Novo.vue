@@ -39,7 +39,6 @@ export default defineComponent({
     methods: {
         async RetornarConfiguracao() {
             const config = await retornar_configuracao();
-            console.log(config);
             this.config = config;
             this.valorHora = config.valor_hora;
             this.valorHoraMulta = config.valor_hora;
@@ -83,7 +82,6 @@ export default defineComponent({
                     entrada: new Date(this.entrada),
                     saida: new Date(this.saida),
                 }, this.calculoAutomatico ? this.config : null, this.calculoAutomatico ? null : customValues);
-                console.log(calculatedData);
                 data = {
                     condutor_id: this.condutor,
                     veiculo_id: this.veiculo,
@@ -99,7 +97,6 @@ export default defineComponent({
                     valor_hora_multa: calculatedData.valor_hora_multa,
                 }
             }
-            console.log(data);
             await criar_movimentacao(data);
             this.$router.push('/movimentacao');
         }
@@ -114,82 +111,117 @@ export default defineComponent({
                     <a class="back d-flex justify-content-center align-items-center" @click="$router.go(-1)">
                         <i class="bi bi-arrow-left"></i>
                     </a>
-                    <h2 class="mb-0">Cadastro de Movimentação</h2>
+                    <h2 class="mb-0">{{ $t("movimentation.add.movimentation-registration") }}</h2>
                 </div>
                 <div>
                     <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Condutor</label>
+                        <label class="input-group-text" for="inputGroupSelect01">
+                            {{ $t("movimentation.add.driver-name") }}
+                        </label>
                         <select v-model="condutor" class="form-select" id="inputGroupSelect01">
-                            <option value="null">Escolha uma condutor</option>
+                            <option value="null">
+                                {{ $t("movimentation.add.choose-driver-name") }}
+                            </option>
                             <option v-for="(item) in condutores" :key="item.value" :value="item.value">{{ item.title }}
                             </option>
                         </select>
                     </div>
                     <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Veiculo</label>
+                        <label class="input-group-text" for="inputGroupSelect01">
+                            {{ $t("movimentation.add.vehicle-name") }}
+                        </label>
                         <select v-model="veiculo" class="form-select" id="inputGroupSelect01">
-                            <option value="null">Escolha uma veículo</option>
+                            <option value="null">
+                                {{ $t("movimentation.add.choose-vehicle-name") }}
+                            </option>
                             <option v-for="(item) in veiculos" :key="item.value" :value="item.value">{{ item.title }}
                             </option>
                         </select>
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Hora Entrada</span>
-                            <input type="datetime-local" v-model="entrada" class="form-control" placeholder="Hora Entrada"
-                                aria-label="Hora Entrada" aria-describedby="basic-addon1" required>
+                            <span class="input-group-text" id="basic-addon1">{{ $t("movimentation.add.enter-time") }}</span>
+                            <input type="datetime-local" v-model="entrada" class="form-control"
+                                :placeholder='$t("movimentation.add.enter-time")'
+                                :aria-label='$t("movimentation.add.enter-time")' aria-describedby="basic-addon1" required>
                         </div>
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Hora Saída</span>
-                            <input type="datetime-local" v-model="saida" class="form-control" placeholder="Hora Saída"
-                                aria-label="Hora Saída" aria-describedby="basic-addon1">
+                            <span class="input-group-text" id="basic-addon1">
+                                {{ $t("movimentation.add.exit-time") }}
+                            </span>
+                            <input type="datetime-local" v-model="saida" class="form-control"
+                                :placeholder='$t("movimentation.add.exit-time")'
+                                :aria-label='$t("movimentation.add.exit-time")' aria-describedby="basic-addon1">
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Tempo total decorrido</span>
-                            <input type="time" v-model="tempo" class="form-control" placeholder="Tempo total decorrido"
-                                aria-label="Tempo total decorrido" aria-describedby="basic-addon1">
+                            <span class="input-group-text" id="basic-addon1">
+                                {{ $t("movimentation.add.total-duration") }}
+                            </span>
+                            <input type="time" v-model="tempo" class="form-control"
+                                :placeholder='$t("movimentation.add.total-duration")'
+                                :aria-label='$t("movimentation.add.total-duration")' aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Tempo desconto</span>
-                            <input type="time" v-model="tempoDesconto" class="form-control" placeholder="Tempo desconto"
-                                aria-label="Tempo desconto" aria-describedby="basic-addon1">
+                            <span class="input-group-text" id="basic-addon1">
+                                {{ $t("movimentation.add.discount-time") }}
+                            </span>
+                            <input type="time" v-model="tempoDesconto" class="form-control"
+                                :placeholder='$t("movimentation.add.discount-time")'
+                                :aria-label='$t("movimentation.add.discount-time")' aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Tempo multa</span>
-                            <input type="time" v-model="tempoMulta" class="form-control" placeholder="Tempo multa"
-                                aria-label="Tempo multa" aria-describedby="basic-addon1">
-                        </div>
-                    </div>
-                    <div v-if="!calculoAutomatico" class="d-flex align-items-center justify-content-center gap-2">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Valor desconto (R$)</span>
-                            <input type="text" v-model="valorDesconto" class="form-control" placeholder="Valor desconto"
-                                aria-label="Valor desconto" aria-describedby="basic-addon1">
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Valor multa (R$)</span>
-                            <input type="text" v-model="valorMulta" class="form-control" placeholder="Valor multa"
-                                aria-label="Valor multa" aria-describedby="basic-addon1">
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Valor da multa por hora (R$)</span>
-                            <input type="text" v-model="valorHoraMulta" class="form-control" placeholder="Valor multa"
-                                aria-label="Valor multa" aria-describedby="basic-addon1">
+                            <span class="input-group-text" id="basic-addon1">
+                                {{ $t("movimentation.add.fee-time") }}
+                            </span>
+                            <input type="time" v-model="tempoMulta" class="form-control"
+                                :placeholder='$t("movimentation.add.fee-time")'
+                                :aria-label='$t("movimentation.add.fee-time")' aria-describedby="basic-addon1">
                         </div>
                     </div>
                     <div v-if="!calculoAutomatico" class="d-flex align-items-center justify-content-center gap-2">
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Valor unitario por hora (R$)</span>
+                            <span class="input-group-text" id="basic-addon1">
+                                {{ $t("movimentation.add.discount-value") }}
+                            </span>
+                            <input type="text" v-model="valorDesconto" class="form-control"
+                                :placeholder='$t("movimentation.add.discount-value")'
+                                :aria-label='$t("movimentation.add.discount-value")' aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">
+                                {{ $t("movimentation.add.fee-value") }}
+                            </span>
+                            <input type="text" v-model="valorMulta" class="form-control"
+                                :placeholder='$t("movimentation.add.fee-value")'
+                                :aria-label='$t("movimentation.add.fee-value")' aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">
+                                {{ $t("movimentation.add.fee-hour-value") }}
+                            </span>
+                            <input type="text" v-model="valorHoraMulta" class="form-control"
+                                :placeholder='$t("movimentation.add.fee-hour-value")'
+                                :aria-label='$t("movimentation.add.fee-hour-value")' aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div v-if="!calculoAutomatico" class="d-flex align-items-center justify-content-center gap-2">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">
+                                {{ $t("movimentation.add.unit-hour-value") }}
+                            </span>
                             <input type="text" v-model="valorHora" class="form-control"
-                                placeholder="Valor unitario por hora" aria-label="Valor unitario por hora"
-                                aria-describedby="basic-addon1">
+                                :placeholder='$t("movimentation.add.unit-hour-value")'
+                                :aria-label='$t("movimentation.add.unit-hour-value")' aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Valor total (R$)</span>
-                            <input type="text" v-model="valorTotal" class="form-control" placeholder="Valor total"
-                                aria-label="Valor total" aria-describedby="basic-addon1">
+                            <span class="input-group-text" id="basic-addon1">
+                                {{ $t("movimentation.add.total-value") }}
+                            </span>
+                            <input type="text" v-model="valorTotal" class="form-control"
+                                :placeholder='$t("movimentation.add.unit-hour-value")'
+                                :aria-label='$t("movimentation.add.unit-hour-value")' aria-describedby="basic-addon1">
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
@@ -197,13 +229,13 @@ export default defineComponent({
                             <input v-model="calculoAutomatico" class="form-check-input" type="checkbox"
                                 id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
-                                Calculo automatico ?
+                                {{ $t("movimentation.add.automatic-calculation") }}
                             </label>
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
                         <button type="submit" class="btn btn-warning w-100">
-                            Cadastrar movimentação
+                            {{ $t("movimentation.add.register-movimentation") }}
                         </button>
                     </div>
                 </div>

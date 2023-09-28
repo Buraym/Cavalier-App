@@ -1,6 +1,51 @@
 import SQLite from 'tauri-plugin-sqlite-api';
 
 // VEICULOS
+
+// RETURN PAGINATED VEHICLES LIST
+export async function list_vehicles_paginated(page: Number, perPage: Number) {
+    const db = await SQLite.open('./cavalier.db');
+    let results = await db.select<Array<any>>(`
+        SELECT *
+        FROM veiculo
+        ORDER BY cadastro DESC
+        LIMIT ${perPage}
+        OFFSET (${page} - 1) * ${perPage};
+    `);
+    let totalPages = await db.select<Array<{ total_rows: Number }>>(`SELECT COUNT(*) AS total_rows FROM veiculo;`);
+    if (results.length > 0) {
+        let modelos = await db.select<Array<any>>(`
+            SELECT *
+            FROM modelo
+            WHERE id IN ( ${results.map((item) => item.modelo_id).join(", ")} );
+        `);
+        if (modelos.length > 0) {
+            let marcas = await db.select<Array<any>>(`
+                SELECT *
+                FROM marca
+                WHERE id IN ( ${modelos.map((item) => item.marca_id).join(", ")} );
+            `);
+            results = results.map((item) => {
+                let { modelo_id, ...rest } = item;
+                let { marca_id, ...modeloRest } = modelos.filter((modelo) => modelo.id === modelo_id)[0];
+                return {
+                    ...rest,
+                    modelo: {
+                        ...modeloRest,
+                        marca: marcas.filter((marca) => marca.id === marca_id)[0]
+                    }
+                }
+            })
+        }
+    }
+    
+    return {
+        results,
+        totalItems: Number(totalPages[0].total_rows),
+        totalPages: Math.ceil(Number(totalPages[0].total_rows) / Number(perPage))
+    };
+}
+
 // LISTAR VEICULOS
 export async function listar_veiculos() {
     const db = await SQLite.open('./cavalier.db');

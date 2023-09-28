@@ -1,6 +1,38 @@
 import SQLite from 'tauri-plugin-sqlite-api';
 
 // MODELOS
+
+// RETURN PAGINATED MODELS LIST
+export async function list_models_paginated(page: Number, perPage: Number) {
+    const db = await SQLite.open('./cavalier.db');
+    let results = await db.select<Array<any>>(`
+        SELECT *
+        FROM modelo
+        ORDER BY cadastro DESC
+        LIMIT ${perPage}
+        OFFSET (${page} - 1) * ${perPage};
+    `);
+    let totalPages = await db.select<Array<{ total_rows: Number }>>(`SELECT COUNT(*) AS total_rows FROM modelo;`);
+    let marcas = await db.select<Array<any>>(`
+        SELECT *
+        FROM marca
+        WHERE id IN ( ${results.map((item) => item.marca_id).join(", ")} );
+    `);
+    results = results.map((modelo) => {
+        let { marca_id, ...rest } = modelo;
+        return {
+            ...rest,
+            marca: marcas.filter((marca) => marca.id === marca_id)[0]
+        }
+    });
+    
+    return {
+        results,
+        totalItems: Number(totalPages[0].total_rows),
+        totalPages: Math.ceil(Number(totalPages[0].total_rows) / Number(perPage))
+    };
+}
+
 // LISTAR MODELOS
 export async function listar_modelos() {
     const db = await SQLite.open('./cavalier.db');

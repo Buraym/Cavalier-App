@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useUsersStore } from '@/stores/index'
+import { getLocalisedMessage } from '../../utils/index';
 export default defineComponent({
     name: "login",
     data() {
@@ -9,6 +10,10 @@ export default defineComponent({
             password: "",
             remember: false,
             mode: "login",
+            errorsLogin: {
+                email: "",
+                password: ""
+            },
             registerData: {
                 name: "",
                 document: "",
@@ -16,33 +21,36 @@ export default defineComponent({
                 password: "",
                 confirmPassword: "",
                 contact: ""
-            }
+            },
+            loading: false
         }
     },
     methods: {
         async Login(ev: any) {
+            this.loading = true;
+            const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
             ev.preventDefault();
+            this.errorsLogin.email = ""
+            this.errorsLogin.password = ""
             const usersStore = useUsersStore()
-            console.log(this.email, this.password);
             const result = await usersStore.login({ email: this.email, password: this.password, remember: this.remember });
-            console.log(result);
-            this.$router.push("/");
+            if (result.user) {
+                this.$router.push("/");
+            } else {
+                this.errorsLogin.email = String(getLocalisedMessage(String(this.$i18n.locale), "auth", "login", "incorrect-login"));
+                this.errorsLogin.password = String(getLocalisedMessage(String(this.$i18n.locale), "auth", "login", "incorrect-login"));
+                await sleep(5000);
+                this.errorsLogin = {
+                    email: "",
+                    password: ""
+                }
+            }
+            this.loading = false;
         },
-
         async Register(ev: any) {
             ev.preventDefault();
+            this.loading = true;
             const usersStore = useUsersStore()
-            console.log(
-                "Aqui vai cadastrar !!!",
-                {
-                    name: this.registerData.name,
-                    email: this.registerData.email,
-                    password: this.registerData.password,
-                    document: this.registerData.document,
-                    contact: this.registerData.contact,
-                    role: 'user'
-                }
-            );
             if (
                 String(this.registerData.password) === String(this.registerData.confirmPassword) &&
                 String(this.registerData.password).length >= 8
@@ -64,11 +72,10 @@ export default defineComponent({
             this.email = result.user.email;
             this.password = result.user.password;
             this.mode = "login"
-            console.log(result);
+            this.loading = false;
         },
         async setMode(mode: "login" | "register") {
             this.mode = mode;
-            console.log(mode);
         }
     }
 })
@@ -76,90 +83,111 @@ export default defineComponent({
 <template>
     <div :class="mode === 'login' ? 'login-helper-box' : 'login-helper-box closed'">
         <div class="w-100" style="margin-bottom: 100px">
-            <h2 class="mb-5 pacifico text-white text-start title">O melhor app de estacionamento gratuíto já feito !</h2>
+            <h2 class="mb-5 pacifico text-white text-start title">
+                {{ $t("auth.login.slogan") }}
+            </h2>
             <p class="text-white text-start mooli subtitle">
-                Com funções de automatização de contas, relatórios de custos e lucros, backup dos dados na nuvem,
-                portabilidade para Windows, Linux, Mac OS, emissão de via do cliente e ticket, notificações pelo telefone do
-                usuario e muito mais funcionalidades.
+                {{ $t("auth.login.sub-slogan") }}
             </p>
         </div>
     </div>
     <div :class="mode === 'login' ? 'form-box' : 'form-box changed'">
         <div class="w-100" style="margin-bottom: 100px">
-            <h2 class="mb-1 pacifico">Seja muito bem-vindo !</h2>
-            <small class="mooli">entre com as suas credenciais</small>
+            <h2 class="mb-1 pacifico">
+                {{ $t("auth.login.welcome") }}
+            </h2>
+            <small class="mooli">
+                {{ $t("auth.login.sub-welcome") }}
+            </small>
         </div>
         <form @submit="(ev) => mode === 'login' ? Login(ev) : Register(ev)" class="w-100">
             <!-- LOGIN COMPONENTS -->
             <div class="w-100 mb-3" v-if="mode === 'login'">
-                <label for="login-email-input" class="form-label w-100 text-start">Email</label>
-                <input type="email" class="form-control" autocomplete="username" id="login-email-input" v-model="email"
-                    placeholder="Email" required>
+                <label for="login-email-input" class="form-label w-100 text-start">
+                    {{ $t("auth.login.email") }}
+                    <span class="badge text-bg-danger" v-if="errorsLogin.email !== ''">{{ errorsLogin.email }}</span>
+                </label>
+                <input type="email" :class="`form-control ${errorsLogin.email !== '' ? 'is-invalid' : ''}`"
+                    autocomplete="username" id="login-email-input" v-model="email" :placeholder='$t("auth.login.email")'
+                    required>
+
             </div>
             <div class="w-100 mb-3" v-if="mode === 'login'">
-                <label for="login-password-input" class="form-label w-100 text-start">Senha</label>
-                <input type="password" class="form-control" autocomplete="current-password" id="login-password-input"
-                    v-model="password" placeholder="Senha" required>
+                <label for="login-password-input" class="form-label w-100 text-start">
+                    {{ $t("auth.login.password") }}
+                </label>
+                <input type="password" :class="`form-control ${errorsLogin.password !== '' ? 'is-invalid' : ''}`"
+                    autocomplete="current-password" id="login-password-input" v-model="password"
+                    :placeholder='$t("auth.login.password")' required>
             </div>
             <div class="form-check mb-5" v-if="mode === 'login'">
                 <input class="form-check-input" type="checkbox" v-model="remember" id="login-remember-me">
                 <label class="form-check-label w-100 text-start" for="login-remember-me">
-                    Manter-me conectado ?
+                    {{ $t("auth.login.rememberme") }}
                 </label>
             </div>
             <div class="w-100" v-if="mode === 'login'">
-                <button type="submit" class="btn btn-warning w-100 text-white">Entrar</button>
+                <button type="submit" class="btn btn-warning w-100 text-white" :disabled="loading">{{ $t("auth.login.login")
+                }}</button>
                 <div class="d-flex justify-content-between align-items-center mooli">
                     <hr style="width:calc(40% - 10px)">
-                    ou
+                    {{ $t("auth.login.or") }}
                     <hr style="width:calc(40% - 10px)">
                 </div>
-                <button type="button" @click="setMode('register')"
-                    class="btn btn-primary w-100 text-white">Cadastrar-se</button>
+                <button type="button" @click="setMode('register')" class="btn btn-primary w-100 text-white">
+                    {{ $t("auth.login.register") }}
+                </button>
             </div>
             <!-- REGISTER COMPONENTS -->
             <div class="w-100 mb-3" v-if="mode === 'register'">
-                <label for="login-email-input" class="form-label w-100 text-start">Nome completo</label>
+                <label for="login-email-input" class="form-label w-100 text-start">{{ $t("auth.login.complete-name")
+                }}</label>
                 <input type="text" class="form-control" id="register-name-input" v-model="registerData.name"
-                    placeholder="Nome completo" required>
+                    :placeholder='$t("auth.login.complete-name")' required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
-                <label for="login-email-input" class="form-label w-100 text-start">Email</label>
+                <label for="login-email-input" class="form-label w-100 text-start">{{ $t("auth.login.email") }}</label>
                 <input type="email" class="form-control" autocomplete="username" id="login-email-input"
-                    v-model="registerData.email" placeholder="Email" required>
+                    v-model="registerData.email" :placeholder='$t("auth.login.email")' required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
-                <label for="login-password-input" class="form-label w-100 text-start">Senha</label>
+                <label for="login-password-input" class="form-label w-100 text-start">{{ $t("auth.login.password")
+                }}</label>
                 <input type="password" minlength="8" autocomplete="current-password" class="form-control"
-                    id="login-password-input" v-model="registerData.password" placeholder="Senha" required>
+                    id="login-password-input" v-model="registerData.password" :placeholder='$t("auth.login.password")'
+                    required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
-                <label for="login-password-input" class="form-label w-100 text-start">Confirme sua senha</label>
+                <label for="login-password-input" class="form-label w-100 text-start">{{ $t("auth.login.confirm-password")
+                }}</label>
                 <input type="password" minlength="8" class="form-control" id="login-password-input"
-                    v-model="registerData.confirmPassword" placeholder="Confirme sua senha" required>
+                    v-model="registerData.confirmPassword" :placeholder='$t("auth.login.confirm-password")' required>
             </div>
             <div class="w-100 mb-3" v-if="mode === 'register'">
-                <label for="login-password-input" class="form-label w-100 text-start">Contato</label>
+                <label for="login-password-input" class="form-label w-100 text-start">{{ $t("auth.login.contact") }}</label>
                 <input type="text" class="form-control" id="login-password-input" v-model="registerData.contact"
-                    placeholder="Contato" required>
+                    :placeholder='$t("auth.login.contact")' required>
             </div>
             <div class="w-100" v-if="mode === 'register'">
-                <button type="submit" class="btn btn-warning w-100 text-white">Cadastrar-se</button>
+                <button type="submit" class="btn btn-warning w-100 text-white" :disabled="loading">{{
+                    $t("auth.login.register") }}</button>
                 <div class="d-flex justify-content-between align-items-center mooli">
                     <hr style="width:calc(40% - 10px)">
-                    ou
+                    {{ $t("auth.login.or") }}
                     <hr style="width:calc(40% - 10px)">
                 </div>
-                <button type="button" @click="setMode('login')" class="btn btn-primary w-100 text-white">Entrar</button>
+                <button type="button" @click="setMode('login')" class="btn btn-primary w-100 text-white">{{
+                    $t("auth.login.login") }}</button>
             </div>
         </form>
     </div>
     <div :class="mode === 'login' ? 'register-box' : 'register-box opened'">
-        <div class="w-100" style="margin-bottom: 100px">
-            <h2 class="mb-5 pacifico text-white text-start title">Cadastre-se hoje mesmo !</h2>
+        <div class="w-100" style="margin-bottom: 50px">
+            <h2 class="mb-5 pacifico text-white text-start title">
+                {{ $t("auth.login.register-slogan") }}
+            </h2>
             <p class="text-white text-start mooli subtitle">
-                Bem-vindo ao nosso aplicativo! Para começar a aproveitar todos os recursos e benefícios, por favor, complete
-                o processo de cadastro ao lado.
+                {{ $t("auth.login.register-sub-slogan") }}
             </p>
         </div>
     </div>

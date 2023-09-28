@@ -11,7 +11,7 @@ export async function list_users() {
     return results;
 }
 
-// RETORNAR MOVIMENTACAO PAGINADO
+// RETURN PAGINATED USERS LIST
 export async function list_users_paginated(page: Number, perPage: Number) {
     const db = await SQLite.open('./cavalier.db');
     let results = await db.select<Array<any>>(`
@@ -21,7 +21,7 @@ export async function list_users_paginated(page: Number, perPage: Number) {
         LIMIT ${perPage}
         OFFSET (${page} - 1) * ${perPage};
     `);
-    let totalPages = await db.select<Array<any>>(`SELECT COUNT(*) AS total_rows FROM usuario;`);
+    let totalPages = await db.select<Array<{ total_rows: Number }>>(`SELECT COUNT(*) AS total_rows FROM usuario;`);
     
     return {
         results,

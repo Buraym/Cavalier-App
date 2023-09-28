@@ -7,6 +7,19 @@ export default defineComponent({
     return {
       usersStore: useUsersStore()
     }
+  },
+  methods: {
+    switchLocale() {
+      if (String(this.$i18n.locale) === "pt") {
+        this.$i18n.locale = "en"
+      } else if (String(this.$i18n.locale) === "en") {
+        this.$i18n.locale = "es"
+      } else if (String(this.$i18n.locale) === "es") {
+        this.$i18n.locale = "pt"
+      } else {
+        this.$i18n.locale = "en"
+      }
+    }
   }
 })
 </script>
@@ -72,6 +85,11 @@ export default defineComponent({
               </router-link>
             </li>
           </ul>
+          <button class="btn mb-2" @click="switchLocale">
+            <img :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${String($i18n.locale) === 'pt' ? 'BR'
+              : String($i18n.locale) === 'en' ? 'US' : String($i18n.locale) === 'es' ? 'ES' : 'BR'}.svg`" width="20"
+              height="20">
+          </button>
           <button @click="usersStore.logout" style="border: none; background: none; border-radius: 10px" title="Sair">
             <i class="bi bi-door-open"></i>
           </button>
@@ -130,6 +148,7 @@ export default defineComponent({
   height: 30px;
   width: 30px;
   transition: 350ms ease-in-out;
+  cursor: pointer;
 }
 
 .back:hover {
@@ -144,5 +163,9 @@ export default defineComponent({
 
 .login-page {
   background: #ebbf3c;
+}
+
+.bold {
+  font-weight: bold;
 }
 </style>

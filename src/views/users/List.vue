@@ -1,24 +1,30 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import Table from '@/components/Table.vue';
+import Pagination from '@/components/Pagination.vue';
 import { format } from 'date-fns';
 import { delete_user, list_users_paginated, switch_user_role } from '@/controllers/users';
+import { getLocalisedMessage } from '../../utils/index';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
-        name: "id"
+        field: "users.list.table-id-header"
     },
     {
-        label: "Complete name",
-        name: "nome"
+        label: "Nome Completo",
+        field: "users.list.table-name-header"
     },
     {
         label: "Role",
-        name: "role"
+        field: "users.list.table-role-header"
     },
     {
         label: "Created at",
-        name: "created_at"
+        field: "users.list.table-created-at-header"
+    },
+    {
+        label: "",
+        field: ""
     }
 ]
 const data = ref<any[] | []>([]);
@@ -35,7 +41,8 @@ export default defineComponent({
         }
     },
     components: {
-        Table
+        Table,
+        Pagination
     },
     mounted() {
         this.ListagemDeItens();
@@ -48,7 +55,6 @@ export default defineComponent({
             if (perPage) {
                 this.perPage = Number(perPage);
             }
-            console.log(response);
             // @ts-ignore
             this.data = response?.results?.map((item) => ({
                 id: item.id,
@@ -62,10 +68,35 @@ export default defineComponent({
                 this.page = Number(page);
             }
         },
+        updateColumnHeadersLocalization() {
+            if (String(this.$i18n.locale) !== "pt") {
+                this.columns = [
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "users", "list", "table-id-header")),
+                        field: "users.list.table-id-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "users", "list", "table-name-header")),
+                        field: "users.list.table-name-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "users", "list", "table-role-header")),
+                        field: "users.list.table-role-header"
+                    },
+                    {
+                        label: String(getLocalisedMessage(String(this.$i18n.locale), "users", "list", "table-created-at-header")),
+                        field: "users.list.table-created-at-header"
+                    },
+                    {
+                        label: "",
+                        field: ""
+                    }
+                ]
+            }
+        },
         async DeletarItem(id: string) {
             await delete_user(id);
             this.data = this.data.filter((item: { id: string; }) => item.id !== id);
-            console.log(this.data);
         },
         async SwitchAuthorityRole(id: string, role: 'admin' | 'user') {
             await switch_user_role(id, role);
@@ -78,69 +109,12 @@ export default defineComponent({
     <div class="listagem-movimentacao">
         <Table :columns="columns" :data="data" :edit="String('/user/')" :remove="DeletarItem"
             :change-auth="SwitchAuthorityRole" />
-        <div>
-            <a class="w-100 btn btn-warning" href="/movimentacao/new">
-                Cadastrar nova Movimentação
-            </a>
-        </div>
-        <div class="d-flex w-100 justify-content-end">
-            <nav class="d-flex w-100 justify-content-end" aria-label="Page navigation example">
-                <div class="d-flex mx-2 mb-2 mt-3">
-                    Exibindo
-                    <select v-model="perPage" @change="ListagemDeItens()" class="form-select form-select-sm mx-2 mb-1"
-                        aria-label="Small select example">
-                        <option value="5" v-bind:selected="perPage === 5">5</option>
-                        <option value="10" v-bind:selected="perPage === 10">10</option>
-                        <option value="20" v-bind:selected="perPage === 20">20</option>
-                        <option value="50" v-bind:selected="perPage === 50">50</option>
-                    </select> de <strong class="mx-1"> {{ items }} </strong>
-                </div>
-                <ul class="pagination mt-2">
-                    <li class="page-item" v-if="pages > 1" style="border-right: none">
-                        <button v-bind:disabled="page === 1" v-bind:class="{ active: page === 1 }"
-                            class="page-link warning-color mx-0" style="border-right: none" aria-label="Previous"
-                            @click="ListagemDeItens(1)">
-                            <span aria-hidden="true">&laquo;</span>
-                        </button>
-                    </li>
-                    <li v-for="pageList in pages" key="pageList" class="page-item"
-                        style="border-left: none; border-right: none">
-                        <button class="page-link warning-color mx-0" v-bind:class="{ active: page === pageList }"
-                            style="border-left: none; border-right: none" @click="ListagemDeItens(pageList)">
-                            {{ pageList }}
-                        </button>
-                    </li>
-                    <li class="page-item" v-if="pages > 1" style="border-left: none">
-                        <button v-bind:disabled="page === pages" v-bind:class="{ active: page === pages }"
-                            class="page-link warning-color mx-0" style="border-left: none" aria-label="Next"
-                            @click="ListagemDeItens(pages)">
-                            <span aria-hidden="true">&raquo;</span>
-                        </button>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        <Pagination :page="page" :pages="pages" :per-page="perPage" :items="items" :list-function="ListagemDeItens" />
     </div>
 </template>
 <style scoped>
-.warning-color {
-    background: #FFF;
-    color: #ffc107;
-    transition: 250ms ease-in-out;
-}
-
 .form-select-sm {
     height: 28px;
-}
-
-.warning-color:hover {
-    background: #ffe38e;
-}
-
-.warning-color.active {
-    border-color: #dee2e6;
-    background: #ffc107;
-    color: #FFF;
 }
 
 .listagem-movimentacao {

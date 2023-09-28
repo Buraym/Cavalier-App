@@ -1,0 +1,264 @@
+{
+  "auth": {
+    "login": {
+      "slogan": "The best parking app ever made!",
+      "sub-slogan": "With account automation features, cost and profit reports, cloud data backup, cross-platform support for Windows, Linux, Mac OS, customer receipt and ticket issuance, phone notifications for users, and many more functionalities.",
+      "welcome": "The best parking app ever made!",
+      "sub-welcome": "Log in with your credentials",
+      "email": "Email",
+      "password": "Password",
+      "rememberme": "Remember Me?",
+      "login": "Log In",
+      "or": "Or",
+      "register": "Sign Up",
+      "complete-name": "Full Name",
+      "confirm-password": "Confirm your password",
+      "contact": "Contact",
+      "register-slogan": "Sign up today!",
+      "register-sub-slogan": "Welcome to our app! To start enjoying all the features and benefits, please complete the registration process on the right.",
+      "incorrect-login": "Incorrect email and/or password!"
+    }
+  },
+  "driver": {
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Name",
+      "table-cpf-header": "CPF",
+      "table-telephone-header": "Telephone",
+      "table-time-spent-header": "Time spent",
+      "register-new": "Register new Driver"
+    },
+    "add": {
+      "driver-registration": "Driver Registration",
+      "driver-name": "Full name",
+      "driver-cpf": "CPF",
+      "driver-telephone": "Telephone",
+      "register-driver": "Register driver"
+    },
+    "edit": {
+      "update-registry": "Update record",
+      "delete-registry": "Delete ?",
+      "driver-name": "Full name",
+      "driver-cpf": "CPF",
+      "driver-telephone": "Telephone",
+      "driver-time-spent": "Telephone",
+      "driver-active": "Active ?",
+      "driver-created-at": "Registered at: ",
+      "driver-updated-at": "Edited in: "
+    }
+  },
+  "config": {
+    "index": {
+      "main-title": "General Settings",
+      "car-vacancies-qty": "QTY. of parking spaces for cars",
+      "motorcycle-vacancies-qty": "QTY. of spaces for motorcycles",
+      "van-vacancies-qty": "QTY. of spaces for vans",
+      "hourly-time": "Hourly Value (R$)",
+      "minute-time": "Minute Value (R$)",
+      "save-changes": "Save changes"
+    }
+  },
+  "brands": {
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Name",
+      "register-new": "Register new Brand"
+    },
+    "add": {
+      "brand-registration": "Brand Registration",
+      "brand-name": "Brand Name",
+      "register-brand": "Register brand"
+    },
+    "edit": {
+      "update-registry": "Update registry",
+      "delete-registry": "Delete ?",
+      "brand-name": "Brand Name",
+      "brand-active": "Active ?",
+      "brand-created-at": "Registered at: ",
+      "brand-updated-at": "Edited at: "
+    }
+  },
+  "models": {
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Name",
+      "table-brand-name-header": "Brand",
+      "register-new": "Register new Model"
+    },
+    "add": {
+      "model-registration": "Model Registration",
+      "model-name": "Model Name",
+      "brand-name": "Brand",
+      "choose-brand-name": "Choose a brand",
+      "register-model": "Register model"
+    },
+    "edit": {
+      "update-registry": "Update record",
+      "delete-registry": "Delete ?",
+      "model-name": "Model Name",
+      "model-brand-name": "Brand",
+      "choose-model-brand-name": "Choose a brand",
+      "model-active": "Active ?",
+      "model-created-at": "Registered at: ",
+      "model-updated-at": "Edited at: "
+    }
+  },
+  "movimentation": {
+    "list": {
+      "table-id-header": "ID",
+      "table-driver-name-header": "Condutor",
+      "table-vehicle-name-header": "Veículo",
+      "table-enter-time-header": "Entrada",
+      "table-exit-time-header": "Saída",
+      "table-hourly-value-header": "Valor Hora",
+      "table-total-value-header": "Valor Total",
+      "register-new": "Cadastrar nova Movimentação"
+    },
+    "add": {
+      "movimentation-registration": "Movimentation Registration",
+      "driver-name": "Driver",
+      "choose-driver-name": "Choose a driver",
+      "vehicle-name": "Vehicle",
+      "choose-vehicle-name": "Choose a vehicle",
+      "enter-time": "Enter Time",
+      "exit-time": "Exit Time",
+      "total-duration": "Total elapsed time",
+      "discount-time": "Discount time",
+      "fee-time": "Fine-time",
+      "discount-value": "Discount value (R$)",
+      "fee-value": "Fine value (R$)",
+      "fee-hour-value": "Amount of fine per hour (R$)",
+      "unit-hour-value": "Unit value per hour (R$)",
+      "total-value": "Total value (R$)",
+      "automatic-calculation": "Automatic calculation ?",
+      "register-movimentation": "Register movement"
+    },
+    "edit": {
+      "update-registry": "Update record",
+      "delete-registry": "Delete ?",
+      "movimentation-registration": "Movimentation Registration",
+      "driver-name": "Driver",
+      "choose-driver-name": "Choose a driver",
+      "vehicle-name": "Vehicle",
+      "choose-vehicle-name": "Choose a vehicle",
+      "enter-time": "Enter Time",
+      "exit-time": "Exit Time",
+      "total-duration": "Total elapsed time",
+      "discount-time": "Discount time",
+      "fee-time": "Fine-time",
+      "discount-value": "Discount value (R$)",
+      "fee-value": "Fine value (R$)",
+      "fee-hour-value": "Amount of fine per hour (R$)",
+      "unit-hour-value": "Unit value per hour (R$)",
+      "total-value": "Total value (R$)",
+      "automatic-calculation": "Automatic calculation ?",
+      "movimentation-active": "Active ?",
+      "movimentation-created-at": "Registered at: ",
+      "movimentation-updated-at": "Edited in: "
+    }
+  },
+  "reports": {
+    "index": {
+      "monthly-resuls": "Results of this month",
+      "total-movimentations": "Movimentations",
+      "total-hours": " Hours and",
+      "total-minutes": "Minutes",
+      "total-vehicles": " Vehicles and ",
+      "total-drivers": "Drivers"
+    }
+  },
+  "users": {
+    "list": {
+      "table-id-header": "ID",
+      "table-name-header": "Full name",
+      "table-role-header": "Role",
+      "table-created-at-header": "Created at",
+      "role-admin": "Administrator",
+      "role-user": "User"
+    },
+    "edit": {
+      "update-registry": "Update registration",
+      "delete-registry": "Delete ?",
+      "complete-name": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "document": "Document number",
+      "user-active": "Active ?",
+      "user-created-at": "Registered at: ",
+      "user-updated-at": "Edited in: "
+    }
+  },
+  "vehicles": {
+    "list": {
+      "table-id-header": "ID",
+      "table-model-name-header": "Model",
+      "table-year-header": "Year",
+      "table-plate-header": "Plate",
+      "table-color-header": "Color",
+      "register-new": "Register new Vehicle"
+    },
+    "add": {
+      "vehicle-registration": "Vehicle Registration",
+      "vehicle-plate": "Vehicle plate",
+      "vehicle-year": "Version year",
+      "model-name": "Model",
+      "choose-model-name": "Choose a model",
+      "vehicle-color": "Color",
+      "choose-vehicle-color": "Choose a color",
+      "vehicle-type": "Vehicle Type",
+      "choose-vehicle-type": "Choose a type",
+      "register-vehicle": "Register vehicle"
+    },
+    "edit": {
+      "update-registry": "Update record",
+      "delete-registry": "Delete ?",
+      "vehicle-plate": "Vehicle plate",
+      "vehicle-year": "Version year",
+      "model-name": "Model",
+      "choose-model-name": "Choose a model",
+      "vehicle-color": "Color",
+      "choose-vehicle-color": "Choose a color",
+      "vehicle-type": "Vehicle Type",
+      "choose-vehicle-type": "Choose a type",
+      "vehicle-active": "Active ?",
+      "vehicle-created-at": "Registered at: ",
+      "vehicle-updated-at": "Edited in: "
+    }
+  },
+  "main": {
+    "index": {
+      "table-id-header": "ID",
+      "table-name-header": "Name",
+      "table-cpf-header": "CPF",
+      "table-vehicle-header": "Vehicle",
+      "table-entertime-header": "Entry Time",
+      "table-leavetime-header": "Exit Time",
+      "table-discount-header": "Discount Time",
+      "finish-vacancy": "Finish Vacancy",
+      "vacancy-entertime": "*Entry: ",
+      "vacancy-duration-days": "Day(s)",
+      "vacancy-duration-hours": "Hour(s)",
+      "vacancy-duration-minutes": "Minute(s)",
+      "todays-movimentations": "Today's Driver Movements"
+    }
+  },
+  "general": {
+    "index": {
+      "pagination-listing": "Listing",
+      "pagination-of": "of",
+      "color-red": "Red",
+      "color-white": "White",
+      "color-grey": "Gray",
+      "color-silver": "Silver",
+      "color-black": "Black",
+      "color-purple": "Purple",
+      "color-orange": "Orange",
+      "color-green": "Green",
+      "color-blue": "Blue",
+      "color-other": "Another color or print",
+      "vehicle-car": "Car",
+      "vehicle-motorcycle": "Motorcycle",
+      "vehicle-van": "Van"
+    }
+  }
+}
