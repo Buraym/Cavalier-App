@@ -16,32 +16,32 @@ console.log(this);
 const listHeaderTopics: any[] = [
   {
     label: "ID",
-    name: "id"
+    field: "main.index.table-id-header"
   },
   {
     label: "Nome",
-    name: "nome"
+    field: "main.index.table-name-header"
   },
   {
     label: "CPF",
-    name: "cpf"
+    field: "main.index.table-cpf-header"
   },
   {
     label: "Veiculo",
-    name: "veiculo_nome",
+    field: "main.index.table-vehicle-header",
     is_link: true
   },
   {
     label: "Hora entrada",
-    name: "entrada"
+    field: "main.index.table-entertime-header"
   },
   {
     label: "Hora saida",
-    name: "saida"
+    field: "main.index.table-leavetime-header"
   },
   {
     label: "Tempo desconto",
-    name: "tempo_desconto"
+    field: "main.index.table-discount-header"
   }
 ]
 let OldMovimentations = ref<any[] | []>([]);
@@ -73,32 +73,32 @@ export default defineComponent({
         this.columns = [
           {
             label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-id-header")),
-            name: "id"
+            field: "main.index.table-id-header"
           },
           {
             label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-name-header")),
-            name: "nome"
+            field: "main.index.table-name-header"
           },
           {
             label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-cpf-header")),
-            name: "cpf"
+            field: "main.index.table-cpf-header"
           },
           {
             label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-vehicle-header")),
-            name: "veiculo_nome",
+            field: "main.index.table-vehicle-header",
             is_link: true
           },
           {
             label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-entertime-header")),
-            name: "entrada"
+            field: "main.index.table-entertime-header"
           },
           {
             label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-leavetime-header")),
-            name: "saida"
+            field: "main.index.table-leavetime-header"
           },
           {
             label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-discount-header")),
-            name: "tempo_desconto"
+            field: "main.index.table-discount-header"
           }
         ]
       }
