@@ -12,9 +12,6 @@ import {
   editar_movimentacao
 } from "@/controllers/movimentacao";
 import Table from '@/components/Table.vue';
-import { ExportDailyMovimentations } from "@/reports/excel"
-import { ExportDailyMovimentationsPDF } from '@/reports/pdf';
-import { GenerateServerReport, IConfig } from '@/reports/server';
 console.log(this);
 const listHeaderTopics: any[] = [
   {
@@ -107,62 +104,73 @@ export default defineComponent({
       }
     },
     async RetornarVagas() {
-      try {
-        const list = await listar_movimentacoes();
-        this.OldMovimentations = list.filter((item: any) =>
-          item.ativo && item.saida &&
-          isToday(
-            new Date(
-              item.entrada
-            )
-          )
-        ).map((item) => ({
-          id: item.id,
-          name: item.condutor.nome,
-          cpf: item.condutor.cpf,
-          veiculo_nome: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
-          entrada: format(new Date(
-            item.entrada
-          ), 'dd/MM/yyyy - HH:mm'),
-          saida: item.saida ? format(new Date(
-            item.saida
-          ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
-          valor_total: "R$ " + Number(item.valor_total).toFixed(2),
-          total: item.valor_total
-        }));
-        this.UsedParkingSpots = list.filter((item: any) =>
-          item.ativo &&
-          item.saida === null
-        ).map((item) => ({
-          id: item.id,
-          condutor: String(item.condutor.nome) + " | " + String(item.condutor.cpf),
-          condutor_id: String(item.condutor.id),
-          entrada: format(new Date(
-            item.entrada
-          ), 'dd/MM/yyyy - HH:mm'),
-          duracao: new Date() < new Date(
-            item.entrada
-          ) ? "" : `${intervalToDuration({
-            start: new Date(
-              item.entrada
-            ), end: new Date()
-          }).days} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-days"))}, ${intervalToDuration({
-            start: new Date(
-              item.entrada
-            ), end: new Date()
-          }).hours} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-hours"))} e ${intervalToDuration({
-            start: new Date(
-              item.entrada
-            ), end: new Date()
-          }).minutes} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-minutes"))}`,
-          veiculo: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
-          veiculo_id: String(item.veiculo.id),
-          placa: item.veiculo.placa
-        }));
-      } catch (err) {
-        console.log(err);
-
+      const list = await listar_movimentacoes();
+      const date_format_localised = {
+        pt: {
+          "dia(s)": "",
+          "hora(s)": "Hora(s)",
+          "minuto(s)": "Minuto(s)",
+        },
+        en: {
+          "dia(s)": "Day(s)",
+          "hora(s)": "Hour(s)",
+          "minuto(s)": "Minute(s)",
+        },
+        es: {
+          "dia(s)": "Dia(s)",
+          "hora(s)": "Hora(s)",
+          "minuto(s)": "Minuto(s)",
+        },
       }
+      this.OldMovimentations = list.filter((item: any) =>
+        item.ativo && item.saida &&
+        isToday(
+          new Date(
+            item.entrada
+          )
+        )
+      ).map((item) => ({
+        id: item.id,
+        name: item.condutor.nome,
+        cpf: item.condutor.cpf,
+        veiculo_nome: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
+        entrada: format(new Date(
+          item.entrada
+        ), 'dd/MM/yyyy - HH:mm'),
+        saida: item.saida ? format(new Date(
+          item.saida
+        ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
+        valor_total: "R$ " + Number(item.valor_total).toFixed(2)
+      }));
+      this.UsedParkingSpots = list.filter((item: any) =>
+        item.ativo &&
+        item.saida === null
+      ).map((item) => ({
+        id: item.id,
+        condutor: String(item.condutor.nome) + " | " + String(item.condutor.cpf),
+        condutor_id: String(item.condutor.id),
+        entrada: format(new Date(
+          item.entrada
+        ), 'dd/MM/yyyy - HH:mm'),
+        duracao: new Date() < new Date(
+          item.entrada
+        ) ? "" : `${intervalToDuration({
+          start: new Date(
+            item.entrada
+          ), end: new Date()
+        }).days} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-days"))}, ${intervalToDuration({
+          start: new Date(
+            item.entrada
+          ), end: new Date()
+        }).hours} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-hours"))} e ${intervalToDuration({
+          start: new Date(
+            item.entrada
+          ), end: new Date()
+        }).minutes} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-minutes"))}`,
+        veiculo: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
+        veiculo_id: String(item.veiculo.id),
+        placa: item.veiculo.placa
+      }));
     },
     async DeletarItem(id: string) {
       await deletar_movimentacao(id);
@@ -211,91 +219,6 @@ export default defineComponent({
         valor_hora_multa: calculatedData.valor_hora_multa,
       });
       await this.RetornarVagas();
-    },
-    async ExportReportExcel() {
-      console.log({
-        date: format(new Date(), "dd/MM/yyyy - HH:mm:ss"),
-        movimentations: this.OldMovimentations.map((item) => {
-          return [
-            String(item.id),
-            String(item.name),
-            String(item.veiculo_nome),
-            String(item.entrada),
-            String(item.saida),
-            String(item.valor_total)
-          ];
-        })
-      });
-      await ExportDailyMovimentations(
-        this.$i18n.locale,
-        {
-          date: format(new Date(), "dd/MM/yyyy - HH:mm:ss"),
-          movimentations: this.OldMovimentations.map((item) => {
-            return [
-              String(item.id),
-              String(item.name),
-              String(item.veiculo_nome),
-              String(item.entrada),
-              String(item.saida),
-              String(item.valor_total)
-            ];
-          })
-        }
-      );
-    },
-    async ExportReportPDF() {
-      ExportDailyMovimentationsPDF(
-        this.$i18n.locale,
-        {
-          date: format(new Date(), "dd/MM/yyyy - HH:mm:ss"),
-          movimentations: this.OldMovimentations.map((item) => ({
-            id: String(item.id),
-            name: String(item.name),
-            veiculo_nome: String(item.veiculo_nome),
-            entrada: String(item.entrada),
-            saida: String(item.saida),
-            valor_total: String(item.valor_total),
-            total: Number(item.valor_total)
-          }))
-        }
-      );
-    },
-    async ExportServerReport() {
-      const config: IConfig = {
-        format: "pdf",
-        type: "daily"
-      }
-      let list = new Array(this.OldMovimentations);
-      const data: any = {
-        "locale": {
-          "report-title": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "title")),
-          "driver": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "driver")),
-          "vehicle": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "vehicle")),
-          "enter-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "enter-time")),
-          "exit-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "exit-time")),
-          "total": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total")),
-          "total-amount": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total-amount")),
-        },
-        "movimentations":
-          this.OldMovimentations.map((item) => ({
-            id: String(item.id),
-            driver: String(item.name),
-            vehicle: String(item.veiculo_nome),
-            enter_time: String(item.entrada),
-            exit_time: String(item.saida),
-            total: String(item.total)
-          })),
-
-        "total-amount": list.reduce((acc: any, curr: any) => {
-          acc += curr.total;
-          return acc;
-        }, 0),
-      }
-      const reportData = await GenerateServerReport(
-        config,
-        data
-      );
-
     }
   }
 });
@@ -333,8 +256,7 @@ export default defineComponent({
     </div>
     <div v-if="OldMovimentations.length > 0" class="container py-3 my-3">
       <Table :columns="columns" :data="OldMovimentations" :title='$t("main.index.todays-movimentations")'
-        :edit="String(/movimentacao/)" :remove="DeletarItem" :export-function="ExportReportExcel"
-        :export-function-pdf="ExportServerReport" />
+        :edit="String(/movimentacao/)" :remove="DeletarItem" />
     </div>
   </div>
 </template>

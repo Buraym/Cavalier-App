@@ -164,17 +164,6 @@
       "total-minutes": "Minutos",
       "total-vehicles": " Veiculos e ",
       "total-drivers": "Condutores"
-    },
-    "files": {
-      "daily-movimentation": {
-        "title": "PLANILHA DE MOVIMENTOS",
-        "driver": "CONDUTOR",
-        "vehicle": "VEICULOS",
-        "enter-time": "ENTRADA",
-        "exit-time": "SAÍDA",
-        "total": "VALOR TOTAL",
-        "total-amount": "MONTANTE FINAL"
-      }
     }
   },
   "users": {
@@ -254,8 +243,6 @@
   },
   "general": {
     "index": {
-      "export-pdf": "Exportar relatório em PDF",
-      "export-excel": "Exportar relatório em Excel",
       "pagination-listing": "Exibindo",
       "pagination-of": "de",
       "color-red": "Vermelho",
