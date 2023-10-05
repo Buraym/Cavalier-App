@@ -32,6 +32,8 @@ export default defineComponent({
         edit: String,
         remove: Function,
         changeAuth: Function,
+        exportFunction: Function,
+        exportFunctionPdf: Function,
     }
 });
 </script>
@@ -41,8 +43,20 @@ export default defineComponent({
         <table class="table table-hover table-borderless table-sm">
             <thead>
                 <tr v-if="title">
-                    <th v-bind:colspan="columns?.length" class="text-center">
+                    <th v-bind:colspan="Number(columns?.length)" class="text-start">
                         {{ title }}
+                    </th>
+                    <th class="text-end">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button class='btn btn-outline-primary' v-if="exportFunction"
+                                @click="exportFunction && exportFunction()" :title="$t('general.index.export-excel')">
+                                <i class="bi bi-table"></i>
+                            </button>
+                            <button class='btn btn-outline-primary' v-if="exportFunctionPdf"
+                                @click="exportFunctionPdf && exportFunctionPdf()" :title="$t('general.index.export-pdf')">
+                                <i class="bi bi-file-earmark-pdf-fill"></i>
+                            </button>
+                        </div>
                     </th>
                 </tr>
                 <tr class="table-header">

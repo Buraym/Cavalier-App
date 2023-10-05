@@ -9,10 +9,13 @@ import {
   retornar_movimentacao,
   listar_movimentacoes,
   deletar_movimentacao,
-  editar_movimentacao
+  editar_movimentacao,
+  get_total_day_value
 } from "@/controllers/movimentacao";
 import Table from '@/components/Table.vue';
-console.log(this);
+import { ExportDailyMovimentations } from "@/reports/excel"
+import { ExportDailyMovimentationsPDF } from '@/reports/pdf';
+import { GenerateServerReport, IConfig } from '@/reports/server';
 const listHeaderTopics: any[] = [
   {
     label: "ID",
@@ -40,8 +43,8 @@ const listHeaderTopics: any[] = [
     field: "main.index.table-leavetime-header"
   },
   {
-    label: "Tempo desconto",
-    field: "main.index.table-discount-header"
+    label: "Valor total",
+    field: "main.index.table-total-value"
   }
 ]
 let OldMovimentations = ref<any[] | []>([]);
@@ -62,7 +65,6 @@ export default defineComponent({
     Table
   },
   mounted() {
-    console.log(this.$i18n);
     this.RetornarConfiguracao();
     this.RetornarVagas();
   },
@@ -97,8 +99,8 @@ export default defineComponent({
             field: "main.index.table-leavetime-header"
           },
           {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-discount-header")),
-            field: "main.index.table-discount-header"
+            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "main.index.table-total-value")),
+            field: "main.index.table-total-value"
           }
         ]
       }
@@ -219,6 +221,251 @@ export default defineComponent({
         valor_hora_multa: calculatedData.valor_hora_multa,
       });
       await this.RetornarVagas();
+    },
+    async ExportReportExcel() {
+      const totalDayValue = await get_total_day_value();
+      await ExportDailyMovimentations(
+        {
+          "title": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "title")),
+          "driver": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "driver")),
+          "vehicle": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "vehicle")),
+          "enter-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "enter-time")),
+          "exit-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "exit-time")),
+          "total": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total")),
+          "total-amount": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total-amount")),
+          "no-file-selected": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "no-file-selected")),
+          "file-to": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "file-to")),
+          "file-saved": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "file-saved")),
+          "file-cannot-be-saved": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "file-cannot-be-saved"))
+        },
+        {
+          date: format(new Date(), "dd/MM/yyyy - HH:mm:ss"),
+          movimentations: this.OldMovimentations.map((item) => {
+            return [
+              {
+                v: String(item.id), t: "s",
+                s: {
+                  border: {
+                    left: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    right: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    top: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    bottom: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    }
+                  },
+                  alignment: { vertical: "center", horizontal: "center" },
+                  font: {
+                    bold: true,
+                  }
+                }
+              },
+              {
+                v: String(item.name), t: "s",
+                s: {
+                  border: {
+                    left: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    right: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    top: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    bottom: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    }
+                  },
+                  alignment: { vertical: "center", horizontal: "center" }
+                }
+              },
+              {
+                v: String(item.veiculo_nome), t: "s",
+                s: {
+                  border: {
+                    left: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    right: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    top: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    bottom: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    }
+                  },
+                  alignment: { vertical: "center", horizontal: "center" }
+                }
+              },
+              {
+                v: String(item.entrada), t: "s",
+                s: {
+                  border: {
+                    left: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    right: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    top: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    bottom: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    }
+                  },
+                  alignment: { vertical: "center", horizontal: "center" }
+                }
+              },
+              {
+                v: String(item.saida), t: "s",
+                s: {
+                  border: {
+                    left: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    right: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    top: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    bottom: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    }
+                  },
+                  alignment: { vertical: "center", horizontal: "center" }
+                }
+              },
+              {
+                v: String(item.valor_total), t: "s",
+                s: {
+                  border: {
+                    left: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    right: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    top: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    },
+                    bottom: {
+                      style: "thick",
+                      color: { rgb: "0c0c0c" }
+                    }
+                  },
+                  alignment: { vertical: "center", horizontal: "center" }
+                }
+              },
+            ];
+          }),
+          total: Number(totalDayValue).toFixed(2),
+        }
+      );
+    },
+    async ExportReportPDF() {
+      ExportDailyMovimentationsPDF(
+        this.$i18n.locale,
+        {
+          date: format(new Date(), "dd/MM/yyyy - HH:mm:ss"),
+          movimentations: this.OldMovimentations.map((item) => ({
+            id: String(item.id),
+            name: String(item.name),
+            veiculo_nome: String(item.veiculo_nome),
+            entrada: String(item.entrada),
+            saida: String(item.saida),
+            valor_total: String(item.valor_total),
+            total: Number(item.valor_total)
+          }))
+        }
+      );
+    },
+    async ExportServerReport() {
+      const config: IConfig = {
+        format: "pdf",
+        type: "daily"
+      }
+      const totalDayValue = await get_total_day_value();
+      console.log(totalDayValue);
+      let list = (await listar_movimentacoes()).filter((item: any) =>
+        item.ativo && item.saida &&
+        isToday(
+          new Date(
+            item.entrada
+          )
+        )
+      ).map((item) => ({
+        id: item.id,
+        name: item.condutor.nome,
+        cpf: item.condutor.cpf,
+        veiculo_nome: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
+        entrada: format(new Date(
+          item.entrada
+        ), 'dd/MM/yyyy - HH:mm'),
+        saida: item.saida ? format(new Date(
+          item.saida
+        ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
+        valor_total: "R$ " + Number(item.valor_total).toFixed(2),
+        total: item.valor_total
+      }));
+      const data: any = {
+        "locale": {
+          "report-title": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "title")),
+          "driver": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "driver")),
+          "vehicle": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "vehicle")),
+          "enter-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "enter-time")),
+          "exit-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "exit-time")),
+          "total": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total")),
+          "total-amount": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total-amount")),
+        },
+        "movimentations":
+          list.map((item) => ({
+            id: String(item.id),
+            driver: String(item.name),
+            vehicle: String(item.veiculo_nome),
+            enter_time: String(item.entrada),
+            exit_time: String(item.saida),
+            total: String(item.total)
+          })),
+        "total-amount": `R$ ${totalDayValue}`,
+      }
+      const reportData = await GenerateServerReport(
+        config,
+        data
+      );
+      console.log(reportData);
     }
   }
 });
@@ -256,7 +503,8 @@ export default defineComponent({
     </div>
     <div v-if="OldMovimentations.length > 0" class="container py-3 my-3">
       <Table :columns="columns" :data="OldMovimentations" :title='$t("main.index.todays-movimentations")'
-        :edit="String(/movimentacao/)" :remove="DeletarItem" />
+        :edit="String(/movimentacao/)" :remove="DeletarItem" :export-function="ExportReportExcel"
+        :export-function-pdf="ExportServerReport" />
     </div>
   </div>
 </template>

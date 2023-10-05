@@ -164,6 +164,17 @@
       "total-minutes": "Minutos",
       "total-vehicles": " Veiculos e ",
       "total-drivers": "Condutores"
+    },
+    "files": {
+      "daily-movimentation": {
+        "title": "PLANILHA DE MOVIMENTOS",
+        "driver": "CONDUTOR",
+        "vehicle": "VEICULOS",
+        "enter-time": "ENTRADA",
+        "exit-time": "SAÍDA",
+        "total": "VALOR TOTAL",
+        "total-amount": "MONTANTE FINAL"
+      }
     }
   },
   "users": {
@@ -233,6 +244,7 @@
       "table-entertime-header": "Hora entrada",
       "table-leavetime-header": "Hora saida",
       "table-discount-header": "Tempo desconto",
+      "table-total-value": "Valor total",
       "finish-vacancy": "Encerrar vaga",
       "vacancy-entertime": "*Entrada: ",
       "vacancy-duration-days": "Dia(s)",
@@ -243,6 +255,12 @@
   },
   "general": {
     "index": {
+      "no-file-selected": "Nenhum arquivo selecionado.",
+      "file-to": "Salvar planilha em",
+      "file-cannot-be-saved": "Ocorreu um erro ao salvar o arquivo.",
+      "file-saved": "Arquivo salvo com sucesso !",
+      "export-pdf": "Exportar relatório em PDF",
+      "export-excel": "Exportar relatório em Excel",
       "pagination-listing": "Exibindo",
       "pagination-of": "de",
       "color-red": "Vermelho",

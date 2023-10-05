@@ -166,6 +166,17 @@
       "total-minutes": "Minutos",
       "total-vehicles": " Vehículos y ",
       "total-drivers": "Conductores"
+    },
+    "files": {
+      "daily-movimentation": {
+        "title": "HOJA DE MOVIMIENTOS",
+        "driver": "CONDUCTOR",
+        "vehicle": "VEICULOS",
+        "enter-time": "ENTRADA",
+        "exit-time": "SALIDA",
+        "total": "VALOR TOTAL",
+        "total-amount": "CANTIDAD FINAL"
+      }
     }
   },
   "users": {
@@ -235,6 +246,7 @@
       "table-entertime-header": "Hora de Entrada",
       "table-leavetime-header": "Hora de Salida",
       "table-discount-header": "Tiempo de Descuento",
+      "table-total-value": "Valor total",
       "finish-vacancy": "Finalizar Vacante",
       "vacancy-entertime": "*Entrada: ",
       "vacancy-duration-days": "Dia(s)",
@@ -245,6 +257,12 @@
   },
   "general": {
     "index": {
+      "no-file-selected": "Ningún archivo seleccionado.",
+      "file-to": "Guardar hoja de cálculo en",
+      "file-saved": "¡Archivo guardado exitosamente!",
+      "file-cannot-be-saved": "Se produjo un error al guardar el archivo.",
+      "export-pdf": "Exportar relatório em PDF",
+      "export-excel": "Exportar relatório em Excel",
       "pagination-listing": "Mostrando",
       "pagination-of": "en",
       "color-red": "Rojo",

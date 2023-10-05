@@ -60,8 +60,9 @@ export function StringToDate(time: String): Date {
 export function getLocalisedMessage(
     locale: String,
     page_module: "auth" | "driver" | "config" | "brands" | "models" | "es" | "movimentation" | "reports" | "users" | "vehicles" | "main" | "general",
-    page: "login" | "list" | "add" | "edit" | "index",
-    message: string
+    page: "login" | "list" | "add" | "edit" | "index" | "files",
+    message: string,
+    extraMessage?: string
 ) {
     const lang = {
         es,
@@ -69,7 +70,10 @@ export function getLocalisedMessage(
         pt
     }
     // @ts-ignore
-    const result = lang[locale][page_module][page][message]
+    let result = lang[locale][page_module][page][message]
+    if (extraMessage) {
+        result = result[extraMessage];
+    }
     if (result) {
         return String(result);
     } else {
