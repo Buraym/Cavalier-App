@@ -13,8 +13,7 @@ import {
   get_total_day_value
 } from "@/controllers/movimentacao";
 import Table from '@/components/Table.vue';
-import { ExportDailyMovimentations } from "@/reports/excel"
-import { GenerateServerReport, IConfig } from '@/reports/server';
+import { ExportDailyMovimentations } from "@/reports/excel";
 const listHeaderTopics: any[] = [
   {
     label: "ID",
@@ -391,64 +390,10 @@ export default defineComponent({
             ];
           }),
           total: Number(totalDayValue).toFixed(2),
-        }
+        },
+        true
       );
     },
-    async ExportServerReport() {
-      const config: IConfig = {
-        format: "pdf",
-        type: "daily"
-      }
-      const totalDayValue = await get_total_day_value();
-      console.log(totalDayValue);
-      let list = (await listar_movimentacoes()).filter((item: any) =>
-        item.ativo && item.saida &&
-        isToday(
-          new Date(
-            item.entrada
-          )
-        )
-      ).map((item) => ({
-        id: item.id,
-        name: item.condutor.nome,
-        cpf: item.condutor.cpf,
-        veiculo_nome: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
-        entrada: format(new Date(
-          item.entrada
-        ), 'dd/MM/yyyy - HH:mm'),
-        saida: item.saida ? format(new Date(
-          item.saida
-        ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
-        valor_total: "R$ " + Number(item.valor_total).toFixed(2),
-        total: item.valor_total
-      }));
-      const data: any = {
-        "locale": {
-          "report-title": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "title")),
-          "driver": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "driver")),
-          "vehicle": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "vehicle")),
-          "enter-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "enter-time")),
-          "exit-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "exit-time")),
-          "total": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total")),
-          "total-amount": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total-amount")),
-        },
-        "movimentations":
-          list.map((item) => ({
-            id: String(item.id),
-            driver: String(item.name),
-            vehicle: String(item.veiculo_nome),
-            enter_time: String(item.entrada),
-            exit_time: String(item.saida),
-            total: String(item.total)
-          })),
-        "total-amount": `R$ ${totalDayValue}`,
-      }
-      const reportData = await GenerateServerReport(
-        config,
-        data
-      );
-      console.log(reportData);
-    }
   }
 });
 </script>
@@ -485,8 +430,7 @@ export default defineComponent({
     </div>
     <div v-if="OldMovimentations.length > 0" class="container py-3 my-3">
       <Table :columns="columns" :data="OldMovimentations" :title='$t("main.index.todays-movimentations")'
-        :edit="String(/movimentacao/)" :remove="DeletarItem" :export-function="ExportReportExcel"
-        :export-function-pdf="ExportServerReport" />
+        :edit="String(/movimentacao/)" :remove="DeletarItem" :export-function="ExportReportExcel" />
     </div>
   </div>
 </template>

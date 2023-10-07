@@ -327,6 +327,7 @@ export async function init_db() {
             created_at TEXT NOT NULL,
             link VARCHAR(150) NOT NULL,
             format VARCHAR(50) NOT NULL CHECK (format IN ('pdf', 'excel')),
+            file_data TEXT NOT NULL,
             model VARCHAR(50) NOT NULL CHECK (model IN ('dailyMovimentations', 'monthlyMovimentations'))
         );
     `);

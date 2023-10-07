@@ -56,12 +56,11 @@ export async function return_report(id: string) {
 export async function create_report(report: any) {
     const db = await SQLite.open('./cavalier.db');
     await db.execute(`
-        INSERT INTO report (ativo, cadastro, link, format, model)
-        VALUES (?1, ?2, ?3, ?4)
-    `, [true, new Date(), report.link, report.format, report.model]);
+        INSERT INTO report (active, created_at, link, format, model, file_data)
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+    `, [true, new Date(), report.link, report.format, report.model, report.file_data]);
     
 }
-
 
 // DELETE REPORT
 export async function delete_report(id: string) {

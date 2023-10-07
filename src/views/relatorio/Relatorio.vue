@@ -4,6 +4,7 @@ import Table from '@/components/Table.vue';
 import { listar_movimentacoes_deste_mes } from '@/controllers/movimentacao';
 import { list_monthly_reports } from '@/controllers/reports';
 import format from 'date-fns/format';
+import { ExportDailyMovimentations } from '@/reports/excel';
 let monthlyReports = ref<any[] | []>([]);
 export default defineComponent({
     name: 'Relatorio',
@@ -23,6 +24,7 @@ export default defineComponent({
     },
     mounted() {
         this.RetornarMovimentacoes();
+        this.ReturnReports();
     },
     methods: {
         async RetornarMovimentacoes() {
@@ -57,10 +59,17 @@ export default defineComponent({
                 date: format(new Date(item.created_at), item.model === "dailyMovimentations" ? "dd/MM/yyyy" : "MM/yyyy"),
                 model: String(item.model),
                 format: String(item.format).toUpperCase(),
+                file_data: item.file_data,
                 link: String(item.link)
             }))
 
         },
+        async ReDownloadReports(type: String, file_data: any) {
+            let data = JSON.parse(file_data);
+            if (type === "dailyMovimentations") {
+                await ExportDailyMovimentations(data.locale, data.data);
+            }
+        }
     }
 });
 </script>
@@ -113,11 +122,12 @@ export default defineComponent({
                                     <span class="badge text-bg-warning d-flex align-items-center">{{ item.date }}</span>
                                 </h6>
                                 <div class="card-body d-flex flex-column justify-content-center align-items-start gap-2">
+                                    <!-- <div class="w-100 d-flex justify-content-center align-items-center">
+                                        Formato: {{ item.format }}
+                                    </div> -->
                                     <div class="w-100 d-flex justify-content-center align-items-center">
-                                        {{ $t(`reports.index.${item.model}`) }}Formato: {{ item.format }}
-                                    </div>
-                                    <div class="w-100 d-flex justify-content-center align-items-center">
-                                        <button class="btn btn-warning">
+                                        <button class="btn btn-warning w-100"
+                                            @click="ReDownloadReports(item.model, item.file_data)">
                                             Download <i class="bi bi-download"></i>
                                         </button>
                                     </div>
