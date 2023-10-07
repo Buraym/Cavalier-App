@@ -319,35 +319,17 @@ export async function init_db() {
             logged BOOLEAN,
             role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'user'))
         );
+
+        CREATE TABLE IF NOT EXISTS report
+        (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            active BOOLEAN NOT NULL,
+            created_at TEXT NOT NULL,
+            link VARCHAR(150) NOT NULL,
+            format VARCHAR(50) NOT NULL CHECK (format IN ('pdf', 'excel')),
+            file_data TEXT NOT NULL,
+            model VARCHAR(50) NOT NULL CHECK (model IN ('dailyMovimentations', 'monthlyMovimentations'))
+        );
     `);
     db.close();
-}
-
-// MARCAS
-// LISTAR MARCAS
-export async function listar_marcas() {
-    const db = await SQLite.open('./cavalier.db');
-    const results = await db.select<Array<any>>(`
-        SELECT * FROM marca;
-    `);
-    return results;
-}
-
-// RETORNAR MARCA
-export async function retornar_marca(id: string) {
-    const db = await SQLite.open('./cavalier.db');
-    const result = await db.select<Array<any>>(`
-        SELECT * FROM marca WHERE id=?1;
-    `, [id]);
-    
-    return result[0];
-}
-
-// CRIAR MARCA
-export async function criar_marca(marca: any) {
-    const db = await SQLite.open('./cavalier.db');
-    await db.execute(`
-        INSERT INTO marca (ativo, atualizacao, cadastro, nome)
-        VALUES (?1, ?2, ?3, ?4)
-    `, [true, null, new Date(), marca.nome]);
 }

@@ -181,6 +181,16 @@ export async function listar_movimentacoes_deste_mes() {
     return results;
 }
 
+export async function get_total_day_value() {
+    const db = await SQLite.open('./cavalier.db');
+    let results = await db.select<Array<{ total: number }>>(`
+        SELECT SUM(valor_total) as total
+        FROM movimentacao
+        WHERE DATE(entrada) = DATE('now')
+    `);
+    return results[0]['total'];
+}
+
 // RETORNAR MOVIMENTACAO
 export async function retornar_movimentacao(id: string) {
     const db = await SQLite.open('./cavalier.db');

@@ -71,7 +71,6 @@ export const useUsersStore = defineStore('users', {
           const result = await create_user({...user});
           return { user: result, status: "sucess", message: "Usuário criado com sucesso !"};
         } catch (err) {
-          console.log(err);
           return { user: null, status: "error", message: "Houve um erro ao criar o usuário !"};
         }
     },

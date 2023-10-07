@@ -164,7 +164,24 @@
       "total-hours": " Hours and",
       "total-minutes": "Minutes",
       "total-vehicles": " Vehicles and ",
-      "total-drivers": "Drivers"
+      "total-drivers": "Drivers",
+      "total-ammount": " was generated this month",
+      "reports-list": "List of reports and spreadsheets",
+      "dailyMovimentations": "Daily movements",
+      "monthlyMovimentations": "Monthly movements",
+      "format": "Format: ",
+      "no-reports": "No reports generated this month"
+    },
+    "files": {
+      "daily-movimentation": {
+        "title": "MOVIMENTATION WORKSHEET",
+        "driver": "CONDUCTOR",
+        "vehicle": "VEHICLE",
+        "enter-time": "ENTER TIME",
+        "exit-time": "LEAVE TIME",
+        "total": "AMOUNT",
+        "total-amount": "FINAL AMOUNT"
+      }
     }
   },
   "users": {
@@ -234,16 +251,23 @@
       "table-entertime-header": "Entry Time",
       "table-leavetime-header": "Exit Time",
       "table-discount-header": "Discount Time",
+      "table-total-value": "Total value",
       "finish-vacancy": "Finish Vacancy",
       "vacancy-entertime": "*Entry: ",
       "vacancy-duration-days": "Day(s)",
       "vacancy-duration-hours": "Hour(s)",
       "vacancy-duration-minutes": "Minute(s)",
-      "todays-movimentations": "Today's Driver Movements"
+      "todays-movimentations": "Today's Driver Movimentations"
     }
   },
   "general": {
     "index": {
+      "no-file-selected": "No file selected.",
+      "file-to": "Save spreadsheet to",
+      "file-saved": "File saved successfully !",
+      "file-cannot-be-saved": "An error occurred while saving the file.",
+      "export-pdf": "Exportar relatório em PDF",
+      "export-excel": "Exportar relatório em Excel",
       "pagination-listing": "Listing",
       "pagination-of": "of",
       "color-red": "Red",

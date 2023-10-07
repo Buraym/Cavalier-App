@@ -53,11 +53,11 @@ export default defineComponent({
         Pagination
     },
     mounted() {
-        this.ListagemDeItens();
+        this.ListagemDeItens(this.page, this.perPage);
     },
     methods: {
-        async ListagemDeItens(page?: Number, perPage?: Number) {
-            const response = await listar_movimentacoes_paginated(Number(page ? page : this.page), 20);
+        async ListagemDeItens(page: Number, perPage: Number) {
+            const response = await listar_movimentacoes_paginated(page, perPage);
             this.pages = Number(response.totalPages);
             this.items = Number(response.totalItems);
             if (perPage) {
