@@ -44,7 +44,7 @@ export default defineComponent({
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">{{ $t("driver.add.driver-cpf") }}</span>
                         <imask-input type="text" v-model="cpf" :mask="'000.000.000-00'" maxlength="14" class="form-control"
-                            :placeholder='$t("driver.add.driver-name")' :aria-label='$t("driver.add.driver-name")'
+                            :placeholder='$t("driver.add.driver-cpf")' :aria-label='$t("driver.add.driver-cpf")'
                             aria-describedby="basic-addon1" required />
                     </div>
                     <div class="input-group mb-3">

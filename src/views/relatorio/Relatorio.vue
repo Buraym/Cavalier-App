@@ -1,8 +1,10 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-// import DougnhnutChart from '@/components/DougnhnutChart.vue';
+import { defineComponent, ref } from 'vue';
 import Table from '@/components/Table.vue';
 import { listar_movimentacoes_deste_mes } from '@/controllers/movimentacao';
+import { list_monthly_reports } from '@/controllers/reports';
+import format from 'date-fns/format';
+let monthlyReports = ref<any[] | []>([]);
 export default defineComponent({
     name: 'Relatorio',
     data: () => {
@@ -13,6 +15,7 @@ export default defineComponent({
             total_vehicles: "",
             total_drivers: "",
             total_value: "",
+            monthlyReports
         }
     },
     components: {
@@ -46,7 +49,17 @@ export default defineComponent({
                     acc += Number(curr.valor_total);
                     return acc;
                 }, 0)
-            )
+            );
+        },
+        async ReturnReports() {
+            let data = await list_monthly_reports();
+            this.monthlyReports = data.map((item) => ({
+                date: format(new Date(item.created_at), item.model === "dailyMovimentations" ? "dd/MM/yyyy" : "MM/yyyy"),
+                model: String(item.model),
+                format: String(item.format).toUpperCase(),
+                link: String(item.link)
+            }))
+
         },
     }
 });
@@ -55,10 +68,10 @@ export default defineComponent({
     <div class="relatorios">
         <div class="container">
             <div class="row w-100 row-gap-2 flex-wrap">
-                <div class="col-md-4 col-sm-12 col-sx-12">
-                    <div class="card">
+                <div class="col-xl-4 col-md-12 col-sm-12 col-sx-12">
+                    <div class="card h-100">
                         <h5 class="card-header text-start">{{ $t("reports.index.monthly-resuls") }}</h5>
-                        <div class="card-body d-flex flex-column gap-1">
+                        <div class="card-body d-flex justify-content-between flex-column gap-1">
                             <ul>
                                 <li class="text-start">
                                     <p class="mb-0">
@@ -79,14 +92,42 @@ export default defineComponent({
                                             {{ total_drivers }}</strong> {{ $t("reports.index.total-drivers") }}
                                     </p>
                                 </li>
+                                <li class="text-start">
+                                    <p class="mb-0">
+                                        <strong>R$ {{ total_value }}</strong>
+                                        {{ $t("reports.index.total-ammount") }}
+                                    </p>
+                                </li>
                             </ul>
-                            <p class="btn w-100 btn-outline-warning"><strong>R$ {{ total_value }}</strong></p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8 col-sm-12 col-sx-12">
-                    <div class="card chart-card">
-                        <div class="card-body d-flex justify-content-between">
+                <div class="col-xl-8 col-md-12 col-sm-12 col-sx-12">
+                    <div class="card  h-100">
+                        <h5 class="card-header text-start">{{ $t("reports.index.reports-list") }}</h5>
+                        <div class="card-body d-flex gap-1" v-bind:class="{ rollable: monthlyReports.length >= 1 }">
+                            <div class="card report-card" v-if="monthlyReports.length >= 1" v-for="(item) in monthlyReports"
+                                :key="item.id">
+                                <h6 class="card-header d-flex justify-content-between text-start gap-2">
+                                    {{ $t(`reports.index.${item.model}`) }}
+                                    <span class="badge text-bg-warning d-flex align-items-center">{{ item.date }}</span>
+                                </h6>
+                                <div class="card-body d-flex flex-column justify-content-center align-items-start gap-2">
+                                    <div class="w-100 d-flex justify-content-center align-items-center">
+                                        {{ $t(`reports.index.${item.model}`) }}Formato: {{ item.format }}
+                                    </div>
+                                    <div class="w-100 d-flex justify-content-center align-items-center">
+                                        <button class="btn btn-warning">
+                                            Download <i class="bi bi-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center w-100 h-100" v-else>
+                                <strong>
+                                    {{ $t("reports.index.no-reports") }}
+                                </strong>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -95,11 +136,15 @@ export default defineComponent({
     </div>
 </template>
 <style scoped>
+.rollable {
+    overflow-x: scroll
+}
+
 .relatorios {
     padding: 30px;
 }
 
-.chart-card {
-    height: 220px
+.report-card {
+    min-width: 300px;
 }
 </style>

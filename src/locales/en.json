@@ -164,7 +164,13 @@
       "total-hours": " Hours and",
       "total-minutes": "Minutes",
       "total-vehicles": " Vehicles and ",
-      "total-drivers": "Drivers"
+      "total-drivers": "Drivers",
+      "total-ammount": " was generated this month",
+      "reports-list": "List of reports and spreadsheets",
+      "dailyMovimentations": "Daily movements",
+      "monthlyMovimentations": "Monthly movements",
+      "format": "Format: ",
+      "no-reports": "No reports generated this month"
     },
     "files": {
       "daily-movimentation": {

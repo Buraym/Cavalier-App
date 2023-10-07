@@ -5,6 +5,7 @@ export default defineComponent({
   name: "App",
   data() {
     return {
+      sidebarOpened: true,
       usersStore: useUsersStore()
     }
   },
@@ -26,9 +27,8 @@ export default defineComponent({
 <template>
   <div :class="Boolean(usersStore.$state.user) ? 'container-fluid' : 'container-fluid d-none'">
     <div class="row">
-      <div class="col-sm-auto bg-light sticky-top p-3">
-        <div
-          class="d-flex flex-sm-column flex-row flex-nowrap bg-light justify-content-end align-items-center sticky-top h-100">
+      <div v-bind:class="{ closed: !sidebarOpened }" class="col-sm-sidebar bg-light sticky-top p-3">
+        <div class="d-flex flex-column flex-nowrap bg-light justify-content-end align-items-center sticky-top h-100">
           <!-- MAIN APP PAGE LINK -->
           <router-link to="/" class="mb-4 router-link">
             <img src="./assets/logo.png" alt="Logo">
@@ -85,21 +85,23 @@ export default defineComponent({
               </router-link>
             </li>
           </ul>
-          <button class="btn mb-2" @click="switchLocale">
-            <img :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${String($i18n.locale) === 'pt' ? 'BR'
-              : String($i18n.locale) === 'en' ? 'US' : String($i18n.locale) === 'es' ? 'ES' : 'BR'}.svg`" width="20"
-              height="20">
-          </button>
-          <button @click="usersStore.logout" style="border: none; background: none; border-radius: 10px" title="Sair">
-            <i class="bi bi-door-open"></i>
-          </button>
-          <router-link to="/login" v-if="Boolean(usersStore.$state.user) === false" class="router-link" title="Entrar"
-            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Login">
-            <i class="bi bi-door-open"></i>
-          </router-link>
+          <div class="logout-options d-flex flex-column justify-content-end align-items-center">
+            <button class="btn mb-2" @click="switchLocale">
+              <img :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${String($i18n.locale) === 'pt' ? 'BR'
+                : String($i18n.locale) === 'en' ? 'US' : String($i18n.locale) === 'es' ? 'ES' : 'BR'}.svg`" width="20"
+                height="20">
+            </button>
+            <button @click="usersStore.logout" style="border: none; background: none; border-radius: 10px" title="Sair">
+              <i class="bi bi-door-open"></i>
+            </button>
+            <router-link to="/login" v-if="Boolean(usersStore.$state.user) === false" class="router-link" title="Entrar"
+              data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Login">
+              <i class="bi bi-door-open"></i>
+            </router-link>
+          </div>
         </div>
       </div>
-      <div class="col-sm p-3 min-vh-100">
+      <div v-bind:class="{ full: !sidebarOpened }" class="col-sm-body p-3 min-vh-100">
         <router-view />
       </div>
     </div>
@@ -114,7 +116,6 @@ export default defineComponent({
 <style lang="scss">
 @import "@/../node_modules/bootstrap/scss/bootstrap";
 
-
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -126,6 +127,42 @@ export default defineComponent({
 .form-check-input:checked {
   background-color: #ffc107 !important;
   border-color: #ffc107 !important;
+}
+
+.no-wrap {
+  flex-wrap: nowrap;
+}
+
+.col-sm-sidebar {
+  flex: 0 0 auto;
+  width: 5%;
+  min-width: 50px;
+  transition: 250ms ease-in-out;
+}
+
+.col-sm-sidebar * {
+  transition: 250ms ease-in-out;
+}
+
+.col-sm-sidebar.closed {
+  flex: 0 0 auto;
+  width: 0%;
+}
+
+.col-sm-sidebar.closed * {
+  display: none !important;
+  opacity: 0;
+}
+
+.col-sm-body {
+  flex: 0 0 auto;
+  width: 95%;
+  transition: 250ms ease-in-out;
+}
+
+.col-sm-body.full {
+  flex: 0 0 auto;
+  width: 100%;
 }
 
 .router-link {
@@ -167,5 +204,38 @@ export default defineComponent({
 
 .bold {
   font-weight: bold;
+}
+
+@media (max-width: 1024px) {
+  .col-sm-sidebar {
+    width: 100vw !important;
+    display: flex;
+    flex-direction: row !important;
+  }
+
+  .col-sm-sidebar>div {
+    width: 100%;
+    justify-content: space-between;
+    flex-direction: row !important;
+  }
+
+  .col-sm-sidebar>div>a {
+    margin-bottom: 0px !important;
+  }
+
+  .col-sm-sidebar>div>ul {
+    flex-direction: row !important;
+    margin-bottom: 0px !important;
+    gap: 20px !important;
+  }
+
+  .logout-options {
+    display: flex;
+    flex-direction: row !important;
+  }
+
+  .col-sm-body {
+    width: 100vw;
+  }
 }
 </style>

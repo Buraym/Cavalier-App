@@ -14,7 +14,6 @@ import {
 } from "@/controllers/movimentacao";
 import Table from '@/components/Table.vue';
 import { ExportDailyMovimentations } from "@/reports/excel"
-import { ExportDailyMovimentationsPDF } from '@/reports/pdf';
 import { GenerateServerReport, IConfig } from '@/reports/server';
 const listHeaderTopics: any[] = [
   {
@@ -392,23 +391,6 @@ export default defineComponent({
             ];
           }),
           total: Number(totalDayValue).toFixed(2),
-        }
-      );
-    },
-    async ExportReportPDF() {
-      ExportDailyMovimentationsPDF(
-        this.$i18n.locale,
-        {
-          date: format(new Date(), "dd/MM/yyyy - HH:mm:ss"),
-          movimentations: this.OldMovimentations.map((item) => ({
-            id: String(item.id),
-            name: String(item.name),
-            veiculo_nome: String(item.veiculo_nome),
-            entrada: String(item.entrada),
-            saida: String(item.saida),
-            valor_total: String(item.valor_total),
-            total: Number(item.valor_total)
-          }))
         }
       );
     },

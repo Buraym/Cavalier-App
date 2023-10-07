@@ -35,11 +35,11 @@ export default defineComponent({
 
 <template>
     <div class="d-flex w-100 justify-content-end" v-bind:class="{ 'mt-2': Number(pages) === 0 }">
-        <nav class="d-flex w-100 justify-content-between" aria-label="Page navigation example">
+        <nav class="d-flex w-100 justify-content-between page-pagination-nav" aria-label="Page navigation example">
             <div class="d-flex align-items-center mx-2">
                 {{ $t("general.index.pagination-listing") }}
                 <!-- @vue-ignore -->
-                <select @change="(ev: Event) => list(Number(page), Number(ev?.target?.value))"
+                <select @change="(ev: Event) => list(1, Number(ev?.target?.value))"
                     class="form-select form-select-sm mx-2 mb-1" aria-label="Small select example">
                     <option value="5" v-bind:selected="perPage === 5">5</option>
                     <option value="10" v-bind:selected="perPage === 10">10</option>
@@ -55,11 +55,40 @@ export default defineComponent({
                         <span aria-hidden="true">&laquo;</span>
                     </button>
                 </li>
-                <li v-for="pageList in pages" key="pageList" class="page-item"
+                <li key="firstPage" class="page-item" style="border-left: none; border-right: none">
+                    <button v-bind:class="{ active: page === 1 }" class="page-link warning-color mx-0"
+                        style="border-left: none; border-right: none" @click="list(1, Number(perPage))">
+                        1
+                    </button>
+                </li>
+                <li key="pagesInBetweenFirst" v-if="Number(pages) > 1" class="page-item"
                     style="border-left: none; border-right: none">
-                    <button v-bind:class="{ active: page === pageList }" class="page-link warning-color mx-0"
+                    <button v-if="Number(page) > 4" class="page-link warning-color mx-0"
+                        style="border-left: none; border-right: none">
+                        ...
+                    </button>
+                </li>
+                <li v-for="pageList in pages" v-if="Number(pages) > 1" key="pageList" class="page-item"
+                    style="border-left: none; border-right: none">
+                    <button
+                        v-if="pageList >= Number(page) - 2 && pageList <= Number(page) + 2 && pageList !== 1 && pageList !== pages"
+                        v-bind:class="{ active: page === pageList }" class="page-link warning-color mx-0"
                         style="border-left: none; border-right: none" @click="list(pageList, Number(perPage))">
                         {{ pageList }}
+                    </button>
+                </li>
+                <li key="pagesInBetweenLast" v-if="Number(pages) > 1" class="page-item"
+                    style="border-left: none; border-right: none">
+                    <button v-if="Number(pages) - 3 > Number(page)" class="page-link warning-color mx-0"
+                        style="border-left: none; border-right: none">
+                        ...
+                    </button>
+                </li>
+                <li key="lastPage" v-if="Number(pages) > 1" class="page-item" style="border-left: none; border-right: none">
+                    <button v-if="Number(pages) > 1" v-bind:class="{ active: page === Number(pages) }"
+                        class="page-link warning-color mx-0" style="border-left: none; border-right: none"
+                        @click="list(Number(pages), Number(perPage))">
+                        {{ Number(pages) }}
                     </button>
                 </li>
                 <li class="page-item" v-if="Number(pages) > 1" style="border-left: none">
@@ -90,5 +119,12 @@ export default defineComponent({
     border-color: #dee2e6 !important;
     background: #ffc107 !important;
     color: #FFF !important;
+}
+
+@media (max-width: 550px) {
+    .page-pagination-nav {
+        flex-direction: column-reverse;
+        align-items: center
+    }
 }
 </style>

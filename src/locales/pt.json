@@ -163,7 +163,13 @@
       "total-hours": " Horas e",
       "total-minutes": "Minutos",
       "total-vehicles": " Veiculos e ",
-      "total-drivers": "Condutores"
+      "total-drivers": "Condutores",
+      "total-ammount": " foi gerado este mês",
+      "reports-list": "Lista de relatórios e planilhas",
+      "dailyMovimentations": "Movimentações diária",
+      "monthlyMovimentations": "Movimentações mensais",
+      "format": "Formato: ",
+      "no-reports": "Nenhum reporte gerado este mês"
     },
     "files": {
       "daily-movimentation": {
