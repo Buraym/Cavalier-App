@@ -4,6 +4,10 @@ import { format } from "date-fns"
 import {
     editar_marca, retornar_marca, deletar_marca
 } from "@/controllers/marca";
+import { useToast } from "vue-toastification";
+import { getLocalisedMessage } from '@/utils';
+
+const toast = useToast()
 export default defineComponent({
     name: 'EdicaoMarca',
     data: () => {
@@ -19,22 +23,50 @@ export default defineComponent({
     },
     methods: {
         async RetornarMarca() {
-            const marca = await retornar_marca(String(this.$route.params.marca_id));
-            this.nome = marca.nome;
-            this.ativo = marca.ativo ? true : false;
-            this.data_cadastro = format(new Date(marca.cadastro), "dd/MM/yyyy HH:mm")
-            if (marca.atualizacao) {
-                this.data_atualizado = format(new Date(marca.atualizacao), "dd/MM/yyyy HH:mm")
+            try {
+                const marca = await retornar_marca(String(this.$route.params.marca_id));
+                this.nome = marca.nome;
+                this.ativo = marca.ativo ? true : false;
+                this.data_cadastro = format(new Date(marca.cadastro), "dd/MM/yyyy HH:mm")
+                if (marca.atualizacao) {
+                    this.data_atualizado = format(new Date(marca.atualizacao), "dd/MM/yyyy HH:mm")
+                }
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-brand")),
+                    { id: "return-brand" }
+                )
             }
         },
         async EditarMarca(event: any) {
-            event.preventDefault();
-            await editar_marca(String(this.$route.params.marca_id), { nome: this.nome, ativo: this.ativo });
-            this.$router.push("/marca");
+            try {
+                event.preventDefault();
+                await editar_marca(String(this.$route.params.marca_id), { nome: this.nome, ativo: this.ativo });
+                this.$router.push("/marca");
+            } catch (err) {
+                if ((err as String).includes("UNIQUE constraint failed: marca.nome (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-unique-name-create-brand")),
+                        { id: "not-unique-name-create-brand" }
+                    )
+                } else {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "edit-brand")),
+                        { id: "edit-brand" }
+                    )
+                }
+            }
         },
         async DeletarItem() {
-            await deletar_marca(String(this.$route.params.marca_id));
-            this.$router.push("/marca");
+            try {
+                await deletar_marca(String(this.$route.params.marca_id));
+                this.$router.push("/marca");
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "remove-brand")),
+                    { id: "remove-brand" }
+                )
+            }
         }
     }
 });

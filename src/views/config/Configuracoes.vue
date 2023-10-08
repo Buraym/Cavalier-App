@@ -1,7 +1,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { format } from 'date-fns';
-import { retornar_configuracao } from '@/controllers/configuracao';
+import { editar_configuracao, retornar_configuracao } from '@/controllers/configuracao';
+import { getLocalisedMessage } from '@/utils';
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 export default defineComponent({
     name: 'Configuracoes',
@@ -26,73 +30,49 @@ export default defineComponent({
     },
     methods: {
         async RetornarConfiguracao() {
-            const configuracao = await retornar_configuracao();
-            this.vagasCarro = String(configuracao.vagas_carro);
-            this.vagasMoto = String(configuracao.vagas_moto);
-            this.vagasVan = String(configuracao.vagas_van);
-            this.valorHora = configuracao.valor_hora;
-            this.valorMinutoHora = configuracao.valor_minuto_hora;
-            this.inicioExpediente = format(
-                new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth(),
-                    new Date().getDate(),
-                    Number(String(configuracao.inicio_expediente).split(":")[0]),
-                    Number(String(configuracao.inicio_expediente).split(":")[1]),
-                    Number(String(configuracao.inicio_expediente).split(":")[1]),
-                ),
-                "HH:mm:ss"
-            );
-            this.fimExpediente = format(
-                new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth(),
-                    new Date().getDate(),
-                    Number(String(configuracao.fim_expediente).split(":")[0]),
-                    Number(String(configuracao.fim_expediente).split(":")[1]),
-                    Number(String(configuracao.fim_expediente).split(":")[1]),
-                ),
-                "HH:mm:ss"
-            );
-            this.gerarDesconto = configuracao.gerar_desconto ? true : false;
-            this.tempoParaDesconto = format(
-                new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth(),
-                    new Date().getDate(),
-                    Number(String(configuracao.tempo_para_desconto).split(":")[0]),
-                    Number(String(configuracao.tempo_para_desconto).split(":")[1]),
-                    Number(String(configuracao.tempo_para_desconto).split(":")[1]),
-                ),
-                "HH:mm:ss"
-            );
-            this.tempoDeDesconto = format(
-                new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth(),
-                    new Date().getDate(),
-                    Number(String(configuracao.tempo_de_desconto).split(":")[0]),
-                    Number(String(configuracao.tempo_de_desconto).split(":")[1]),
-                    Number(String(configuracao.tempo_de_desconto).split(":")[1])
-                ),
-                "HH:mm:ss"
-            );
+            try {
+                const configuracao = await retornar_configuracao();
+                this.vagasCarro = String(configuracao.vagas_carro);
+                this.vagasMoto = String(configuracao.vagas_moto);
+                this.vagasVan = String(configuracao.vagas_van);
+                this.valorHora = configuracao.valor_hora;
+                this.valorMinutoHora = configuracao.valor_minuto_hora;
+                this.inicioExpediente = configuracao.inicio_expediente;
+                this.fimExpediente = configuracao.fim_expediente;
+                this.gerarDesconto = configuracao.gerar_desconto ? true : false;
+                this.tempoParaDesconto = configuracao.tempo_para_desconto;
+                this.tempoDeDesconto = configuracao.tempo_de_desconto;
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-config")),
+                    { id: "return-config" }
+                )
+            }
+
         },
         async EnviarFormulario(event: any) {
-            event.preventDefault();
-            // await editar_configuracao({
-            //     vagas_carro: this.vagasCarro,
-            //     vagas_moto: this.vagasMoto,
-            //     vagas_van: this.vagasVan,
-            //     valor_hora: this.valorHora,
-            //     valor_minuto_hora: this.valorMinutoHora,
-            //     inicio_expediente: this.inicioExpediente,
-            //     fim_expediente: this.fimExpediente,
-            //     gerar_desconto: this.gerarDesconto,
-            //     tempo_para_desconto: this.tempoParaDesconto,
-            //     tempo_de_desconto: this.tempoDeDesconto
-            // });
-            // this.$router.push("/");
+            try {
+                event.preventDefault();
+                await editar_configuracao({
+                    vagas_carro: this.vagasCarro,
+                    vagas_moto: this.vagasMoto,
+                    vagas_van: this.vagasVan,
+                    valor_hora: this.valorHora,
+                    valor_minuto_hora: this.valorMinutoHora,
+                    inicio_expediente: this.inicioExpediente,
+                    fim_expediente: this.fimExpediente,
+                    gerar_desconto: this.gerarDesconto,
+                    tempo_para_desconto: this.tempoParaDesconto,
+                    tempo_de_desconto: this.tempoDeDesconto
+                });
+                this.$router.push("/");
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "update-config")),
+                    { id: "update-config" }
+                )
+            }
+
         }
     }
 });

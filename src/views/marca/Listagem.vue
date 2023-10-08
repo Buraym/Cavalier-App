@@ -6,6 +6,7 @@ import {
 import Table from '@/components/Table.vue';
 import Pagination from '@/components/Pagination.vue';
 import { getLocalisedMessage } from '@/utils';
+import { useToast } from "vue-toastification";
 const listHeaderTopics: any[] = [
     {
         label: "ID",
@@ -17,6 +18,9 @@ const listHeaderTopics: any[] = [
     }
 ];
 const data = ref<any[] | []>([]);
+
+const toast = useToast()
+
 export default defineComponent({
     name: 'ListagemMarca',
     data: () => {
@@ -38,19 +42,26 @@ export default defineComponent({
     },
     methods: {
         async ListagemDeItens(page: Number, perPage: Number) {
-            const response = await list_brands_paginated(Number(page ? page : this.page), perPage);
-            this.pages = Number(response.totalPages);
-            this.items = Number(response.totalItems);
-            if (perPage) {
-                this.perPage = Number(perPage);
-            }
-            // @ts-ignore
-            this.data = response?.results?.map((item) => ({
-                id: item.id,
-                nome: item.nome,
-            }));
-            if (page) {
-                this.page = Number(page);
+            try {
+                const response = await list_brands_paginated(Number(page ? page : this.page), perPage);
+                this.pages = Number(response.totalPages);
+                this.items = Number(response.totalItems);
+                if (perPage) {
+                    this.perPage = Number(perPage);
+                }
+                // @ts-ignore
+                this.data = response?.results?.map((item) => ({
+                    id: item.id,
+                    nome: item.nome,
+                }));
+                if (page) {
+                    this.page = Number(page);
+                }
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-brands")),
+                    { id: "return-brands" }
+                )
             }
         },
         updateColumnHeadersLocalization() {
@@ -68,8 +79,15 @@ export default defineComponent({
             }
         },
         async DeletarItem(id: string) {
-            await deletar_marca(id);
-            this.data = this.data.filter((item) => item.id !== id);
+            try {
+                await deletar_marca(id);
+                this.data = this.data.filter((item) => item.id !== id);
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "remove-brand")),
+                    { id: "remove-brand" }
+                )
+            }
         }
     }
 });

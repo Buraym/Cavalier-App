@@ -7,7 +7,11 @@ import {
 } from "@/controllers/modelo";
 import Table from '@/components/Table.vue';
 import Pagination from '@/components/Pagination.vue';
-import { getLocalisedMessage } from '../../utils/index';
+import { useToast } from "vue-toastification";
+import { getLocalisedMessage } from '@/utils';
+
+const toast = useToast()
+
 const listHeaderTopics: any[] = [
     {
         label: "ID",
@@ -45,16 +49,25 @@ export default defineComponent({
     },
     methods: {
         async ListagemDeItens(page: Number, perPage: Number) {
-            const response = await list_models_paginated(page, perPage);
-            this.pages = Number(response.totalPages);
-            this.items = Number(response.totalItems);
-            this.data = response?.results?.map((item) => ({
-                id: item.id,
-                nome: item.nome,
-                marca: item.marca.nome,
-            }));
-            if (page) {
-                this.page = Number(page);
+            try {
+                const response = await list_models_paginated(page, perPage);
+                this.pages = Number(response.totalPages);
+                this.items = Number(response.totalItems);
+                console.log(response);
+                this.data = response?.results?.map((item) => ({
+                    id: item.id,
+                    nome: item.nome,
+                    marca: item?.marca?.nome,
+                }));
+                if (page) {
+                    this.page = Number(page);
+                }
+            } catch (err) {
+                console.log(err);
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-models")),
+                    { id: "return-models" }
+                )
             }
         },
         updateColumnHeadersLocalization() {
@@ -76,8 +89,15 @@ export default defineComponent({
             }
         },
         async DeletarItem(id: string) {
-            await deletar_modelo(id);
-            this.data = this.data.filter((item) => item.id !== id);
+            try {
+                await deletar_modelo(id);
+                this.data = this.data.filter((item) => item.id !== id);
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "remove-model")),
+                    { id: "remove-model" }
+                )
+            }
         }
     }
 });

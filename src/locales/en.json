@@ -106,13 +106,13 @@
   "movimentation": {
     "list": {
       "table-id-header": "ID",
-      "table-driver-name-header": "Condutor",
-      "table-vehicle-name-header": "Veículo",
-      "table-enter-time-header": "Entrada",
-      "table-exit-time-header": "Saída",
-      "table-hourly-value-header": "Valor Hora",
-      "table-total-value-header": "Valor Total",
-      "register-new": "Cadastrar nova Movimentação"
+      "table-driver-name-header": "Driver",
+      "table-vehicle-name-header": "Vehicle",
+      "table-enter-time-header": "Enter time",
+      "table-exit-time-header": "Leave time",
+      "table-hourly-value-header": "Hour value",
+      "table-total-value-header": "Total value",
+      "register-new": "Register new Movimentation"
     },
     "add": {
       "movimentation-registration": "Movimentation Registration",
@@ -283,6 +283,75 @@
       "vehicle-car": "Car",
       "vehicle-motorcycle": "Motorcycle",
       "vehicle-van": "Van"
+    }
+  },
+  "error": {
+    "index": {
+      "return-parking-spaces": "Error returning parking space(s)!",
+      "return-config-parking-spaces": "Error returning parking configuration!",
+      "export-daily-movimentation": "Error when exporting daily movimentation report!",
+      "remove-movimentation-home": "Error deleting parking space!",
+      "finish-movimentation-parking": "Error finalizing parking space vacancy!",
+
+      "return-brands": "Error returning brand(s)!",
+      "remove-brand": "Error deleting brand!",
+      "not-unique-name-create-brand": "Brand with the same name already exists!",
+      "create-brand": "Error creating brand!",
+      "return-brand": "Error returning mark!",
+      "edit-brand": "Error editing brand!",
+
+      "return-models": "Error returning model(s)!",
+      "remove-model": "Error deleting model!",
+      "not-unique-name-create-model": "Model with the same name already exists!",
+      "not-null-brand-create-model": "Select the brand for this model!",
+      "create-model": "Error creating model!",
+      "return-model": "Error returning model!",
+      "edit-model": "Error editing model!",
+
+      "return-vehicles": "Error returning vehicle(s)!",
+      "remove-vehicle": "Error deleting vehicle!",
+      "not-unique-name-create-vehicle": "Vehicle with this plate already exists!",
+      "not-null-model-create-vehicle": "Select the model for this vehicle!",
+      "not-null-color-create-vehicle": "Select the color for this vehicle!",
+      "not-null-type-create-vehicle": "Select the type for this vehicle!",
+      "create-vehicle": "Error creating vehicle!",
+      "return-vehicle": "Error returning vehicle!",
+      "edit-vehicle": "Error editing vehicle!",
+
+      "return-drivers": "Error returning driver(s)!",
+      "remove-driver": "Error deleting driver!",
+      "not-unique-cpf-create-driver": "Driver with the same CPF already exists!",
+      "create-driver": "Error creating driver!",
+      "return-driver": "Error returning driver!",
+      "edit-driver": "Error editing driver!",
+
+      "return-movimentations": "Error returning movimentation(s)!",
+      "return-config-movimentations": "Error returning movimentation configuration!",
+      "remove-movimentation": "Error deleting movimentation!",
+      "not-null-driver-create-vehicle": "Select the driver for the vehicle!",
+      "not-null-vehicle-create-vehicle": "Select the vehicle for the driver!",
+      "invalid-entry-create-vehicle": "Select valid entry and exit times!",
+      "create-movimentation": "Error creating movimentation!",
+      "return-movimentation": "Error returning movimentation!",
+      "edit-movimentation": "Error editing movimentation!",
+
+      "return-users": "Error returning user(s)!",
+      "remove-user": "Error deleting user!",
+      "switch-auth-user": "Error switching user!",
+      "return-user": "Error returning user!",
+      "edit-user": "Error editing user!",
+
+      "return-reports": "Error returning report(s)!",
+      "redownload-reports": "Error redownloading file!",
+
+      "return-config": "Error returning configuration!",
+      "update-config": "Error updating configuration!"
+    }
+  },
+  "warning": {
+    "index": {
+      "switch-auth-user-admin": "Position of authority given to the user:",
+      "switch-auth-user-user": "Authority role revoked for user:"
     }
   }
 }

@@ -5,8 +5,11 @@ import { IntToTime, StringToDate } from '../../utils/index';
 import { retornar_movimentacao, editar_movimentacao, deletar_movimentacao } from '@/controllers/movimentacao';
 import { listar_veiculos } from '@/controllers/veiculo';
 import { listar_condutores } from '@/controllers/condutor';
+import { getLocalisedMessage } from '@/utils';
+import { useToast } from "vue-toastification";
 const condutores = ref<any[] | []>([]);
 const veiculos = ref<any[] | []>([]);
+const toast = useToast();
 export default defineComponent({
     name: 'EdicaoMovimentacao',
     data: () => {
@@ -37,55 +40,110 @@ export default defineComponent({
     },
     methods: {
         async RetornarCondutores() {
-            this.condutores = (await listar_condutores()).map((item) => ({ title: item.nome, value: item.id }));
+            try {
+                this.condutores = (await listar_condutores()).map((item) => ({ title: item.nome, value: item.id }));
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-vehicles")),
+                    { id: "return-drivers" }
+                )
+            }
         },
         async RetornarVeiculos() {
-            this.veiculos = (await listar_veiculos()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
+            try {
+                this.veiculos = (await listar_veiculos()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-vehicles")),
+                    { id: "return-vehicles" }
+                )
+            }
         },
         async RetornarMovimentacao() {
-            const data = await retornar_movimentacao(String(this.$route.params.movimentacao_id))
-            this.condutor = data.condutor.id;
-            this.veiculo = data.veiculo.id;
-            this.entrada = format(new Date(data.entrada), "yyyy-MM-dd HH:mm");
-            this.saida = data.saida ? format(new Date(data.saida), "yyyy-MM-dd HH:mm") : "";
-            this.tempo = String(IntToTime(data.tempo));
-            this.tempoDesconto = String(IntToTime(data.tempo_desconto));
-            this.tempoMulta = String(IntToTime(data.tempo_multa));
-            this.valorDesconto = String(data.valor_desconto);
-            this.valorHora = String(data.valor_hora);
-            this.valorMulta = String(data.valor_multa);
-            this.valorTotal = String(data.valor_total);
-            this.valorHoraMulta = String(data.valor_hora_multa);
-            this.ativo = data.ativo ? true : false;
-            this.data_cadastro = format(new Date(data.cadastro), "dd/MM/yyyy HH:mm")
-            if (data.atualizacao) {
-                this.data_atualizado = format(new Date(data.atualizacao), "dd/MM/yyyy HH:mm")
+            try {
+                const data = await retornar_movimentacao(String(this.$route.params.movimentacao_id))
+                this.condutor = data.condutor.id;
+                this.veiculo = data.veiculo.id;
+                this.entrada = format(new Date(data.entrada), "yyyy-MM-dd HH:mm");
+                this.saida = data.saida ? format(new Date(data.saida), "yyyy-MM-dd HH:mm") : "";
+                this.tempo = String(IntToTime(data.tempo));
+                this.tempoDesconto = String(IntToTime(data.tempo_desconto));
+                this.tempoMulta = String(IntToTime(data.tempo_multa));
+                this.valorDesconto = String(data.valor_desconto);
+                this.valorHora = String(data.valor_hora);
+                this.valorMulta = String(data.valor_multa);
+                this.valorTotal = String(data.valor_total);
+                this.valorHoraMulta = String(data.valor_hora_multa);
+                this.ativo = data.ativo ? true : false;
+                this.data_cadastro = format(new Date(data.cadastro), "dd/MM/yyyy HH:mm")
+                if (data.atualizacao) {
+                    this.data_atualizado = format(new Date(data.atualizacao), "dd/MM/yyyy HH:mm")
+                }
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-movimentation")),
+                    { id: "return-movimentation" }
+                )
             }
         },
         async EditarMovimentacao(event: any) {
-            event.preventDefault();
-            const data = await retornar_movimentacao(String(this.$route.params.movimentacao_id))
-            await editar_movimentacao(String(this.$route.params.movimentacao_id), {
-                ...data,
-                condutor_id: this.condutor,
-                veiculo_id: this.veiculo,
-                entrada: StringToDate(this.entrada),
-                saida: StringToDate(this.saida),
-                ativo: this.ativo,
-                tempo: Number(String(this.tempo).split(":")[0]) * 60 + Number(String(this.tempo).split(":")[1]),
-                tempo_desconto: Number(String(this.tempoDesconto).split(":")[0]) * 60 + Number(String(this.tempoDesconto).split(":")[1]),
-                tempo_multa: Number(String(this.tempoMulta).split(":")[0]) * 60 + Number(String(this.tempoMulta).split(":")[1]),
-                valor_desconto: Number(Math.abs(Number(this.valorDesconto)).toFixed(2)),
-                valor_multa: Number(Math.abs(Number(this.valorMulta)).toFixed(2)),
-                valor_total: Number(Math.abs(Number(this.valorTotal)).toFixed(2)),
-                valor_hora: Number(Math.abs(Number(this.valorHora)).toFixed(2)),
-                valor_hora_multa: Number(Math.abs(Number(this.valorHoraMulta)).toFixed(2)),
-            });
-            this.$router.go(-1);
+            try {
+                event.preventDefault();
+                const data = await retornar_movimentacao(String(this.$route.params.movimentacao_id))
+                if (this.saida !== "" && new Date(this.saida).valueOf() <= new Date(this.entrada).valueOf()) {
+                    throw new Error("INVALID entry");
+                }
+                await editar_movimentacao(String(this.$route.params.movimentacao_id), {
+                    ...data,
+                    condutor_id: this.condutor,
+                    veiculo_id: this.veiculo,
+                    entrada: StringToDate(this.entrada),
+                    saida: StringToDate(this.saida),
+                    ativo: this.ativo,
+                    tempo: Number(String(this.tempo).split(":")[0]) * 60 + Number(String(this.tempo).split(":")[1]),
+                    tempo_desconto: Number(String(this.tempoDesconto).split(":")[0]) * 60 + Number(String(this.tempoDesconto).split(":")[1]),
+                    tempo_multa: Number(String(this.tempoMulta).split(":")[0]) * 60 + Number(String(this.tempoMulta).split(":")[1]),
+                    valor_desconto: Number(Math.abs(Number(this.valorDesconto)).toFixed(2)),
+                    valor_multa: Number(Math.abs(Number(this.valorMulta)).toFixed(2)),
+                    valor_total: Number(Math.abs(Number(this.valorTotal)).toFixed(2)),
+                    valor_hora: Number(Math.abs(Number(this.valorHora)).toFixed(2)),
+                    valor_hora_multa: Number(Math.abs(Number(this.valorHoraMulta)).toFixed(2)),
+                });
+                this.$router.go(-1);
+            } catch (err) {
+                if (String(err as String).includes("NOT NULL constraint failed: movimentacao.condutor_id (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-driver-create-vehicle")),
+                        { id: "not-null-driver-create-vehicle" }
+                    )
+                } else if (String(err as String).includes("NOT NULL constraint failed: movimentacao.veiculo_id (code 19) ")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-vehicle-create-vehicle")),
+                        { id: "not-null-vehicle-create-vehicle" }
+                    )
+                } else if (String(err as String).includes("INVALID entry")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "invalid-entry-create-vehicle")),
+                        { id: "invalid-entry-create-vehicle" }
+                    )
+                } else {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "create-movimentation")),
+                        { id: "create-movimentation" }
+                    )
+                }
+            }
         },
         async DeletarItem() {
-            await deletar_movimentacao(String(this.$route.params.movimentacao_id));
-            this.$router.push("/movimentacao")
+            try {
+                await deletar_movimentacao(String(this.$route.params.movimentacao_id));
+                this.$router.push("/movimentacao")
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "remove-movimentation")),
+                    { id: "remove-movimentation" }
+                )
+            }
         }
     }
 });

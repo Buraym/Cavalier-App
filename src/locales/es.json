@@ -106,13 +106,13 @@
   "movimentation": {
     "list": {
       "table-id-header": "ID",
-      "table-driver-name-header": "Condutor",
-      "table-vehicle-name-header": "Veículo",
+      "table-driver-name-header": "Conductor",
+      "table-vehicle-name-header": "Vehículo",
       "table-enter-time-header": "Entrada",
-      "table-exit-time-header": "Saída",
-      "table-hourly-value-header": "Valor Hora",
-      "table-total-value-header": "Valor Total",
-      "register-new": "Cadastrar nova Movimentação"
+      "table-exit-time-header": "Salida",
+      "table-hourly-value-header": "Tarifa por hora",
+      "table-total-value-header": "Valor total",
+      "register-new": "Registrar nueva movimientación"
     },
     "add": {
       "movimentation-registration": "Registro de Movimiento",
@@ -284,6 +284,75 @@
       "vehicle-car": "Auto",
       "vehicle-motorcycle": "Motocicleta",
       "vehicle-van": "Camioneta"
+    }
+  },
+  "error": {
+    "index": {
+      "return-parking-spaces": "Error al devolver espacio(s) de estacionamiento!",
+      "return-config-parking-spaces": "Error al devolver configuración de estacionamiento!",
+      "export-daily-movimentation": "Error al exportar informe diario de movimentación!",
+      "remove-movimentation-home": "Error al eliminar espacio de estacionamiento!",
+      "finish-movimentation-parking": "Error al finalizar la vacante de espacio de estacionamiento!",
+
+      "return-brands": "Error al devolver marca(s)!",
+      "remove-brand": "Error al eliminar marca!",
+      "not-unique-name-create-brand": "¡Ya existe una marca con el mismo nombre!",
+      "create-brand": "Error al crear marca!",
+      "return-brand": "Error al devolver marca!",
+      "edit-brand": "Error al editar marca!",
+
+      "return-models": "Error al devolver modelo(s)!",
+      "remove-model": "Error al eliminar modelo!",
+      "not-unique-name-create-model": "¡Ya existe un modelo con el mismo nombre!",
+      "not-null-brand-create-model": "¡Seleccione la marca para este modelo!",
+      "create-model": "Error al crear modelo!",
+      "return-model": "Error al devolver modelo!",
+      "edit-model": "Error al editar modelo!",
+
+      "return-vehicles": "Error al devolver vehículo(s)!",
+      "remove-vehicle": "Error al eliminar vehículo!",
+      "not-unique-name-create-vehicle": "¡Ya existe un vehículo con esta placa!",
+      "not-null-model-create-vehicle": "¡Seleccione el modelo para este vehículo!",
+      "not-null-color-create-vehicle": "¡Seleccione el color para este vehículo!",
+      "not-null-type-create-vehicle": "¡Seleccione el tipo para este vehículo!",
+      "create-vehicle": "Error al crear vehículo!",
+      "return-vehicle": "Error al devolver vehículo!",
+      "edit-vehicle": "Error al editar vehículo!",
+
+      "return-drivers": "Error al devolver conductor(es)!",
+      "remove-driver": "Error al eliminar conductor!",
+      "not-unique-cpf-create-driver": "¡Ya existe un conductor con el mismo CPF!",
+      "create-driver": "Error al crear conductor!",
+      "return-driver": "Error al devolver conductor!",
+      "edit-driver": "Error al editar conductor!",
+
+      "return-movimentations": "Error al devolver movimentación(es)!",
+      "return-config-movimentations": "Error al devolver configuración de movimentaciones!",
+      "remove-movimentation": "Error al eliminar movimentación!",
+      "not-null-driver-create-vehicle": "¡Seleccione el conductor del vehículo!",
+      "not-null-vehicle-create-vehicle": "¡Seleccione el vehículo del conductor!",
+      "invalid-entry-create-vehicle": "¡Seleccione horarios de entrada y salida válidos!",
+      "create-movimentation": "Error al crear movimentación!",
+      "return-movimentation": "Error al devolver movimentación!",
+      "edit-movimentation": "Error al editar movimentación!",
+
+      "return-users": "Error al devolver usuario(s)!",
+      "remove-user": "Error al eliminar usuario!",
+      "switch-auth-user": "Error al cambiar de usuario!",
+      "return-user": "Error al devolver usuario!",
+      "edit-user": "Error al editar usuario!",
+
+      "return-reports": "Error al devolver informe(s)!",
+      "redownload-reports": "Error al volver a descargar el archivo!",
+
+      "return-config": "Error al devolver configuración!",
+      "update-config": "Error al actualizar la configuración!"
+    }
+  },
+  "warning": {
+    "index": {
+      "switch-auth-user-admin": "Posición de autoridad otorgada al usuario:",
+      "switch-auth-user-user": "Rol de autoridad revocado para el usuario:"
     }
   }
 }

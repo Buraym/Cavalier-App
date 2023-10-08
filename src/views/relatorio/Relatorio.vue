@@ -5,7 +5,12 @@ import { listar_movimentacoes_deste_mes } from '@/controllers/movimentacao';
 import { list_monthly_reports } from '@/controllers/reports';
 import format from 'date-fns/format';
 import { ExportDailyMovimentations } from '@/reports/excel';
+import { getLocalisedMessage } from '@/utils';
+import { useToast } from "vue-toastification";
 let monthlyReports = ref<any[] | []>([]);
+
+const toast = useToast();
+
 export default defineComponent({
     name: 'Relatorio',
     data: () => {
@@ -28,46 +33,66 @@ export default defineComponent({
     },
     methods: {
         async RetornarMovimentacoes() {
-            let data = await listar_movimentacoes_deste_mes()
-            let list_vehicle_id = data.map((item) => item.veiculo.id);
-            let list_driver_id = data.map((item) => item.condutor.id);
-            this.qty = String(data.length);
-            this.total_hours = String(Math.floor(Number(data.reduce((acc, curr) => {
-                acc += Number(curr.tempo)
-                return acc;
-            }, 0)) / 60));
-            this.total_minutes = String(Number(data.reduce((acc, curr) => {
-                acc += Number(curr.tempo)
-                return acc;
-            }, 0)) % 60);
-            this.total_vehicles = String(
-                list_vehicle_id.filter((id, index) => list_vehicle_id.indexOf(id) === index).length
-            );
-            this.total_drivers = String(
-                list_driver_id.filter((id, index) => list_driver_id.indexOf(id) === index).length
-            );
-            this.total_value = String(
-                data.reduce((acc, curr) => {
-                    acc += Number(curr.valor_total);
+            try {
+                let data = await listar_movimentacoes_deste_mes()
+                let list_vehicle_id = data.map((item) => item.veiculo.id);
+                let list_driver_id = data.map((item) => item.condutor.id);
+                this.qty = String(data.length);
+                this.total_hours = String(Math.floor(Number(data.reduce((acc, curr) => {
+                    acc += Number(curr.tempo)
                     return acc;
-                }, 0)
-            );
+                }, 0)) / 60));
+                this.total_minutes = String(Number(data.reduce((acc, curr) => {
+                    acc += Number(curr.tempo)
+                    return acc;
+                }, 0)) % 60);
+                this.total_vehicles = String(
+                    list_vehicle_id.filter((id, index) => list_vehicle_id.indexOf(id) === index).length
+                );
+                this.total_drivers = String(
+                    list_driver_id.filter((id, index) => list_driver_id.indexOf(id) === index).length
+                );
+                this.total_value = String(
+                    data.reduce((acc, curr) => {
+                        acc += Number(curr.valor_total);
+                        return acc;
+                    }, 0)
+                );
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-movimentations")),
+                    { id: "return-movimentations" }
+                )
+            }
         },
         async ReturnReports() {
-            let data = await list_monthly_reports();
-            this.monthlyReports = data.map((item) => ({
-                date: format(new Date(item.created_at), item.model === "dailyMovimentations" ? "dd/MM/yyyy" : "MM/yyyy"),
-                model: String(item.model),
-                format: String(item.format).toUpperCase(),
-                file_data: item.file_data,
-                link: String(item.link)
-            }))
-
+            try {
+                let data = await list_monthly_reports();
+                this.monthlyReports = data.map((item) => ({
+                    date: format(new Date(item.created_at), item.model === "dailyMovimentations" ? "dd/MM/yyyy" : "MM/yyyy"),
+                    model: String(item.model),
+                    format: String(item.format).toUpperCase(),
+                    file_data: item.file_data,
+                    link: String(item.link)
+                }))
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-users")),
+                    { id: "return-reports" }
+                )
+            }
         },
         async ReDownloadReports(type: String, file_data: any) {
-            let data = JSON.parse(file_data);
-            if (type === "dailyMovimentations") {
-                await ExportDailyMovimentations(data.locale, data.data);
+            try {
+                let data = JSON.parse(file_data);
+                if (type === "dailyMovimentations") {
+                    await ExportDailyMovimentations(data.locale, data.data);
+                }
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "redownload-reports")),
+                    { id: "redownload-reports" }
+                )
             }
         }
     }

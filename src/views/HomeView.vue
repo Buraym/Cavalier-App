@@ -14,6 +14,7 @@ import {
 } from "@/controllers/movimentacao";
 import Table from '@/components/Table.vue';
 import { ExportDailyMovimentations } from "@/reports/excel";
+import { useToast } from "vue-toastification";
 const listHeaderTopics: any[] = [
   {
     label: "ID",
@@ -48,6 +49,9 @@ const listHeaderTopics: any[] = [
 let OldMovimentations = ref<any[] | []>([]);
 let UsedParkingSpots = ref<any[] | []>([]);
 let config = ref<any>(null);
+
+const toast = useToast()
+
 export default defineComponent({
   name: 'HomeView',
   data: () => {
@@ -68,331 +72,349 @@ export default defineComponent({
   },
   methods: {
     async RetornarConfiguracao() {
-      this.config = await retornar_configuracao();
-      if (String(this.$i18n.locale) !== "pt") {
-        this.columns = [
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-id-header")),
-            field: "main.index.table-id-header"
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-name-header")),
-            field: "main.index.table-name-header"
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-cpf-header")),
-            field: "main.index.table-cpf-header"
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-vehicle-header")),
-            field: "main.index.table-vehicle-header",
-            is_link: true
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-entertime-header")),
-            field: "main.index.table-entertime-header"
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-leavetime-header")),
-            field: "main.index.table-leavetime-header"
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "main.index.table-total-value")),
-            field: "main.index.table-total-value"
-          }
-        ]
+      try {
+        this.config = await retornar_configuracao();
+        if (String(this.$i18n.locale) !== "pt") {
+          this.columns = [
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-id-header")),
+              field: "main.index.table-id-header"
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-name-header")),
+              field: "main.index.table-name-header"
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-cpf-header")),
+              field: "main.index.table-cpf-header"
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-vehicle-header")),
+              field: "main.index.table-vehicle-header",
+              is_link: true
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-entertime-header")),
+              field: "main.index.table-entertime-header"
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-leavetime-header")),
+              field: "main.index.table-leavetime-header"
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "main.index.table-total-value")),
+              field: "main.index.table-total-value"
+            }
+          ]
+        }
+      } catch (err) {
+        toast.error(
+          String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-config-parking-spaces")),
+          { id: "return-config-parking-spaces" }
+        )
       }
     },
     async RetornarVagas() {
-      const list = await listar_movimentacoes();
-      const date_format_localised = {
-        pt: {
-          "dia(s)": "",
-          "hora(s)": "Hora(s)",
-          "minuto(s)": "Minuto(s)",
-        },
-        en: {
-          "dia(s)": "Day(s)",
-          "hora(s)": "Hour(s)",
-          "minuto(s)": "Minute(s)",
-        },
-        es: {
-          "dia(s)": "Dia(s)",
-          "hora(s)": "Hora(s)",
-          "minuto(s)": "Minuto(s)",
-        },
-      }
-      this.OldMovimentations = list.filter((item: any) =>
-        item.ativo && item.saida &&
-        isToday(
-          new Date(
-            item.entrada
+      try {
+        const list = await listar_movimentacoes();
+        this.OldMovimentations = list.filter((item: any) =>
+          item.ativo && item.saida &&
+          isToday(
+            new Date(
+              item.entrada
+            )
           )
+        ).map((item) => ({
+          id: item.id,
+          name: item.condutor.nome,
+          cpf: item.condutor.cpf,
+          veiculo_nome: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
+          entrada: format(new Date(
+            item.entrada
+          ), 'dd/MM/yyyy - HH:mm'),
+          saida: item.saida ? format(new Date(
+            item.saida
+          ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
+          valor_total: "R$ " + Number(item.valor_total).toFixed(2)
+        }));
+        this.UsedParkingSpots = list.filter((item: any) =>
+          item.ativo &&
+          item.saida === null
+        ).map((item) => ({
+          id: item.id,
+          condutor: String(item.condutor.nome) + " | " + String(item.condutor.cpf),
+          condutor_id: String(item.condutor.id),
+          entrada: format(new Date(
+            item.entrada
+          ), 'dd/MM/yyyy - HH:mm'),
+          duracao: new Date() < new Date(
+            item.entrada
+          ) ? "" : `${intervalToDuration({
+            start: new Date(
+              item.entrada
+            ), end: new Date()
+          }).days} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-days"))}, ${intervalToDuration({
+            start: new Date(
+              item.entrada
+            ), end: new Date()
+          }).hours} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-hours"))} e ${intervalToDuration({
+            start: new Date(
+              item.entrada
+            ), end: new Date()
+          }).minutes} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-minutes"))}`,
+          veiculo: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
+          veiculo_id: String(item.veiculo.id),
+          placa: item.veiculo.placa
+        }));
+      } catch (err) {
+        toast.error(
+          String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-parking-spaces")),
+          { id: "return-parking-spaces" }
         )
-      ).map((item) => ({
-        id: item.id,
-        name: item.condutor.nome,
-        cpf: item.condutor.cpf,
-        veiculo_nome: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
-        entrada: format(new Date(
-          item.entrada
-        ), 'dd/MM/yyyy - HH:mm'),
-        saida: item.saida ? format(new Date(
-          item.saida
-        ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
-        valor_total: "R$ " + Number(item.valor_total).toFixed(2)
-      }));
-      this.UsedParkingSpots = list.filter((item: any) =>
-        item.ativo &&
-        item.saida === null
-      ).map((item) => ({
-        id: item.id,
-        condutor: String(item.condutor.nome) + " | " + String(item.condutor.cpf),
-        condutor_id: String(item.condutor.id),
-        entrada: format(new Date(
-          item.entrada
-        ), 'dd/MM/yyyy - HH:mm'),
-        duracao: new Date() < new Date(
-          item.entrada
-        ) ? "" : `${intervalToDuration({
-          start: new Date(
-            item.entrada
-          ), end: new Date()
-        }).days} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-days"))}, ${intervalToDuration({
-          start: new Date(
-            item.entrada
-          ), end: new Date()
-        }).hours} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-hours"))} e ${intervalToDuration({
-          start: new Date(
-            item.entrada
-          ), end: new Date()
-        }).minutes} ${String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "vacancy-duration-minutes"))}`,
-        veiculo: String(item.veiculo.modelo.nome) + " " + String(item.veiculo.ano),
-        veiculo_id: String(item.veiculo.id),
-        placa: item.veiculo.placa
-      }));
+      }
     },
     async DeletarItem(id: string) {
-      await deletar_movimentacao(id);
-      const list = await listar_movimentacoes();
-      this.OldMovimentations = list.filter((item: any) =>
-        item.ativo &&
-        isToday(
-          new Date(
-            item.entrada
+      try {
+        await deletar_movimentacao(id);
+        const list = await listar_movimentacoes();
+        this.OldMovimentations = list.filter((item: any) =>
+          item.ativo &&
+          isToday(
+            new Date(
+              item.entrada
+            )
           )
+        ).map((item) => ({
+          id: item.id,
+          name: item.condutor.nome,
+          cpf: item.condutor.cpf,
+          veiculo_nome: item.veiculo.nome,
+          entrada: format(new Date(
+            item.entrada
+          ), 'dd/MM/yyyy - HH:mm'),
+          saida: item.saida ? format(new Date(
+            item.saida
+          ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
+          valor_total: "R$ " + Number(item.valor_total).toFixed(2)
+        }));
+      } catch (err) {
+        toast.error(
+          String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "remove-movimentation-home")),
+          { id: "remove-movimentation-home" }
         )
-      ).map((item) => ({
-        id: item.id,
-        name: item.condutor.nome,
-        cpf: item.condutor.cpf,
-        veiculo_nome: item.veiculo.nome,
-        entrada: format(new Date(
-          item.entrada
-        ), 'dd/MM/yyyy - HH:mm'),
-        saida: item.saida ? format(new Date(
-          item.saida
-        ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
-        valor_total: "R$ " + Number(item.valor_total).toFixed(2)
-      }));
+      }
     },
     async EncerrarEstacionamento(id: string) {
-      const saida_time = new Date();
-      const movimentacao = await retornar_movimentacao(id);
-      let calculatedData = CalcTotalTime({
-        entrada: new Date(movimentacao.entrada),
-        saida: saida_time,
-      }, this.config, null);
-      await editar_movimentacao(String(id), {
-        ativo: true,
-        condutor_id: movimentacao.condutor.id,
-        veiculo_id: movimentacao.veiculo.id,
-        entrada: new Date(movimentacao.entrada),
-        saida: saida_time,
-        tempo: calculatedData.tempo,
-        tempo_desconto: calculatedData.tempo_desconto,
-        tempo_multa: calculatedData.tempo_multa,
-        valor_desconto: calculatedData.valor_desconto,
-        valor_multa: calculatedData.valor_multa,
-        valor_total: calculatedData.valor_total,
-        valor_hora: calculatedData.valor_hora,
-        valor_hora_multa: calculatedData.valor_hora_multa,
-      });
-      await this.RetornarVagas();
+      try {
+        const saida_time = new Date();
+        const movimentacao = await retornar_movimentacao(id);
+        let calculatedData = CalcTotalTime({
+          entrada: new Date(movimentacao.entrada),
+          saida: saida_time,
+        }, this.config, null);
+        await editar_movimentacao(String(id), {
+          ativo: true,
+          condutor_id: movimentacao.condutor.id,
+          veiculo_id: movimentacao.veiculo.id,
+          entrada: new Date(movimentacao.entrada),
+          saida: saida_time,
+          tempo: calculatedData.tempo,
+          tempo_desconto: calculatedData.tempo_desconto,
+          tempo_multa: calculatedData.tempo_multa,
+          valor_desconto: calculatedData.valor_desconto,
+          valor_multa: calculatedData.valor_multa,
+          valor_total: calculatedData.valor_total,
+          valor_hora: calculatedData.valor_hora,
+          valor_hora_multa: calculatedData.valor_hora_multa,
+        });
+        await this.RetornarVagas();
+      } catch (err) {
+        toast.error(
+          String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "finish-movimentation-parking")),
+          { id: "finish-movimentation-parking" }
+        )
+      }
     },
     async ExportReportExcel() {
-      const totalDayValue = await get_total_day_value();
-      await ExportDailyMovimentations(
-        {
-          "title": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "title")),
-          "driver": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "driver")),
-          "vehicle": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "vehicle")),
-          "enter-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "enter-time")),
-          "exit-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "exit-time")),
-          "total": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total")),
-          "total-amount": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total-amount")),
-          "no-file-selected": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "no-file-selected")),
-          "file-to": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "file-to")),
-          "file-saved": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "file-saved")),
-          "file-cannot-be-saved": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "file-cannot-be-saved"))
-        },
-        {
-          date: format(new Date(), "dd/MM/yyyy - HH:mm:ss"),
-          movimentations: this.OldMovimentations.map((item) => {
-            return [
-              {
-                v: String(item.id), t: "s",
-                s: {
-                  border: {
-                    left: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
+      try {
+        const totalDayValue = await get_total_day_value();
+        await ExportDailyMovimentations(
+          {
+            "title": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "title")),
+            "driver": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "driver")),
+            "vehicle": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "vehicle")),
+            "enter-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "enter-time")),
+            "exit-time": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "exit-time")),
+            "total": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total")),
+            "total-amount": String(getLocalisedMessage(String(this.$i18n.locale), "reports", "files", "daily-movimentation", "total-amount")),
+            "no-file-selected": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "no-file-selected")),
+            "file-to": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "file-to")),
+            "file-saved": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "file-saved")),
+            "file-cannot-be-saved": String(getLocalisedMessage(String(this.$i18n.locale), "general", "index", "file-cannot-be-saved"))
+          },
+          {
+            date: format(new Date(), "dd/MM/yyyy - HH:mm:ss"),
+            movimentations: this.OldMovimentations.map((item) => {
+              return [
+                {
+                  v: String(item.id), t: "s",
+                  s: {
+                    border: {
+                      left: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      right: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      top: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      bottom: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      }
                     },
-                    right: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    top: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    bottom: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
+                    alignment: { vertical: "center", horizontal: "center" },
+                    font: {
+                      bold: true,
                     }
-                  },
-                  alignment: { vertical: "center", horizontal: "center" },
-                  font: {
-                    bold: true,
                   }
-                }
-              },
-              {
-                v: String(item.name), t: "s",
-                s: {
-                  border: {
-                    left: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
+                },
+                {
+                  v: String(item.name), t: "s",
+                  s: {
+                    border: {
+                      left: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      right: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      top: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      bottom: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      }
                     },
-                    right: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
+                    alignment: { vertical: "center", horizontal: "center" }
+                  }
+                },
+                {
+                  v: String(item.veiculo_nome), t: "s",
+                  s: {
+                    border: {
+                      left: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      right: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      top: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      bottom: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      }
                     },
-                    top: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
+                    alignment: { vertical: "center", horizontal: "center" }
+                  }
+                },
+                {
+                  v: String(item.entrada), t: "s",
+                  s: {
+                    border: {
+                      left: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      right: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      top: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      bottom: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      }
                     },
-                    bottom: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    }
-                  },
-                  alignment: { vertical: "center", horizontal: "center" }
-                }
-              },
-              {
-                v: String(item.veiculo_nome), t: "s",
-                s: {
-                  border: {
-                    left: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
+                    alignment: { vertical: "center", horizontal: "center" }
+                  }
+                },
+                {
+                  v: String(item.saida), t: "s",
+                  s: {
+                    border: {
+                      left: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      right: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      top: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      bottom: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      }
                     },
-                    right: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
+                    alignment: { vertical: "center", horizontal: "center" }
+                  }
+                },
+                {
+                  v: String(item.valor_total), t: "s",
+                  s: {
+                    border: {
+                      left: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      right: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      top: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      },
+                      bottom: {
+                        style: "thick",
+                        color: { rgb: "0c0c0c" }
+                      }
                     },
-                    top: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    bottom: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    }
-                  },
-                  alignment: { vertical: "center", horizontal: "center" }
-                }
-              },
-              {
-                v: String(item.entrada), t: "s",
-                s: {
-                  border: {
-                    left: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    right: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    top: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    bottom: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    }
-                  },
-                  alignment: { vertical: "center", horizontal: "center" }
-                }
-              },
-              {
-                v: String(item.saida), t: "s",
-                s: {
-                  border: {
-                    left: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    right: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    top: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    bottom: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    }
-                  },
-                  alignment: { vertical: "center", horizontal: "center" }
-                }
-              },
-              {
-                v: String(item.valor_total), t: "s",
-                s: {
-                  border: {
-                    left: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    right: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    top: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    },
-                    bottom: {
-                      style: "thick",
-                      color: { rgb: "0c0c0c" }
-                    }
-                  },
-                  alignment: { vertical: "center", horizontal: "center" }
-                }
-              },
-            ];
-          }),
-          total: Number(totalDayValue).toFixed(2),
-        },
-        true
-      );
+                    alignment: { vertical: "center", horizontal: "center" }
+                  }
+                },
+              ];
+            }),
+            total: Number(totalDayValue).toFixed(2),
+          },
+          true
+        );
+      } catch (err) {
+        toast.error(
+          String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "export-daily-movimentation")),
+          { id: "export-daily-movimentation" }
+        )
+      }
     },
   }
 });

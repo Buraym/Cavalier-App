@@ -6,8 +6,11 @@ import { listar_condutores } from '@/controllers/condutor';
 import { retornar_configuracao } from '@/controllers/configuracao';
 import { format } from 'date-fns';
 import { CalcTotalTime } from '@/utils';
+import { getLocalisedMessage } from '@/utils';
+import { useToast } from "vue-toastification";
 const condutores = ref<any[] | []>([]);
 const veiculos = ref<any[] | []>([]);
+const toast = useToast();
 export default defineComponent({
     name: 'CadastroModelo',
     emits: ['EnviarFormulario'],
@@ -38,67 +41,117 @@ export default defineComponent({
     },
     methods: {
         async RetornarConfiguracao() {
-            const config = await retornar_configuracao();
-            this.config = config;
-            this.valorHora = config.valor_hora;
-            this.valorHoraMulta = config.valor_hora;
-            this.valorHora = config.valor_hora;
+            try {
+                const config = await retornar_configuracao();
+                this.config = config;
+                this.valorHora = config.valor_hora;
+                this.valorHoraMulta = config.valor_hora;
+                this.valorHora = config.valor_hora;
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-config-movimentations")),
+                    { id: "return-config-movimentations" }
+                )
+            }
         },
         async RetornarCondutores() {
-            this.condutores = (await listar_condutores()).map((item) => ({ title: item.nome, value: item.id }));
+            try {
+                this.condutores = (await listar_condutores()).map((item) => ({ title: item.nome, value: item.id }));
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-drivers")),
+                    { id: "return-drivers" }
+                )
+            }
         },
         async RetornarVeiculos() {
-            this.veiculos = (await listar_veiculos()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
+            try {
+                this.veiculos = (await listar_veiculos()).map((item) => ({ title: item.modelo.nome + " - " + item.placa, value: item.id }));
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-vehicles")),
+                    { id: "return-vehicles" }
+                )
+            }
         },
         async EnviarFormulario(event: any) {
-            event.preventDefault();
-            let customValues = {
-                tempo: this.tempo,
-                tempo_desconto: this.tempoDesconto,
-                tempo_multa: this.tempoMulta,
-                valor_desconto: this.valorDesconto,
-                valor_multa: this.valorMulta,
-                valor_total: this.valorTotal,
-                valor_hora: this.valorHora,
-                valor_hora_multa: this.valorHoraMulta,
-                valor_minuto_hora: Number(this.valorHora / 60)
-            }
-            let data: any = {
-                condutor_id: this.condutor,
-                veiculo_id: this.veiculo,
-                entrada: new Date(this.entrada),
-                saida: null,
-                tempo: 0,
-                tempo_desconto: 0,
-                tempo_multa: 0,
-                valor_desconto: 0,
-                valor_multa: 0,
-                valor_total: 0,
-                valor_hora: 0,
-                valor_hora_multa: 0,
-            }
-            if (this.saida !== "") {
-                let calculatedData = CalcTotalTime({
-                    entrada: new Date(this.entrada),
-                    saida: new Date(this.saida),
-                }, this.calculoAutomatico ? this.config : null, this.calculoAutomatico ? null : customValues);
-                data = {
+            try {
+                event.preventDefault();
+                let customValues = {
+                    tempo: this.tempo,
+                    tempo_desconto: this.tempoDesconto,
+                    tempo_multa: this.tempoMulta,
+                    valor_desconto: this.valorDesconto,
+                    valor_multa: this.valorMulta,
+                    valor_total: this.valorTotal,
+                    valor_hora: this.valorHora,
+                    valor_hora_multa: this.valorHoraMulta,
+                    valor_minuto_hora: Number(this.valorHora / 60)
+                }
+                let data: any = {
                     condutor_id: this.condutor,
                     veiculo_id: this.veiculo,
                     entrada: new Date(this.entrada),
-                    saida: new Date(this.saida),
-                    tempo: calculatedData.tempo,
-                    tempo_desconto: calculatedData.tempo_desconto,
-                    tempo_multa: calculatedData.tempo_multa,
-                    valor_desconto: calculatedData.valor_desconto,
-                    valor_multa: calculatedData.valor_multa,
-                    valor_total: calculatedData.valor_total,
-                    valor_hora: calculatedData.valor_hora,
-                    valor_hora_multa: calculatedData.valor_hora_multa,
+                    saida: null,
+                    tempo: 0,
+                    tempo_desconto: 0,
+                    tempo_multa: 0,
+                    valor_desconto: 0,
+                    valor_multa: 0,
+                    valor_total: 0,
+                    valor_hora: 0,
+                    valor_hora_multa: 0,
                 }
+                if (this.saida !== "") {
+                    if (new Date(this.saida).valueOf() <= new Date(this.entrada).valueOf()) {
+                        throw new Error("INVALID entry");
+                    }
+                    console.log(new Date(this.entrada), new Date(this.saida));
+                    let calculatedData = CalcTotalTime({
+                        entrada: new Date(this.entrada),
+                        saida: new Date(this.saida),
+                    }, this.calculoAutomatico ? this.config : null, this.calculoAutomatico ? null : customValues);
+                    data = {
+                        condutor_id: this.condutor,
+                        veiculo_id: this.veiculo,
+                        entrada: new Date(this.entrada),
+                        saida: new Date(this.saida),
+                        tempo: calculatedData.tempo,
+                        tempo_desconto: calculatedData.tempo_desconto,
+                        tempo_multa: calculatedData.tempo_multa,
+                        valor_desconto: calculatedData.valor_desconto,
+                        valor_multa: calculatedData.valor_multa,
+                        valor_total: calculatedData.valor_total,
+                        valor_hora: calculatedData.valor_hora,
+                        valor_hora_multa: calculatedData.valor_hora_multa,
+                    }
+                }
+                await criar_movimentacao(data);
+                this.$router.push('/movimentacao');
+            } catch (err) {
+                if (String(err as String).includes("NOT NULL constraint failed: movimentacao.condutor_id (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-driver-create-vehicle")),
+                        { id: "not-null-driver-create-vehicle" }
+                    )
+                } else if (String(err as String).includes("NOT NULL constraint failed: movimentacao.veiculo_id (code 19) ")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-vehicle-create-vehicle")),
+                        { id: "not-null-vehicle-create-vehicle" }
+                    )
+                } else if (String(err as String).includes("INVALID entry")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "invalid-entry-create-vehicle")),
+                        { id: "invalid-entry-create-vehicle" }
+                    )
+                } else {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "create-movimentation")),
+                        { id: "create-movimentation" }
+                    )
+                }
+
             }
-            await criar_movimentacao(data);
-            this.$router.push('/movimentacao');
         }
     }
 });

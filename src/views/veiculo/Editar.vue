@@ -3,7 +3,12 @@ import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
 import { editar_veiculo, retornar_veiculo, deletar_veiculo } from '@/controllers/veiculo';
 import { listar_modelos } from '@/controllers/modelo';
+import { getLocalisedMessage } from '@/utils';
+import { useToast } from "vue-toastification";
 const modelos = ref<any[] | []>([]);
+
+const toast = useToast();
+
 export default defineComponent({
     name: 'EdicaoVeiculo',
     data: () => {
@@ -25,36 +30,89 @@ export default defineComponent({
     },
     methods: {
         async RetornarModelos() {
-            this.modelos = (await listar_modelos()).map((item) => ({ title: item.nome, value: item.id }));
+            try {
+                this.modelos = (await listar_modelos()).map((item) => ({ title: item.nome, value: item.id }));
+            } catch (err) {
+                console.log(err);
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-models")),
+                    { id: "return-models" }
+                )
+            }
         },
         async RetornarVeiculo() {
-            const veiculo = await retornar_veiculo(String(this.$route.params.veiculo_id));
-            this.placa = veiculo.placa;
-            this.ano = veiculo.ano;
-            this.modelo = veiculo.modelo.id;
-            this.cor = veiculo.cor;
-            this.tipo = veiculo.tipo;
-            this.ativo = veiculo.ativo ? true : false;
-            this.data_cadastro = format(new Date(veiculo.cadastro), "dd/MM/yyyy HH:mm")
-            if (veiculo.atualizacao) {
-                this.data_atualizado = format(new Date(veiculo.atualizacao), "dd/MM/yyyy HH:mm")
+            try {
+                const veiculo = await retornar_veiculo(String(this.$route.params.veiculo_id));
+                this.placa = veiculo.placa;
+                this.ano = veiculo.ano;
+                this.modelo = veiculo.modelo.id;
+                this.cor = veiculo.cor;
+                this.tipo = veiculo.tipo;
+                this.ativo = veiculo.ativo ? true : false;
+                this.data_cadastro = format(new Date(veiculo.cadastro), "dd/MM/yyyy HH:mm")
+                if (veiculo.atualizacao) {
+                    this.data_atualizado = format(new Date(veiculo.atualizacao), "dd/MM/yyyy HH:mm")
+                }
+            } catch (err) {
+                console.log(err);
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-vehicle")),
+                    { id: "return-vehicle" }
+                )
             }
         },
         async EditarVeiculo(event: any) {
-            event.preventDefault();
-            await editar_veiculo(String(this.$route.params.veiculo_id), {
-                ativo: this.ativo,
-                placa: this.placa,
-                ano: this.ano,
-                modelo: this.modelo,
-                cor: this.cor,
-                tipo: this.tipo,
-            });
-            this.$router.push("/veiculo");
+            try {
+                event.preventDefault();
+                await editar_veiculo(String(this.$route.params.veiculo_id), {
+                    ativo: this.ativo,
+                    placa: this.placa,
+                    ano: this.ano,
+                    modelo: this.modelo,
+                    cor: this.cor,
+                    tipo: this.tipo,
+                });
+                this.$router.push("/veiculo");
+            } catch (err) {
+                console.log(err);
+                if ((err as String).includes("NOT NULL constraint failed: veiculo.cor (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-color-create-vehicle")),
+                        { id: "not-null-color-create-vehicle" }
+                    )
+                } else if ((err as String).includes("NOT NULL constraint failed: veiculo.tipo (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-type-create-vehicle")),
+                        { id: "not-null-type-create-vehicle" }
+                    )
+                } else if ((err as String).includes("NOT NULL constraint failed: veiculo.modelo_id (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-model-create-vehicle")),
+                        { id: "not-null-model-create-vehicle" }
+                    )
+                } else if ((err as String).includes("UNIQUE constraint failed: veiculo.placa (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-unique-name-create-vehicle")),
+                        { id: "not-unique-name-create-vehicle" }
+                    )
+                } else {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "create-vehicle")),
+                        { id: "create-vehicle" }
+                    )
+                }
+            }
         },
         async DeletarItem() {
-            await deletar_veiculo(String(this.$route.params.veiculo_id));
-            this.$router.push("/veiculo");
+            try {
+                await deletar_veiculo(String(this.$route.params.veiculo_id));
+                this.$router.push("/veiculo");
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "remove-vehicle")),
+                    { id: "remove-vehicle" }
+                )
+            }
         }
     }
 });

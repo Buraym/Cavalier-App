@@ -4,7 +4,8 @@ import { list_vehicles_paginated, listar_veiculos, deletar_veiculo } from '@/con
 import Table from '@/components/Table.vue';
 import Pagination from '@/components/Pagination.vue';
 import { COLORS } from '@/utils/constants';
-import { getLocalisedMessage } from '../../utils/index';
+import { getLocalisedMessage } from '@/utils';
+import { useToast } from "vue-toastification";
 const listHeaderTopics: any[] = [
     {
         label: "ID",
@@ -28,6 +29,7 @@ const listHeaderTopics: any[] = [
     }
 ]
 const data = ref<any[] | []>([]);
+const toast = useToast();
 export default defineComponent({
     name: 'ListagemVeiculo',
     data: () => {
@@ -50,19 +52,27 @@ export default defineComponent({
     },
     methods: {
         async ListagemDeItens(page: Number, perPage: Number) {
-            const response = await list_vehicles_paginated(page, perPage);
-            this.pages = Number(response.totalPages);
-            this.items = Number(response.totalItems);
-            this.data = response?.results?.map((item) => ({
-                id: item.id,
-                modelo: String(item.modelo.nome) + " - " + String(item.placa),
-                ano: item.ano,
-                placa: item.placa,
-                cor: COLORS[item.cor],
-            }));
-            if (page) {
-                this.page = Number(page);
+            try {
+                const response = await list_vehicles_paginated(page, perPage);
+                this.pages = Number(response.totalPages);
+                this.items = Number(response.totalItems);
+                this.data = response?.results?.map((item) => ({
+                    id: item.id,
+                    modelo: String(item.modelo.nome) + " - " + String(item.placa),
+                    ano: item.ano,
+                    placa: item.placa,
+                    cor: COLORS[item.cor],
+                }));
+                if (page) {
+                    this.page = Number(page);
+                }
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-vehicles")),
+                    { id: "return-vehicles" }
+                )
             }
+
         },
         updateColumnHeadersLocalization() {
             if (String(this.$i18n.locale) !== "pt") {
@@ -91,8 +101,15 @@ export default defineComponent({
             }
         },
         async DeletarItem(id: string) {
-            await deletar_veiculo(id);
-            this.data = this.data.filter((item) => item.id !== id);
+            try {
+                await deletar_veiculo(id);
+                this.data = this.data.filter((item) => item.id !== id);
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "remove-vehicle")),
+                    { id: "remove-vehicle" }
+                )
+            }
         }
     }
 });

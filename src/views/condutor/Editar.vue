@@ -4,6 +4,11 @@ import { format } from "date-fns"
 import { retornar_condutor, editar_condutor, deletar_condutor } from "@/controllers/condutor";
 import { IntToTime } from '@/utils';
 import { StringToTime } from '../../utils/index';
+import { getLocalisedMessage } from '@/utils';
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
+
 export default defineComponent({
     name: 'EdicaoCondutor',
     data: () => {
@@ -22,31 +27,62 @@ export default defineComponent({
     },
     methods: {
         async RetornarCondutor() {
-            const condutor = await retornar_condutor(String(this.$route.params.condutor_id))
-            this.nome = condutor.nome;
-            this.cpf = condutor.cpf;
-            this.ativo = condutor.ativo ? true : false;
-            this.telefone = condutor.telefone;
-            this.tempoGasto = String(IntToTime(Number(condutor.tempo_gasto)));
-            this.data_cadastro = format(new Date(condutor.cadastro), "dd/MM/yyyy HH:mm")
-            if (condutor.atualizacao) {
-                this.data_atualizado = format(new Date(condutor.atualizacao), "dd/MM/yyyy HH:mm")
+            try {
+                const condutor = await retornar_condutor(String(this.$route.params.condutor_id))
+                this.nome = condutor.nome;
+                this.cpf = condutor.cpf;
+                this.ativo = condutor.ativo ? true : false;
+                this.telefone = condutor.telefone;
+                this.tempoGasto = String(IntToTime(Number(condutor.tempo_gasto)));
+                this.data_cadastro = format(new Date(condutor.cadastro), "dd/MM/yyyy HH:mm")
+                if (condutor.atualizacao) {
+                    this.data_atualizado = format(new Date(condutor.atualizacao), "dd/MM/yyyy HH:mm")
+                }
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-driver")),
+                    { id: "return-driver" }
+                )
             }
+
         },
         async EditarCondutor(event: any) {
-            event.preventDefault();
-            await editar_condutor(String(this.$route.params.condutor_id), {
-                nome: this.nome,
-                cpf: this.cpf,
-                ativo: this.ativo,
-                telefone: this.telefone,
-                tempoGasto: StringToTime(String(this.tempoGasto))
-            });
-            this.$router.push('/condutor');
+            try {
+                event.preventDefault();
+                await editar_condutor(String(this.$route.params.condutor_id), {
+                    nome: this.nome,
+                    cpf: this.cpf,
+                    ativo: this.ativo,
+                    telefone: this.telefone,
+                    tempoGasto: StringToTime(String(this.tempoGasto))
+                });
+                this.$router.push('/condutor');
+            } catch (err) {
+                console.log(err);
+                if ((err as String).includes("UNIQUE constraint failed: condutor.cpf (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-unique-cpf-create-driver")),
+                        { id: "not-unique-cpf-create-driver" }
+                    )
+                } else {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "edit-driver")),
+                        { id: "edit-driver" }
+                    )
+                }
+            }
         },
         async RemoverCondutor() {
-            await deletar_condutor(String(this.$route.params.condutor_id));
-            this.$router.push('/condutor');
+            try {
+                await deletar_condutor(String(this.$route.params.condutor_id));
+                this.$router.push('/condutor');
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "remove-driver")),
+                    { id: "remove-driver" }
+                )
+            }
+
         }
     }
 });
