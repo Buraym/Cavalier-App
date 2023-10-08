@@ -59,7 +59,7 @@ export function StringToDate(time: String): Date {
 
 export function getLocalisedMessage(
     locale: String,
-    page_module: "auth" | "driver" | "config" | "brands" | "models" | "es" | "movimentation" | "reports" | "users" | "vehicles" | "main" | "general" | "error",
+    page_module: "auth" | "driver" | "config" | "brands" | "models" | "es" | "movimentation" | "reports" | "users" | "vehicles" | "main" | "general" | "error" | "warning",
     page: "login" | "list" | "add" | "edit" | "index" | "files",
     message: string,
     extraMessage?: string

@@ -32,11 +32,11 @@ export async function editar_configuracao(configuracao: any) {
     const db = await SQLite.open('./cavalier.db');
     await db.execute(`
         UPDATE configuracao
-        SET ativo = ?1, atualizacao = ?2, cadastro = ?3, fim_expediente = ?4, gerar_desconto = ?5, inicio_expediente = ?6,
+        SET ativo = ?1, atualizacao = ?2, fim_expediente = ?4, gerar_desconto = ?5, inicio_expediente = ?6,
         tempo_de_desconto = ?7, tempo_para_desconto = ?8, vagas_carro = ?9, vagas_moto = ?10, vagas_van = ?11,
         valor_hora = ?12, valor_minuto_hora = ?13
         WHERE id = 1;
-    `, [configuracao.ativo, new Date(), configuracao.cadastro, configuracao.fim_expediente,
+    `, [true, new Date(), configuracao.fim_expediente,
         configuracao.gerar_desconto, configuracao.inicio_expediente, configuracao.tempo_de_desconto,
         configuracao.tempo_para_desconto, configuracao.vagas_carro, configuracao.vagas_moto,
         configuracao.vagas_van, configuracao.valor_hora, configuracao.valor_minuto_hora]);

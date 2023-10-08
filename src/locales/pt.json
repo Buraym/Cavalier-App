@@ -341,7 +341,16 @@
       "edit-user": "Erro ao editar usuário !",
 
       "return-reports": "Erro ao retornar reporte(s) !",
-      "redownload-reports": "Erro ao fazer download de arquivo !"
+      "redownload-reports": "Erro ao fazer download de arquivo !",
+
+      "return-config": "Erro ao retornar configuração !",
+      "update-config": "Erro ao atualizar configuração !"
+    }
+  },
+  "warning": {
+    "index": {
+      "switch-auth-user-admin": "Cargo de autoridade dado para o usuário:",
+      "switch-auth-user-user": "Cargo de autoridade revogado para o usuário:"
     }
   }
 }

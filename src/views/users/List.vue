@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue';
 import Table from '@/components/Table.vue';
 import Pagination from '@/components/Pagination.vue';
 import { format } from 'date-fns';
-import { delete_user, list_users_paginated, switch_user_role } from '@/controllers/users';
+import { delete_user, list_users_paginated, return_user, switch_user_role } from '@/controllers/users';
 import { getLocalisedMessage } from '@/utils';
 import { useToast } from "vue-toastification";
 const listHeaderTopics: any[] = [
@@ -76,7 +76,6 @@ export default defineComponent({
                     { id: "return-users" }
                 )
             }
-
         },
         updateColumnHeadersLocalization() {
             if (String(this.$i18n.locale) !== "pt") {
@@ -120,6 +119,11 @@ export default defineComponent({
             try {
                 await switch_user_role(id, role);
                 await this.ListagemDeItens();
+                let user = await return_user(id);
+                toast.info(
+                    `${String(getLocalisedMessage(String(this.$i18n.locale), "warning", "index", `switch-auth-user-${role}`))} ${user.name}`,
+                    { id: `switch-auth-user-${role}` }
+                )
             } catch (err) {
                 toast.error(
                     String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "switch-auth-user")),
