@@ -2,6 +2,11 @@
 import { listar_marcas } from '@/controllers/marca';
 import { criar_modelo } from '@/controllers/modelo';
 import { defineComponent, ref } from 'vue';
+import { useToast } from "vue-toastification";
+import { getLocalisedMessage } from '@/utils';
+
+const toast = useToast()
+
 const marcas = ref<any[] | []>([]);
 export default defineComponent({
     name: 'CadastroModelo',
@@ -18,15 +23,41 @@ export default defineComponent({
     },
     methods: {
         async RetornarMarcas() {
-            this.marcas = (await listar_marcas()).map((item) => ({ title: item.nome, value: item.id }));
+            try {
+                this.marcas = (await listar_marcas()).map((item) => ({ title: item.nome, value: item.id }));
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-brands")),
+                    { id: "return-brands" }
+                )
+            }
         },
         async EnviarFormulario(event: any) {
-            event.preventDefault();
-            await criar_modelo({
-                nome: this.nome,
-                marca_id: this.marca
-            });
-            this.$router.push('/modelo')
+            try {
+                event.preventDefault();
+                await criar_modelo({
+                    nome: this.nome,
+                    marca_id: this.marca
+                });
+                this.$router.push('/modelo')
+            } catch (err) {
+                if ((err as String).includes("NOT NULL constraint failed: modelo.marca_id (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-brand-create-model")),
+                        { id: "not-null-brand-create-model" }
+                    )
+                } else if ((err as String).includes("UNIQUE constraint failed: modelo.nome (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-unique-name-create-model")),
+                        { id: "not-unique-name-create-model" }
+                    )
+                } else {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "create-model")),
+                        { id: "create-model" }
+                    )
+                }
+            }
         }
     }
 });
@@ -45,7 +76,7 @@ export default defineComponent({
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">{{ $t("models.add.model-name") }}</span>
                         <input type="text" v-model="nome" class="form-control" :placeholder='$t("models.add.model-name")'
-                            :aria-label='$t("models.add.model-name")' aria-describedby="basic-addon1">
+                            :aria-label='$t("models.add.model-name")' aria-describedby="basic-addon1" required>
                     </div>
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">{{ $t("models.add.brand-name") }}</label>

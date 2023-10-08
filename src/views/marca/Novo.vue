@@ -3,6 +3,11 @@ import { defineComponent } from 'vue';
 import {
     criar_marca
 } from "@/controllers/marca";
+import { useToast } from "vue-toastification";
+import { getLocalisedMessage } from '@/utils';
+
+const toast = useToast()
+
 export default defineComponent({
     name: 'CadastroMarca',
     emits: ['EnviarFormulario'],
@@ -13,9 +18,24 @@ export default defineComponent({
     },
     methods: {
         async EnviarFormulario(event: any) {
-            event.preventDefault();
-            await criar_marca({ nome: this.nome });
-            this.$router.push('/marca');
+            try {
+                event.preventDefault();
+                await criar_marca({ nome: this.nome });
+                this.$router.push('/marca');
+            } catch (err) {
+                if ((err as String).includes("UNIQUE constraint failed: marca.nome (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-unique-name-create-brand")),
+                        { id: "not-unique-name-create-brand" }
+                    )
+                } else {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "create-brand")),
+                        { id: "create-brand" }
+                    )
+                }
+
+            }
         }
     }
 });

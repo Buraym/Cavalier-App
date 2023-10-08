@@ -79,7 +79,7 @@ export default defineComponent({
                                 </svg>
                             </router-link>
                             <button class='btn btn-danger'
-                                v-if="changeAuth && String(usersStore.$state.user?.id) !== String(item.id)"
+                                v-if="(changeAuth && String(usersStore.$state.user?.id) !== String(item.id)) || (remove && !changeAuth)"
                                 @click='remove && remove(item.id)' title="Delete resource">
                                 <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'
                                     class='bi bi-trash-fill' viewBox='0 0 16 16'>

@@ -3,6 +3,11 @@ import { defineComponent, ref } from 'vue';
 import { format } from "date-fns"
 import { listar_marcas } from '@/controllers/marca';
 import { editar_modelo, retornar_modelo, deletar_modelo } from '@/controllers/modelo';
+import { useToast } from "vue-toastification";
+import { getLocalisedMessage } from '@/utils';
+
+const toast = useToast();
+
 const marcas = ref<any[] | []>([]);
 export default defineComponent({
     name: 'EdicaoModelo',
@@ -22,30 +27,71 @@ export default defineComponent({
     },
     methods: {
         async RetornarMarcas() {
-            this.marcas = (await listar_marcas()).map((item) => ({ title: item.nome, value: item.id }));
+            try {
+                this.marcas = (await listar_marcas()).map((item) => ({ title: item.nome, value: item.id }));
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-brands")),
+                    { id: "return-brands" }
+                )
+            }
         },
         async RetornarModelo() {
-            const modelo = await retornar_modelo(String(this.$route.params.modelo_id));
-            this.nome = modelo.nome;
-            this.marca = modelo.marca.id;
-            this.ativo = modelo.ativo ? true : false;
-            this.data_cadastro = format(new Date(modelo.cadastro), "dd/MM/yyyy HH:mm")
-            if (modelo.atualizacao) {
-                this.data_atualizado = format(new Date(modelo.atualizacao), "dd/MM/yyyy HH:mm")
+            try {
+                const modelo = await retornar_modelo(String(this.$route.params.modelo_id));
+                this.nome = modelo.nome;
+                this.marca = modelo.marca.id;
+                this.ativo = modelo.ativo ? true : false;
+                this.data_cadastro = format(new Date(modelo.cadastro), "dd/MM/yyyy HH:mm")
+                if (modelo.atualizacao) {
+                    this.data_atualizado = format(new Date(modelo.atualizacao), "dd/MM/yyyy HH:mm")
+                }
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-model")),
+                    { id: "return-model" }
+                )
             }
         },
         async EditarModelo(event: any) {
-            event.preventDefault();
-            await editar_modelo(String(this.$route.params.modelo_id), {
-                nome: this.nome,
-                ativo: this.ativo,
-                marca_id: this.marca
-            })
-            this.$router.push("/modelo")
+            try {
+                event.preventDefault();
+                if (this.marca === "null") throw new Error("NOT NULL constraint failed: modelo.marca_id (code 19)");
+                await editar_modelo(String(this.$route.params.modelo_id), {
+                    nome: this.nome,
+                    ativo: this.ativo,
+                    marca_id: this.marca
+                })
+                this.$router.push("/modelo")
+            } catch (err) {
+                if (String(err as String).includes("NOT NULL constraint failed: modelo.marca_id (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-brand-create-model")),
+                        { id: "not-null-brand-create-model" }
+                    )
+                } else if ((err as String).includes("UNIQUE constraint failed: modelo.nome (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-unique-name-create-model")),
+                        { id: "not-unique-name-create-model" }
+                    )
+                } else {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "create-model")),
+                        { id: "edit-model" }
+                    )
+                }
+            }
         },
         async DeletarItem() {
-            await deletar_modelo(String(this.$route.params.modelo_id));
-            this.$router.push("/modelo")
+            try {
+                await deletar_modelo(String(this.$route.params.modelo_id));
+                this.$router.push("/modelo")
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "remove-model")),
+                    { id: "remove-model" }
+                )
+            }
         }
     }
 });

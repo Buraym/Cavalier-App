@@ -284,5 +284,28 @@
       "vehicle-motorcycle": "Motorcycle",
       "vehicle-van": "Van"
     }
+  },
+  "error": {
+    "index": {
+      "return-parking-spaces": "Erro ao retornar vaga(s) de estacionamento !",
+      "export-daily-movimentation": "Erro ao exportar reporte de Movimentações diarias !",
+      "remove-movimentation-home": "Erro ao excluir vaga de estacionamento !",
+      "finish-movimentation-parking": "Erro ao finalizar vaga !",
+
+      "return-brands": "Erro ao retornar marca(s) !",
+      "remove-brand": "Erro ao excluir marca !",
+      "not-unique-name-create-brand": "Marca com este mesmo nome já existe !",
+      "create-brand": "Erro ao criar marca !",
+      "return-brand": "Erro ao retornar marca !",
+      "edit-brand": "Erro ao editar marca !",
+
+      "return-models": "Erro ao retornar modelo(s) !",
+      "remove-model": "Erro ao excluir modelo !",
+      "not-unique-name-create-model": "Modelo com este mesmo nome já existe !",
+      "not-null-brand-create-model": "Selecione a marca deste modelo !",
+      "create-model": "Erro ao criar modelo !",
+      "return-model": "Erro ao retornar modelo !",
+      "edit-model": "Erro ao editar modelo !"
+    }
   }
 }
