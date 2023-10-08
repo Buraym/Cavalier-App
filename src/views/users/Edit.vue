@@ -1,8 +1,10 @@
 <script lang="ts">
 import { defineComponent, } from 'vue';
 import { format } from "date-fns"
-import { retornar_movimentacao, editar_movimentacao, deletar_movimentacao } from '@/controllers/movimentacao';
 import { delete_user, edit_user, return_user } from '@/controllers/users';
+import { getLocalisedMessage } from '@/utils';
+import { useToast } from "vue-toastification";
+const toast = useToast();
 export default defineComponent({
     name: 'EditUser',
     data: () => {
@@ -23,36 +25,58 @@ export default defineComponent({
     },
     methods: {
         async ReturnUser() {
-            const data = await return_user(String(this.$route.params.user_id));
-            this.name = data.name;
-            this.email = data.email;
-            this.password = data.password;
-            this.role = data.role;
-            this.document = data.document;
-            this.contact = data.contact;
-            this.active = data.ativo ? true : false;
-            this.date_created = format(new Date(data.created_at), "dd/MM/yyyy HH:mm")
-            if (data.atualizacao) {
-                this.date_updated = format(new Date(data.updated_at), "dd/MM/yyyy HH:mm")
+            try {
+                const data = await return_user(String(this.$route.params.user_id));
+                this.name = data.name;
+                this.email = data.email;
+                this.password = data.password;
+                this.role = data.role;
+                this.document = data.document;
+                this.contact = data.contact;
+                this.active = data.ativo ? true : false;
+                this.date_created = format(new Date(data.created_at), "dd/MM/yyyy HH:mm")
+                if (data.atualizacao) {
+                    this.date_updated = format(new Date(data.updated_at), "dd/MM/yyyy HH:mm")
+                }
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-user")),
+                    { id: "return-user" }
+                )
             }
         },
         async EditUser(event: any) {
-            event.preventDefault();
-            const data = await return_user(String(this.$route.params.user_id))
-            await edit_user(String(this.$route.params.user_id), {
-                ...data,
-                nome: this.name,
-                email: this.email,
-                password: this.password,
-                role: this.role,
-                document: this.document,
-                contact: this.contact,
-            });
-            this.$router.go(-1);
+            try {
+                event.preventDefault();
+                const data = await return_user(String(this.$route.params.user_id))
+                await edit_user(String(this.$route.params.user_id), {
+                    ...data,
+                    nome: this.name,
+                    email: this.email,
+                    password: this.password,
+                    role: this.role,
+                    document: this.document,
+                    contact: this.contact,
+                });
+                this.$router.go(-1);
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "edit-user")),
+                    { id: "edit-user" }
+                )
+            }
+
         },
         async DeleteUser() {
-            await delete_user(String(this.$route.params.user_id));
-            this.$router.push("/users")
+            try {
+                await delete_user(String(this.$route.params.user_id));
+                this.$router.push("/users")
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "remove-user")),
+                    { id: "remove-user" }
+                )
+            }
         }
     }
 });

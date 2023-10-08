@@ -2,7 +2,10 @@
 import { defineComponent, ref } from 'vue';
 import { criar_veiculo } from '@/controllers/veiculo';
 import { listar_modelos } from '@/controllers/modelo';
+import { getLocalisedMessage } from '@/utils';
+import { useToast } from "vue-toastification";
 const modelos = ref<any[] | []>([]);
+const toast = useToast();
 export default defineComponent({
     name: 'CadastroVeiculo',
     emits: ['EnviarFormulario'],
@@ -21,18 +24,56 @@ export default defineComponent({
     },
     methods: {
         async RetornarModelos() {
-            this.modelos = (await listar_modelos()).map((item) => ({ title: item.nome, value: item.id }));
+            try {
+                this.modelos = (await listar_modelos()).map((item) => ({ title: item.nome, value: item.id }));
+            } catch (err) {
+                console.log(err);
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-models")),
+                    { id: "return-models" }
+                )
+            }
         },
         async EnviarFormulario(event: any) {
-            event.preventDefault();
-            await criar_veiculo({
-                ano: Number(this.ano),
-                cor: this.cor,
-                placa: this.placa,
-                tipo: this.tipo,
-                modelo_id: this.modelo,
-            });
-            this.$router.push('/veiculo')
+            try {
+                event.preventDefault();
+                await criar_veiculo({
+                    ano: Number(this.ano),
+                    cor: this.cor,
+                    placa: this.placa,
+                    tipo: this.tipo,
+                    modelo_id: this.modelo,
+                });
+                this.$router.push('/veiculo')
+            } catch (err) {
+                console.log(err);
+                if ((err as String).includes("NOT NULL constraint failed: veiculo.cor (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-color-create-vehicle")),
+                        { id: "not-null-color-create-vehicle" }
+                    )
+                } else if ((err as String).includes("NOT NULL constraint failed: veiculo.tipo (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-type-create-vehicle")),
+                        { id: "not-null-type-create-vehicle" }
+                    )
+                } else if ((err as String).includes("NOT NULL constraint failed: veiculo.modelo_id (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-model-create-vehicle")),
+                        { id: "not-null-model-create-vehicle" }
+                    )
+                } else if ((err as String).includes("UNIQUE constraint failed: veiculo.placa (code 19)")) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-unique-name-create-vehicle")),
+                        { id: "not-unique-name-create-vehicle" }
+                    )
+                } else {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "create-vehicle")),
+                        { id: "create-vehicle" }
+                    )
+                }
+            }
         }
     }
 });
@@ -97,7 +138,7 @@ export default defineComponent({
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
                         <button type="submit" class="btn btn-warning w-100">
-                            {{ $t("general.index.register-vehicle") }}
+                            {{ $t("vehicles.add.register-vehicle") }}
                         </button>
                     </div>
                 </div>

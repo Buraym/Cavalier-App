@@ -106,13 +106,13 @@
   "movimentation": {
     "list": {
       "table-id-header": "ID",
-      "table-driver-name-header": "Condutor",
-      "table-vehicle-name-header": "Veículo",
-      "table-enter-time-header": "Entrada",
-      "table-exit-time-header": "Saída",
-      "table-hourly-value-header": "Valor Hora",
-      "table-total-value-header": "Valor Total",
-      "register-new": "Cadastrar nova Movimentação"
+      "table-driver-name-header": "Driver",
+      "table-vehicle-name-header": "Vehicle",
+      "table-enter-time-header": "Enter time",
+      "table-exit-time-header": "Leave time",
+      "table-hourly-value-header": "Hour value",
+      "table-total-value-header": "Total value",
+      "register-new": "Register new Movimentation"
     },
     "add": {
       "movimentation-registration": "Movimentation Registration",
@@ -288,6 +288,7 @@
   "error": {
     "index": {
       "return-parking-spaces": "Erro ao retornar vaga(s) de estacionamento !",
+      "return-config-parking-spaces": "Erro ao retornar configuração do estacionamento !",
       "export-daily-movimentation": "Erro ao exportar reporte de Movimentações diarias !",
       "remove-movimentation-home": "Erro ao excluir vaga de estacionamento !",
       "finish-movimentation-parking": "Erro ao finalizar vaga !",
@@ -305,7 +306,41 @@
       "not-null-brand-create-model": "Selecione a marca deste modelo !",
       "create-model": "Erro ao criar modelo !",
       "return-model": "Erro ao retornar modelo !",
-      "edit-model": "Erro ao editar modelo !"
+      "edit-model": "Erro ao editar modelo !",
+
+      "return-vehicles": "Erro ao retornar veículo(s) !",
+      "remove-vehicle": "Erro ao excluir veículo !",
+      "not-unique-name-create-vehicle": "Veículo com esta placa já existe !",
+      "not-null-model-create-vehicle": "Selecione o modelo deste veículo !",
+      "not-null-color-create-vehicle": "Selecione a cor deste veículo !",
+      "not-null-type-create-vehicle": "Selecione o tipo deste veículo !",
+      "create-vehicle": "Erro ao criar veículo !",
+      "return-vehicle": "Erro ao retornar veículo !",
+      "edit-vehicle": "Erro ao editar veículo !",
+
+      "return-drivers": "Erro ao retornar condutor(es) !",
+      "remove-driver": "Erro ao excluir condutor !",
+      "not-unique-cpf-create-driver": "Condutor com este mesmo CPF já existe !",
+      "create-driver": "Erro ao criar condutor !",
+      "return-driver": "Erro ao retornar condutor !",
+      "edit-driver": "Erro ao editar condutor !",
+
+      "return-movimentations": "Erro ao retornar movimentação(ões) !",
+      "return-config-movimentations": "Erro ao retornar configuração das movimentações !",
+      "remove-movimentation": "Erro ao excluir movimentação !",
+      "not-null-driver-create-vehicle": "Selecione o condutor do veículo !",
+      "not-null-vehicle-create-vehicle": "Selecione o veículo do condutor !",
+      "invalid-entry-create-vehicle": "Selecione os horarios de entrada e saída que sejam válidos !",
+      "create-movimentation": "Erro ao criar movimentação !",
+      "return-movimentation": "Erro ao retornar movimentação !",
+      "edit-movimentation": "Erro ao editar movimentação !",
+
+      "return-users": "Erro ao retornar usuário(s) !",
+      "remove-user": "Erro ao excluir usuário !",
+      "switch-auth-user": "Erro ao trocar usuário !",
+
+      "return-reports": "Erro ao retornar reporte(s) !",
+      "redownload-reports": "Erro ao fazer download de arquivo !"
     }
   }
 }

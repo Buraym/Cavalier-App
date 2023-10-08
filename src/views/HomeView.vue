@@ -72,39 +72,46 @@ export default defineComponent({
   },
   methods: {
     async RetornarConfiguracao() {
-      this.config = await retornar_configuracao();
-      if (String(this.$i18n.locale) !== "pt") {
-        this.columns = [
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-id-header")),
-            field: "main.index.table-id-header"
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-name-header")),
-            field: "main.index.table-name-header"
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-cpf-header")),
-            field: "main.index.table-cpf-header"
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-vehicle-header")),
-            field: "main.index.table-vehicle-header",
-            is_link: true
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-entertime-header")),
-            field: "main.index.table-entertime-header"
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-leavetime-header")),
-            field: "main.index.table-leavetime-header"
-          },
-          {
-            label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "main.index.table-total-value")),
-            field: "main.index.table-total-value"
-          }
-        ]
+      try {
+        this.config = await retornar_configuracao();
+        if (String(this.$i18n.locale) !== "pt") {
+          this.columns = [
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-id-header")),
+              field: "main.index.table-id-header"
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-name-header")),
+              field: "main.index.table-name-header"
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-cpf-header")),
+              field: "main.index.table-cpf-header"
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-vehicle-header")),
+              field: "main.index.table-vehicle-header",
+              is_link: true
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-entertime-header")),
+              field: "main.index.table-entertime-header"
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "table-leavetime-header")),
+              field: "main.index.table-leavetime-header"
+            },
+            {
+              label: String(getLocalisedMessage(String(this.$i18n.locale), "main", "index", "main.index.table-total-value")),
+              field: "main.index.table-total-value"
+            }
+          ]
+        }
+      } catch (err) {
+        toast.error(
+          String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-config-parking-spaces")),
+          { id: "return-config-parking-spaces" }
+        )
       }
     },
     async RetornarVagas() {
