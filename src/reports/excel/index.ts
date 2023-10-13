@@ -381,7 +381,7 @@ export async function ExportDailyMovimentations(locale: any, data: any, will_cre
           }
         },
         {
-          v: `R$ ${total}`, t: "s",
+          v: `${total}`, t: "s",
           s: {
             border: {
               left: {

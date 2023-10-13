@@ -274,6 +274,7 @@ export async function init_db() {
             gerar_desconto BOOLEAN,
             inicio_expediente TEXT,
             tempo_de_desconto TEXT,
+            moeda VARCHAR(50) NOT NULL CHECK (moeda IN ('ars', 'brl', 'pyg', 'usd')),
             tempo_para_desconto TEXT,
             vagas_carro INTEGER,
             vagas_moto INTEGER,
@@ -300,9 +301,10 @@ export async function init_db() {
             vagas_moto,
             vagas_van,
             valor_hora,
-            valor_minuto_hora
+            valor_minuto_hora,
+            moeda
         )
-        SELECT 1, 1, NULL, DATE('now'), TIME('18:00:00'), 1, TIME('09:00:00'), TIME('01:00:00'), TIME('00:30:00'), 10, 5, 2, 15.50, 0.25
+        SELECT 1, 1, NULL, DATE('now'), TIME('18:00:00'), 1, TIME('09:00:00'), TIME('01:00:00'), TIME('00:30:00'), 10, 5, 2, 15.50, 0.25, 'brl'
         WHERE NOT EXISTS (SELECT 1 FROM configuracao);
 
         CREATE TABLE IF NOT EXISTS usuario

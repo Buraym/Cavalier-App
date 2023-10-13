@@ -66,9 +66,9 @@ export default defineComponent({
   components: {
     Table
   },
-  mounted() {
-    this.RetornarConfiguracao();
-    this.RetornarVagas();
+  async mounted() {
+    await this.RetornarConfiguracao();
+    await this.RetornarVagas();
   },
   methods: {
     async RetornarConfiguracao() {
@@ -116,6 +116,14 @@ export default defineComponent({
     },
     async RetornarVagas() {
       try {
+        const currencies = {
+          "ARS": "es-AR",
+          "PYG": "es-PY",
+          "USD": "en-US",
+          "BRL": "pt-BR",
+        }
+        // @ts-ignore
+        const formatter = new Intl.NumberFormat(currencies[String(this.config.moeda).toUpperCase()], { style: 'currency', currency: String(this.config.moeda).toUpperCase() })
         const list = await listar_movimentacoes();
         this.OldMovimentations = list.filter((item: any) =>
           item.ativo && item.saida &&
@@ -135,7 +143,8 @@ export default defineComponent({
           saida: item.saida ? format(new Date(
             item.saida
           ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
-          valor_total: "R$ " + Number(item.valor_total).toFixed(2)
+          // @ts-ignore
+          valor_total: formatter.format(Number(item.valor_total))
         }));
         this.UsedParkingSpots = list.filter((item: any) =>
           item.ativo &&
@@ -167,6 +176,7 @@ export default defineComponent({
           placa: item.veiculo.placa
         }));
       } catch (err) {
+        console.log(err);
         toast.error(
           String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-parking-spaces")),
           { id: "return-parking-spaces" }
@@ -237,6 +247,14 @@ export default defineComponent({
     },
     async ExportReportExcel() {
       try {
+        const currencies = {
+          "ARS": "es-AR",
+          "PYG": "es-PY",
+          "USD": "en-US",
+          "BRL": "pt-BR",
+        }
+        // @ts-ignore
+        const formatter = new Intl.NumberFormat(currencies[String(this.config.moeda).toUpperCase()], { style: 'currency', currency: String(this.config.moeda).toUpperCase() })
         const totalDayValue = await get_total_day_value();
         await ExportDailyMovimentations(
           {
@@ -380,7 +398,8 @@ export default defineComponent({
                   }
                 },
                 {
-                  v: String(item.valor_total), t: "s",
+                  // @ts-ignore
+                  v: formatter.format(Number(item.valor_total)), t: "s",
                   s: {
                     border: {
                       left: {
@@ -405,7 +424,8 @@ export default defineComponent({
                 },
               ];
             }),
-            total: Number(totalDayValue).toFixed(2),
+            // @ts-ignore
+            total: formatter.format(Number(totalDayValue)),
           },
           true
         );

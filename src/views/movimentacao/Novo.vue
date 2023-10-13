@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { CalcTotalTime } from '@/utils';
 import { getLocalisedMessage } from '@/utils';
 import { useToast } from "vue-toastification";
+
 const condutores = ref<any[] | []>([]);
 const veiculos = ref<any[] | []>([]);
 const toast = useToast();

@@ -52,12 +52,11 @@ export default defineComponent({
                 this.total_drivers = String(
                     list_driver_id.filter((id, index) => list_driver_id.indexOf(id) === index).length
                 );
-                this.total_value = String(
-                    data.reduce((acc, curr) => {
+                this.total_value =
+                    Number(data.reduce((acc, curr) => {
                         acc += Number(curr.valor_total);
                         return acc;
-                    }, 0)
-                );
+                    }, 0)).toFixed(2);
             } catch (err) {
                 toast.error(
                     String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-movimentations")),
@@ -128,7 +127,7 @@ export default defineComponent({
                                 </li>
                                 <li class="text-start">
                                     <p class="mb-0">
-                                        <strong>R$ {{ total_value }}</strong>
+                                        <strong>{{ total_value }}</strong>
                                         {{ $t("reports.index.total-ammount") }}
                                     </p>
                                 </li>

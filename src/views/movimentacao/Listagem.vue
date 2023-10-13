@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { deletar_movimentacao, listar_movimentacoes_paginated } from '@/controllers/movimentacao';
 import { getLocalisedMessage } from '@/utils';
 import { useToast } from "vue-toastification";
-
+import { retornar_configuracao } from '@/controllers/configuracao';
 const listHeaderTopics: any[] = [
     {
         label: "ID",
@@ -39,10 +39,12 @@ const listHeaderTopics: any[] = [
 ]
 const data = ref<any[] | []>([]);
 const toast = useToast();
+let config = ref<any>(null);
 export default defineComponent({
     name: 'ListagemMovimentacao',
     data: () => {
         return {
+            config,
             data,
             items: 1,
             page: 1,
@@ -55,13 +57,24 @@ export default defineComponent({
         Table,
         Pagination
     },
-    mounted() {
-        this.ListagemDeItens(this.page, this.perPage);
-        this.updateColumnHeadersLocalization();
+    async mounted() {
+        await this.updateColumnHeadersLocalization();
+        await this.ListagemDeItens(this.page, this.perPage);
     },
     methods: {
         async ListagemDeItens(page: Number, perPage: Number) {
             try {
+                const currencies = {
+                    "ARS": "es-AR",
+                    "PYG": "es-PY",
+                    "USD": "en-US",
+                    "BRL": "pt-BR",
+                }
+                const formatter = new Intl.NumberFormat(
+                    // @ts-ignore
+                    currencies[String(this.config.moeda).toUpperCase()],
+                    { style: 'currency', currency: String(this.config.moeda).toUpperCase() }
+                );
                 const response = await listar_movimentacoes_paginated(page, perPage);
                 this.pages = Number(response.totalPages);
                 this.items = Number(response.totalItems);
@@ -79,8 +92,8 @@ export default defineComponent({
                     saida: item.saida ? format(new Date(
                         item.saida
                     ), "dd/MM/yyyy - HH:mm") : "Sem saída",
-                    valor_hora: "R$ " + Number(item.valor_hora).toFixed(2),
-                    valor_total: "R$ " + Number(item.valor_total).toFixed(2),
+                    valor_hora: formatter.format(Number(item.valor_hora)),
+                    valor_total: formatter.format(Number(item.valor_total)),
                 }));
                 if (page) {
                     this.page = Number(page);
@@ -92,7 +105,8 @@ export default defineComponent({
                 )
             }
         },
-        updateColumnHeadersLocalization() {
+        async updateColumnHeadersLocalization() {
+            this.config = await retornar_configuracao();
             if (String(this.$i18n.locale) !== "pt") {
                 this.columns = [
                     {

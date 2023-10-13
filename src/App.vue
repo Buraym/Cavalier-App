@@ -30,8 +30,10 @@ export default defineComponent({
       <div v-bind:class="{ closed: !sidebarOpened }" class="col-sm-sidebar bg-light sticky-top p-3">
         <div class="d-flex flex-column flex-nowrap bg-light justify-content-end align-items-center sticky-top h-100">
           <!-- MAIN APP PAGE LINK -->
-          <router-link to="/" class="mb-4 router-link">
-            <img src="./assets/logo.png" alt="Logo">
+          <router-link to="/" class="mb-2 router-link">
+            <!-- <i class="bi bi-house-fill"></i> -->
+            <i class="bi bi-p-square-fill"></i>
+            <!-- <img src="./assets/logo.png" alt="Logo"> -->
           </router-link>
           <!-- TOPICS PAGES LINKS -->
           <ul
