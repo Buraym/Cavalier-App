@@ -144,7 +144,7 @@ export default defineComponent({
             item.saida
           ), 'dd/MM/yyyy - HH:mm') : "Sem saída",
           // @ts-ignore
-          valor_total: formatter.format(this.config.moeda === "pyg" ? Number(item.valor_total) * 1000 : Number(item.valor_total))
+          valor_total: formatter.format(Number(item.valor_total))
         }));
         this.UsedParkingSpots = list.filter((item: any) =>
           item.ativo &&

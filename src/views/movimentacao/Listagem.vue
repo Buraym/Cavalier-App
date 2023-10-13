@@ -92,8 +92,8 @@ export default defineComponent({
                     saida: item.saida ? format(new Date(
                         item.saida
                     ), "dd/MM/yyyy - HH:mm") : "Sem saída",
-                    valor_hora: formatter.format(this.config.moeda === "pyg" ? Number(item.valor_hora) * 1000 : Number(item.valor_hora)),
-                    valor_total: formatter.format(this.config.moeda === "pyg" ? Number(item.valor_total) * 1000 : Number(item.valor_total)),
+                    valor_hora: formatter.format(Number(item.valor_hora)),
+                    valor_total: formatter.format(Number(item.valor_total)),
                 }));
                 if (page) {
                     this.page = Number(page);
