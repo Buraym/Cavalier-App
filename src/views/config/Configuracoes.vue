@@ -6,12 +6,12 @@ import { getLocalisedMessage } from '@/utils';
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
-
 export default defineComponent({
     name: 'Configuracoes',
     emits: ["EnviarFormulario"],
     data: () => {
         return {
+            moeda: "brl",
             vagasCarro: "10",
             vagasMoto: "5",
             vagasVan: "2",
@@ -42,6 +42,7 @@ export default defineComponent({
                 this.gerarDesconto = configuracao.gerar_desconto ? true : false;
                 this.tempoParaDesconto = configuracao.tempo_para_desconto;
                 this.tempoDeDesconto = configuracao.tempo_de_desconto;
+                this.moeda = configuracao.moeda;
             } catch (err) {
                 toast.error(
                     String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-config")),
@@ -63,7 +64,8 @@ export default defineComponent({
                     fim_expediente: this.fimExpediente,
                     gerar_desconto: this.gerarDesconto,
                     tempo_para_desconto: this.tempoParaDesconto,
-                    tempo_de_desconto: this.tempoDeDesconto
+                    tempo_de_desconto: this.tempoDeDesconto,
+                    moeda: this.moeda
                 });
                 this.$router.push("/");
             } catch (err) {
@@ -72,7 +74,6 @@ export default defineComponent({
                     { id: "update-config" }
                 )
             }
-
         }
     }
 });
@@ -105,6 +106,17 @@ export default defineComponent({
                     <span class="input-group-text">{{ $t("config.index.minute-time") }}</span>
                     <input type="number" v-model="valorMinutoHora" step="0.01" class="form-control"
                         :placeholder='$t("config.index.minute-time")' :aria-label='$t("config.index.minute-time")'>
+                </div>
+                <div class="input-group m-0">
+                    <label class="input-group-text" for="inputGroupSelect01">
+                        {{ $t("config.index.currency-chosen") }}
+                    </label>
+                    <select v-model="moeda" class="form-select" required>
+                        <option value="brl">{{ $t("config.index.currency-brl") }}</option>
+                        <option value="ars">{{ $t("config.index.currency-ars") }}</option>
+                        <option value="pyg">{{ $t("config.index.currency-pyg") }}</option>
+                        <option value="usd">{{ $t("config.index.currency-usd") }}</option>
+                    </select>
                 </div>
                 <!-- <div class="input-group m-0">
                     <span class="input-group-text">Inicio do expediente</span>

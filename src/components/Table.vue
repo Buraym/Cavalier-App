@@ -48,7 +48,7 @@ export default defineComponent({
                     <th class="text-end">
                         <button class='btn btn-outline-primary' v-if="exportFunction"
                             @click="exportFunction && exportFunction()" :title="$t('general.index.export-excel')">
-                            <i class="bi bi-table"></i>
+                            <i class="bi bi-file-earmark-spreadsheet-fill"></i>
                         </button>
                     </th>
                 </tr>
