@@ -4,7 +4,7 @@ import SQLite from 'tauri-plugin-sqlite-api';
 
 // RETURN PAGINATED VEHICLES LIST
 export async function list_vehicles_paginated(page: Number, perPage: Number) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM veiculo
@@ -48,7 +48,7 @@ export async function list_vehicles_paginated(page: Number, perPage: Number) {
 
 // LISTAR VEICULOS
 export async function listar_veiculos() {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM veiculo;
@@ -84,7 +84,7 @@ export async function listar_veiculos() {
 
 // RETORNAR VEICULO
 export async function retornar_veiculo(id: string) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     let result = await db.select<Array<any>>(`
         SELECT *
         FROM veiculo
@@ -123,7 +123,7 @@ export async function retornar_veiculo(id: string) {
 
 // CRIAR VEICULO
 export async function criar_veiculo(veiculo: any) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     await db.execute(`
         INSERT INTO veiculo (ativo, atualizacao, cadastro, ano, cor, placa, tipo, modelo_id)
         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8);
@@ -133,7 +133,7 @@ export async function criar_veiculo(veiculo: any) {
 
 // EDITAR VEICULO
 export async function editar_veiculo(id: string, veiculo: any) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     await db.execute(`
         UPDATE veiculo
         SET placa = ?1, cor = ?2, ano = ?3, tipo = ?4, ativo = ?5, atualizacao = ?6
@@ -144,7 +144,7 @@ export async function editar_veiculo(id: string, veiculo: any) {
 
 // DELETAR VEICULO
 export async function deletar_veiculo(id: string) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     await db.execute(`
         DELETE FROM veiculo
         WHERE id = ?1;

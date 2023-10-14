@@ -1,8 +1,11 @@
+import { appDataDir, join, sep, BaseDirectory, appLocalDataDir } from '@tauri-apps/api/path'
+import { writeTextFile, writeBinaryFile, exists } from '@tauri-apps/api/fs';
 import SQLite from 'tauri-plugin-sqlite-api';
+// import fs from "fs";
 
 // INICIA O BANCO SE JÁ NÃO TIVER INICIADO
 export async function init_db() {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     await db.execute(`
         CREATE TABLE IF NOT EXISTS marca
         (
@@ -275,6 +278,8 @@ export async function init_db() {
             inicio_expediente TEXT,
             tempo_de_desconto TEXT,
             moeda VARCHAR(50) NOT NULL CHECK (moeda IN ('ars', 'brl', 'pyg', 'usd')),
+            backup_since TEXT,
+            backup_folder TEXT,
             tempo_para_desconto TEXT,
             vagas_carro INTEGER,
             vagas_moto INTEGER,
@@ -302,9 +307,11 @@ export async function init_db() {
             vagas_van,
             valor_hora,
             valor_minuto_hora,
-            moeda
+            moeda,
+            backup_since,
+            backup_folder
         )
-        SELECT 1, 1, NULL, DATE('now'), TIME('18:00:00'), 1, TIME('09:00:00'), TIME('01:00:00'), TIME('00:30:00'), 10, 5, 2, 15.50, 0.25, 'brl'
+        SELECT 1, 1, NULL, DATE('now'), TIME('18:00:00'), 1, TIME('09:00:00'), TIME('01:00:00'), TIME('00:30:00'), 10, 5, 2, 15.50, 0.25, 'brl', NULL, NULL
         WHERE NOT EXISTS (SELECT 1 FROM configuracao);
 
         CREATE TABLE IF NOT EXISTS usuario
@@ -333,5 +340,62 @@ export async function init_db() {
             model VARCHAR(50) NOT NULL CHECK (model IN ('dailyMovimentations', 'monthlyMovimentations'))
         );
     `);
-    db.close();
+    await db.close();
+}
+
+export async function set_backup_folder(path: String) {
+    const db = await SQLite.open('../src/db/cavalier.db');
+    await db.execute("update configuracao SET backup_folder = ?1", [path]);
+    await db.close();
+}
+
+export async function backup_db() {
+    const db = await SQLite.open('../src/db/cavalier.db')
+    const brands = await db.select<any[] | []>(
+        "SELECT * FROM marca"
+    )
+    const models = await db.select<any[] | []>(
+        "SELECT * FROM modelo"
+    )
+    const vehicles = await db.select<any[] | []>(
+        "SELECT * FROM veiculo"
+    )
+    const drivers = await db.select<any[] | []>(
+        "SELECT * FROM condutor"
+    )
+    const movimentation = await db.select<any[] | []>(
+        "SELECT * FROM movimentacao"
+    )
+    const config = await db.select<any[] | []>(
+        "SELECT * FROM configuracao"
+    )
+    const reports = await db.select<any[] | []>(
+        "SELECT * FROM report"
+    )
+    let result:any = {
+        brands,
+        models,
+        vehicles,
+        drivers,
+        movimentation,
+        config,
+        reports,
+    };
+    console.log(result);
+    result =  JSON.stringify(result);
+    let appDataDirPath:  any = await appLocalDataDir();
+    // appDataDirPath = String(appDataDirPath)
+    // appDataDirPath.split(sep).filter((step) => step !== "").join(sep);
+    // console.log(appDataDirPath);
+    // if (exists())
+    // await writeTextFile({ path: `CAVALIER_BACKUP_${new Date().valueOf()}.json`, contents: result }, { dir: BaseDirectory })
+    return {
+        brands,
+        models,
+        vehicles,
+        drivers,
+        movimentation,
+        config,
+        reports,
+    }
 }

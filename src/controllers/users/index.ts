@@ -4,7 +4,7 @@ import SQLite from 'tauri-plugin-sqlite-api';
 // USERS
 // LIST USERS
 export async function list_users() {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     const results = await db.select<Array<any>>(`
         SELECT * FROM usuario;
     `);
@@ -13,7 +13,7 @@ export async function list_users() {
 
 // RETURN PAGINATED USERS LIST
 export async function list_users_paginated(page: Number, perPage: Number) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM usuario
@@ -32,7 +32,7 @@ export async function list_users_paginated(page: Number, perPage: Number) {
 
 // RETURN USERS
 export async function return_user(id: string) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     const result = await db.select<Array<any>>(`
         SELECT * FROM usuario WHERE id=?1;
     `, [id]);
@@ -42,7 +42,7 @@ export async function return_user(id: string) {
 
 // AUTHENTICATE  USER
 export async function auth_user(email: string, password: string, remember: boolean) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     const result = await db.select<Array<any>>(`
         SELECT * FROM usuario WHERE email LIKE ?1 AND password LIKE ?2;
     `, [email, password]);
@@ -60,7 +60,7 @@ export async function auth_user(email: string, password: string, remember: boole
 
 // CHECK IF THERE IS ANY ADMIN USER
 export async function check_admin_created() {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     const result = await db.select<Array<{ admin_count: Number }>>(`
         SELECT COUNT(*) AS admin_count
         FROM usuario
@@ -71,7 +71,7 @@ export async function check_admin_created() {
 
 // GET REMEMBERED LOGGED USER
 export async function get_logged_user() {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     const result = await db.select<Array<any>>(`
         SELECT * FROM usuario WHERE logged = 1 LIMIT 1;
     `);
@@ -81,7 +81,7 @@ export async function get_logged_user() {
 
 // LOG OUT USER FROM THE APP
 export async function logout_user() {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     await db.execute(`
             UPDATE usuario SET logged = 0;
         `);
@@ -89,7 +89,7 @@ export async function logout_user() {
 
 // CREATE USER
 export async function create_user(user: any) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     await db.execute(`
         INSERT INTO usuario (active, created_at, name, email, password, document, contact, role)
         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8);
@@ -104,7 +104,7 @@ export async function create_user(user: any) {
 
 // EDIT USER
 export async function edit_user(id: string, user: any) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     await db.execute(`
         UPDATE usuario
         SET name = ?1, active = ?2, updated_at = ?3,
@@ -116,7 +116,7 @@ export async function edit_user(id: string, user: any) {
 }
 
 export async function switch_user_role(id: string, role: 'admin' | 'user') {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     await db.execute(`
         UPDATE usuario
         SET role = ?1
@@ -127,7 +127,7 @@ export async function switch_user_role(id: string, role: 'admin' | 'user') {
 
 // DELETE USER
 export async function delete_user(id: string) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db')
     await db.execute(`
         DELETE FROM usuario
         WHERE id = ?1;

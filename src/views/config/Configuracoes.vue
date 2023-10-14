@@ -2,8 +2,11 @@
 import { defineComponent } from 'vue';
 import { format } from 'date-fns';
 import { editar_configuracao, retornar_configuracao } from '@/controllers/configuracao';
+import { open, message } from '@tauri-apps/api/dialog';
+import { downloadDir } from '@tauri-apps/api/path';
 import { getLocalisedMessage } from '@/utils';
 import { useToast } from "vue-toastification";
+import { set_backup_folder } from '@/utils/database';
 
 const toast = useToast();
 export default defineComponent({
@@ -23,6 +26,10 @@ export default defineComponent({
             tempoParaDesconto: "00:30:00",
             tempoDeDesconto: "01:00:00",
             ativo: true,
+            backup_since: "",
+            backup_folder: "",
+            backup_folder_warning: false,
+            backup_folder_warning_text: "",
         }
     },
     mounted() {
@@ -43,13 +50,24 @@ export default defineComponent({
                 this.tempoParaDesconto = configuracao.tempo_para_desconto;
                 this.tempoDeDesconto = configuracao.tempo_de_desconto;
                 this.moeda = configuracao.moeda;
+                this.backup_since =
+                    configuracao.backup_since ?
+                        format(new Date(configuracao.backup_since), "dd/MM/yyyy HH:mm") :
+                        String(getLocalisedMessage(String(this.$i18n.locale), "config", "index", "backup-since-never"))
+                if (configuracao.backup_folder === null) {
+                    toast.error(
+                        String(getLocalisedMessage(String(this.$i18n.locale), "config", "index", "undefined-backup-folder")),
+                        { id: "undefined-backup-folder", timeout: false }
+                    )
+                } else {
+                    this.backup_folder = configuracao.backup_folder;
+                }
             } catch (err) {
                 toast.error(
                     String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-config")),
                     { id: "return-config" }
                 )
             }
-
         },
         async EnviarFormulario(event: any) {
             try {
@@ -74,6 +92,29 @@ export default defineComponent({
                     { id: "update-config" }
                 )
             }
+        },
+        async UpdateBackupFolderLocation() {
+            try {
+                const path = String(this.backup_folder) !== "" ? String(this.backup_folder) : await downloadDir();
+                const selected = await open({
+                    directory: true,
+                    multiple: false,
+                    title: String(getLocalisedMessage(String(this.$i18n.locale), "config", "index", "update-backup-dialog-title")),
+                    defaultPath: path
+                });
+                if (selected !== null) {
+                    await set_backup_folder(String(selected));
+                    this.backup_folder_warning = false;
+                    this.backup_folder = String(selected);
+                    console.log(selected);
+                }
+            } catch (err) {
+                toast.error(
+                    String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "update-backup-folder")),
+                    { id: "update-backup-folder" }
+                )
+            }
+
         }
     }
 });
@@ -81,7 +122,7 @@ export default defineComponent({
 <template>
     <div class="px-5">
         <form @submit="EnviarFormulario" class="container">
-            <h4 class="text-start mb-3  mt-5">{{ $t("config.index.main-title") }}s</h4>
+            <h4 class="text-start mb-3  mt-5">{{ $t("config.index.main-title") }}</h4>
             <div class="d-flex w-100 align-items-center justify-content-center gap-3 mb-3">
                 <div class="input-group m-0">
                     <span class="input-group-text">{{ $t("config.index.car-vacancies-qty") }}</span>
@@ -96,7 +137,7 @@ export default defineComponent({
                     <input type="number" v-model="vagasVan" class="form-control">
                 </div>
             </div>
-            <div class="d-flex w-100 align-items-center justify-content-center gap-3 mb-3">
+            <div class="d-flex w-100 justify-content-center align-items-center gap-3 mb-3">
                 <div class="input-group m-0">
                     <span class="input-group-text">{{ $t("config.index.hourly-time") }}</span>
                     <input type="number" v-model="valorHora" step="0.01" class="form-control"
@@ -129,7 +170,28 @@ export default defineComponent({
                         aria-label="Fim do expediente">
                 </div> -->
             </div>
-            <button type="submit" class="btn btn-warning w-100">{{ $t("config.index.save-changes") }}</button>
+            <div class="d-flex w-100 justify-content-between align-items-center flex-wrap gap-2 mb-5">
+                <div class="d-flex text-start justify-content-center align-items-center">
+                    <p v-if="String(backup_folder) !== ''" class="mt-1" :title="$t('config.index.backup-since-info')">
+                        {{ $t("config.index.saved-backup-folder-path") }}<br>{{ backup_folder }}
+                    </p>
+                </div>
+                <div class="d-flex justify-content-center align-items-center gap-2">
+                    <h5 class="mt-1" :title="$t('config.index.backup-since-info')">
+                        {{ $t("config.index.backup-since") }}
+                        <span class="badge text-bg-warning">{{ backup_since }}</span>
+                    </h5>
+                    <button type="button" :title="$t('config.index.backup-folder-path')"
+                        v-bind:class="{ 'btn-danger': backup_folder_warning, 'btn-warning': !backup_folder_warning }"
+                        class="btn" @click="async () => await UpdateBackupFolderLocation()">
+                        <i class="bi bi-folder-fill"></i>
+                    </button>
+                </div>
+
+            </div>
+            <button type="submit" class="btn btn-warning w-100">
+                {{ $t("config.index.save-changes") }}
+            </button>
         </form>
     </div>
 </template>

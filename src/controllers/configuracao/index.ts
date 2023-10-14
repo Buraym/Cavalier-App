@@ -3,7 +3,7 @@ import SQLite from 'tauri-plugin-sqlite-api';
 // CONFIGURACOES
 // RETORNAR CONFIGURACAO
 export async function retornar_configuracao() {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     const result = await db.select<Array<any>>(`
         SELECT *
         FROM configuracao
@@ -15,7 +15,7 @@ export async function retornar_configuracao() {
 
 // CRIAR CONFIGURACAO
 export async function criar_configuracao(configuracao: any) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     await db.execute(`
         INSERT INTO configuracao (id, ativo, atualizacao, cadastro, fim_expediente, gerar_desconto, inicio_expediente,
         tempo_de_desconto, tempo_para_desconto, vagas_carro, vagas_moto, vagas_van, valor_hora, valor_minuto_hora)
@@ -29,7 +29,7 @@ export async function criar_configuracao(configuracao: any) {
 
 // EDITAR CONFIGURACAO
 export async function editar_configuracao(configuracao: any) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     await db.execute(`
         UPDATE configuracao
         SET ativo = ?1, atualizacao = ?2, fim_expediente = ?3, gerar_desconto = ?4, inicio_expediente = ?5,

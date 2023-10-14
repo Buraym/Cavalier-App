@@ -4,7 +4,7 @@ import SQLite from 'tauri-plugin-sqlite-api';
 
 // RETURN PAGINATED REPORTS LIST
 export async function list_reports_paginated(page: Number, perPage: Number) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM report
@@ -23,7 +23,7 @@ export async function list_reports_paginated(page: Number, perPage: Number) {
 
 // LIST REPORTS
 export async function list_reports() {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     const results = await db.select<Array<any>>(`
         SELECT * FROM report;
     `);
@@ -32,7 +32,7 @@ export async function list_reports() {
 
 // LIST MONTHLY REPORTS
 export async function list_monthly_reports() {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     const results = await db.select<Array<any>>(`
         SELECT * FROM report
         WHERE created_at >= DATE('now', 'start of month')
@@ -44,7 +44,7 @@ export async function list_monthly_reports() {
 
 // RETURN REPORT
 export async function return_report(id: string) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     const result = await db.select<Array<any>>(`
         SELECT * FROM report WHERE id=?1;
     `, [id]);
@@ -54,7 +54,7 @@ export async function return_report(id: string) {
 
 // CREATE REPORT
 export async function create_report(report: any) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     await db.execute(`
         INSERT INTO report (active, created_at, link, format, model, file_data)
         VALUES (?1, ?2, ?3, ?4, ?5, ?6)
@@ -64,7 +64,7 @@ export async function create_report(report: any) {
 
 // DELETE REPORT
 export async function delete_report(id: string) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     await db.execute(`
         DELETE FROM report
         WHERE id = ?1;

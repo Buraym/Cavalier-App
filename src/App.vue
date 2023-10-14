@@ -1,13 +1,19 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useUsersStore } from '@/stores/index'
+import { format } from 'date-fns';
+import { backup_db } from './utils/database';
 export default defineComponent({
   name: "App",
   data() {
     return {
       sidebarOpened: true,
-      usersStore: useUsersStore()
+      usersStore: useUsersStore(),
+      backup_since: "",
     }
+  },
+  async mounted() {
+    await this.backupData();
   },
   methods: {
     switchLocale() {
@@ -19,6 +25,16 @@ export default defineComponent({
         this.$i18n.locale = "pt"
       } else {
         this.$i18n.locale = "en"
+      }
+    },
+    async backupData() {
+      console.log(this.backup_since)
+      const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+      while (true) {
+        this.backup_since = format(new Date(), "dd/MM/yyyy HH:mm");
+        // console.log((await backup_db()));
+        await sleep(1000 * 60 * 10);
+        console.log(this.backup_since)
       }
     }
   }
