@@ -4,7 +4,7 @@ import SQLite from 'tauri-plugin-sqlite-api';
 
 // RETURN PAGINATED MODELS LIST
 export async function list_models_paginated(page: Number, perPage: Number) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM modelo
@@ -35,7 +35,7 @@ export async function list_models_paginated(page: Number, perPage: Number) {
 
 // LISTAR MODELOS
 export async function listar_modelos() {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     let results = await db.select<Array<any>>(`
         SELECT *
         FROM modelo;
@@ -58,7 +58,7 @@ export async function listar_modelos() {
 
 // RETORNAR MODELO
 export async function retornar_modelo(id: string) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     let result = await db.select<Array<any>>(`
         SELECT * FROM modelo WHERE id=?1;
     `, [id]);
@@ -81,7 +81,7 @@ export async function retornar_modelo(id: string) {
 
 // CRIAR MODELO
 export async function criar_modelo(modelo: any) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     await db.execute(`
         INSERT INTO modelo (ativo, atualizacao, cadastro, nome, marca_id)
         VALUES (?1, ?2, ?3, ?4, ?5)
@@ -91,7 +91,7 @@ export async function criar_modelo(modelo: any) {
 
 // EDITAR MODELO
 export async function editar_modelo(id: string, modelo: any) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     await db.execute(`
         UPDATE modelo
         SET nome = ?1, ativo = ?2, marca_id = ?3, atualizacao = ?4
@@ -102,7 +102,7 @@ export async function editar_modelo(id: string, modelo: any) {
 
 // DELETAR MODELO
 export async function deletar_modelo(id: string) {
-    const db = await SQLite.open('./cavalier.db');
+    const db = await SQLite.open('../src/db/cavalier.db');
     await db.execute(`
         DELETE FROM modelo
         WHERE id = ?1;

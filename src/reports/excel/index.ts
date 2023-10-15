@@ -17,7 +17,6 @@ export async function ExportDailyMovimentations(locale: any, data: any, will_cre
     const selected = await save({
       title: locale['file-to'],
       filters,
-
     });
     if(!selected) throw new Error(locale['no-file-selected']);
     const { date, total, movimentations } = data;

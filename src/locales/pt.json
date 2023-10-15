@@ -60,6 +60,13 @@
       "currency-ars": "Peso ($)",
       "currency-pyg": "Guarani (₲)",
       "currency-usd": "Dólar (US$)",
+      "backup-since": "Informações salvas até: ",
+      "backup-since-info": "O app salva um arquivo de restauração, caso dê algum problema de corrupção de pastas e/ou arquivos, provendo assim uma melhor segurança para nossos clientes.",
+      "backup-since-never": "Nunca",
+      "backup-folder-path": "Clique para abrir na pasta de armazenamento de backup.",
+      "update-backup-dialog-title": "Local de armazenamento de arquivos de backup",
+      "undefined-backup-folder": "Aviso: Pasta de arquivos de backup não definida ! Defina imediatamente uma pasta para caso haja algum imprevisto ou corrompa algum relatório e/ou informação(ões) importantes !",
+      "saved-backup-folder-path": "Local de armazenamento: ",
       "save-changes": "Salvar mudanças"
     }
   },
@@ -349,7 +356,8 @@
       "redownload-reports": "Erro ao fazer download de arquivo !",
 
       "return-config": "Erro ao retornar configuração !",
-      "update-config": "Erro ao atualizar configuração !"
+      "update-config": "Erro ao atualizar configuração !",
+      "update-backup-folder": "Erro ao atualizar caminho de pasta de Backup do app !"
     }
   },
   "warning": {

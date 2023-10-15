@@ -60,6 +60,13 @@
       "currency-ars": "Peso ($)",
       "currency-pyg": "Guarani (₲)",
       "currency-usd": "Dolar (US$)",
+      "backup-since": "Information saved until:",
+      "backup-since-info": "The app saves a restoration file, in case there is a problem with folder and/or file corruption, thus providing better security for our customers.",
+      "backup-since-never": "Never",
+      "backup-folder-path": "Click to open the backup storage folder.",
+      "update-backup-dialog-title": "Backup file storage location",
+      "undefined-backup-folder": "Warning: Backup file folder not defined! Immediately define a folder in case there is something unforeseen or a report and/or important information is corrupted!",
+      "saved-backup-folder-path": "Local de armazenamento: ",
       "save-changes": "Save changes"
     }
   },
@@ -350,7 +357,8 @@
       "redownload-reports": "Error redownloading file!",
 
       "return-config": "Error returning configuration!",
-      "update-config": "Error updating configuration!"
+      "update-config": "Error updating configuration!",
+      "update-backup-folder": "Error updating app Backup folder path !"
     }
   },
   "warning": {

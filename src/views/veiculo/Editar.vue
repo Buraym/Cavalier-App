@@ -33,7 +33,6 @@ export default defineComponent({
             try {
                 this.modelos = (await listar_modelos()).map((item) => ({ title: item.nome, value: item.id }));
             } catch (err) {
-                console.log(err);
                 toast.error(
                     String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-models")),
                     { id: "return-models" }
@@ -54,7 +53,6 @@ export default defineComponent({
                     this.data_atualizado = format(new Date(veiculo.atualizacao), "dd/MM/yyyy HH:mm")
                 }
             } catch (err) {
-                console.log(err);
                 toast.error(
                     String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-vehicle")),
                     { id: "return-vehicle" }
@@ -74,7 +72,6 @@ export default defineComponent({
                 });
                 this.$router.push("/veiculo");
             } catch (err) {
-                console.log(err);
                 if ((err as String).includes("NOT NULL constraint failed: veiculo.cor (code 19)")) {
                     toast.error(
                         String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-null-color-create-vehicle")),

@@ -8,7 +8,6 @@ import { createPinia } from "pinia"
 import App from './App.vue'
 import router from './router';
 import Toast, { POSITION, PluginOptions } from "vue-toastification"
-// Import the CSS or use your own!
 import "vue-toastification/dist/index.css";
 
 const i18n = createI18n({

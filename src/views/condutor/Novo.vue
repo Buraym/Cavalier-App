@@ -31,7 +31,6 @@ export default defineComponent({
                 })
                 this.$router.push("/condutor");
             } catch (err) {
-                console.log(err);
                 if ((err as String).includes("UNIQUE constraint failed: condutor.cpf (code 19)")) {
                     toast.error(
                         String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "not-unique-cpf-create-driver")),

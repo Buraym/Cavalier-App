@@ -60,6 +60,13 @@
       "currency-ars": "Peso ($)",
       "currency-pyg": "Guaraní (₲)",
       "currency-usd": "Dólar (US$)",
+      "backup-since": "Información guardada hasta: ",
+      "backup-since-info": "La aplicación guarda un archivo de restauración, en caso de que haya un problema con la corrupción de carpetas y/o archivos, brindando así una mayor seguridad a nuestros clientes.",
+      "backup-since-never": "Nunca",
+      "backup-folder-path": "Haga clic para abrir la carpeta de almacenamiento de respaldo.",
+      "update-backup-dialog-title": "Ubicación de almacenamiento del archivo de respaldo",
+      "undefined-backup-folder": "Advertencia: ¡La carpeta del archivo de copia de seguridad no está definida! ¡Defina inmediatamente una carpeta en caso de que haya algún imprevisto o un informe y/o información importante esté dañada!",
+      "saved-backup-folder-path": "Local de armazenamento: ",
       "save-changes": "Guardar cambios"
     }
   },
@@ -351,7 +358,8 @@
       "redownload-reports": "Error al volver a descargar el archivo!",
 
       "return-config": "Error al devolver configuración!",
-      "update-config": "Error al actualizar la configuración!"
+      "update-config": "Error al actualizar la configuración!",
+      "update-backup-folder": "Error al actualizar la ruta de la carpeta de respaldo de la aplicación !"
     }
   },
   "warning": {
