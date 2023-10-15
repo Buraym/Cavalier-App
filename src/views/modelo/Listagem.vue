@@ -53,7 +53,6 @@ export default defineComponent({
                 const response = await list_models_paginated(page, perPage);
                 this.pages = Number(response.totalPages);
                 this.items = Number(response.totalItems);
-                console.log(response);
                 this.data = response?.results?.map((item) => ({
                     id: item.id,
                     nome: item.nome,
@@ -63,7 +62,6 @@ export default defineComponent({
                     this.page = Number(page);
                 }
             } catch (err) {
-                console.log(err);
                 toast.error(
                     String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-models")),
                     { id: "return-models" }

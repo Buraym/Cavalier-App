@@ -6,7 +6,7 @@ import { open, message } from '@tauri-apps/api/dialog';
 import { downloadDir } from '@tauri-apps/api/path';
 import { getLocalisedMessage } from '@/utils';
 import { useToast } from "vue-toastification";
-import { set_backup_folder } from '@/utils/database';
+import { set_backup_folder, upload_backup_data } from '@/utils/database';
 
 const toast = useToast();
 export default defineComponent({
@@ -106,13 +106,25 @@ export default defineComponent({
                     await set_backup_folder(String(selected));
                     this.backup_folder_warning = false;
                     this.backup_folder = String(selected);
-                    console.log(selected);
                 }
             } catch (err) {
                 toast.error(
                     String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "update-backup-folder")),
                     { id: "update-backup-folder" }
                 )
+            }
+        },
+        async GetBackupData() {
+            try {
+                const path = String(this.backup_folder) !== "" ? String(this.backup_folder) : await downloadDir();
+                const selected = await open({
+                    directory: false,
+                    multiple: false,
+                    title: String(getLocalisedMessage(String(this.$i18n.locale), "config", "index", "update-backup-dialog-title")),
+                    defaultPath: path
+                });
+                const result = await upload_backup_data(String(selected))
+            } catch (err) {
             }
 
         }
@@ -170,24 +182,27 @@ export default defineComponent({
                         aria-label="Fim do expediente">
                 </div> -->
             </div>
-            <div class="d-flex w-100 justify-content-between align-items-center flex-wrap gap-2 mb-5">
+            <div class="d-flex w-100 justify-content-between align-items-center flex-wrap gap-2">
                 <div class="d-flex text-start justify-content-center align-items-center">
                     <p v-if="String(backup_folder) !== ''" class="mt-1" :title="$t('config.index.backup-since-info')">
                         {{ $t("config.index.saved-backup-folder-path") }}<br>{{ backup_folder }}
                     </p>
                 </div>
                 <div class="d-flex justify-content-center align-items-center gap-2">
-                    <h5 class="mt-1" :title="$t('config.index.backup-since-info')">
+                    <p class="mt-3" :title="$t('config.index.backup-since-info')">
                         {{ $t("config.index.backup-since") }}
                         <span class="badge text-bg-warning">{{ backup_since }}</span>
-                    </h5>
+                    </p>
                     <button type="button" :title="$t('config.index.backup-folder-path')"
                         v-bind:class="{ 'btn-danger': backup_folder_warning, 'btn-warning': !backup_folder_warning }"
                         class="btn" @click="async () => await UpdateBackupFolderLocation()">
                         <i class="bi bi-folder-fill"></i>
                     </button>
+                    <button v-if="String(backup_folder) !== ''" type="button" :title="$t('config.index.backup-folder-path')"
+                        class="btn btn-primary" @click="async () => await GetBackupData()">
+                        <i class="bi bi-cloud-arrow-down-fill"></i>
+                    </button>
                 </div>
-
             </div>
             <button type="submit" class="btn btn-warning w-100">
                 {{ $t("config.index.save-changes") }}

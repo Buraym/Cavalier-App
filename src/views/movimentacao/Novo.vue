@@ -107,7 +107,6 @@ export default defineComponent({
                     if (new Date(this.saida).valueOf() <= new Date(this.entrada).valueOf()) {
                         throw new Error("INVALID entry");
                     }
-                    console.log(new Date(this.entrada), new Date(this.saida));
                     let calculatedData = CalcTotalTime({
                         entrada: new Date(this.entrada),
                         saida: new Date(this.saida),

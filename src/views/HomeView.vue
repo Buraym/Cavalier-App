@@ -176,7 +176,6 @@ export default defineComponent({
           placa: item.veiculo.placa
         }));
       } catch (err) {
-        console.log(err);
         toast.error(
           String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "return-parking-spaces")),
           { id: "return-parking-spaces" }
