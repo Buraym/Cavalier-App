@@ -11,15 +11,15 @@ import Toast, { POSITION, PluginOptions } from "vue-toastification"
 import "vue-toastification/dist/index.css";
 
 const i18n = createI18n({
-    locale: "pt",
-    fallbackLocale: "pt",
-    messages: { pt, en, es },
-  });
+  locale: "en",
+  fallbackLocale: "pt",
+  messages: { pt, en, es },
+});
 
 const pinia = createPinia()
 await init_db();
 const option:PluginOptions = {
-  position: POSITION.BOTTOM_RIGHT,
+  position: POSITION.TOP_RIGHT,
   timeout: 5000,
   closeOnClick: true,
   pauseOnFocusLoss: true,

@@ -3,7 +3,6 @@ import { defineComponent } from 'vue';
 import { format } from "date-fns"
 import { retornar_condutor, editar_condutor, deletar_condutor } from "@/controllers/condutor";
 import { IntToTime } from '@/utils';
-import { StringToTime } from '../../utils/index';
 import { getLocalisedMessage } from '@/utils';
 import { useToast } from "vue-toastification";
 
@@ -17,7 +16,6 @@ export default defineComponent({
             nome: "",
             cpf: "",
             telefone: "",
-            tempoGasto: "",
             data_cadastro: "",
             data_atualizado: "",
         }
@@ -33,7 +31,6 @@ export default defineComponent({
                 this.cpf = condutor.cpf;
                 this.ativo = condutor.ativo ? true : false;
                 this.telefone = condutor.telefone;
-                this.tempoGasto = String(IntToTime(Number(condutor.tempo_gasto)));
                 this.data_cadastro = format(new Date(condutor.cadastro), "dd/MM/yyyy HH:mm")
                 if (condutor.atualizacao) {
                     this.data_atualizado = format(new Date(condutor.atualizacao), "dd/MM/yyyy HH:mm")
@@ -53,8 +50,7 @@ export default defineComponent({
                     nome: this.nome,
                     cpf: this.cpf,
                     ativo: this.ativo,
-                    telefone: this.telefone,
-                    tempoGasto: StringToTime(String(this.tempoGasto))
+                    telefone: this.telefone
                 });
                 this.$router.push('/condutor');
             } catch (err) {
@@ -130,15 +126,6 @@ export default defineComponent({
                         <input type="text" v-model="telefone" class="form-control"
                             :placeholder='$t("driver.edit.driver-telephone")'
                             :aria-label='$t("driver.edit.driver-telephone")' aria-describedby="basic-addon1">
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">{{ $t("driver.edit.driver-time-spent")
-                            }}</span>
-                            <input type="time" v-model="tempoGasto" class="form-control"
-                                :placeholder='$t("driver.edit.driver-time-spent")'
-                                :aria-label='$t("driver.edit.driver-time-spent")' aria-describedby="basic-addon1">
-                        </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-between gap-2">
                         <div class="form-check">

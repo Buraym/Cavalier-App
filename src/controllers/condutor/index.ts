@@ -57,9 +57,9 @@ export async function editar_condutor(id: string, condutor: any) {
     const db = await SQLite.open('../src/db/cavalier.db');
     await db.execute(`
         UPDATE condutor
-        SET cpf = ?1, nome = ?2, telefone = ?3, tempo_gasto = ?4, ativo = ?5, atualizacao = ?6
-        WHERE id = ?7;
-    `, [condutor.cpf, condutor.nome, condutor.telefone, condutor.tempo_gasto, condutor.ativo, new Date(), id]);
+        SET cpf = ?1, nome = ?2, telefone = ?3, ativo = ?4, atualizacao = ?5
+        WHERE id = ?6;
+    `, [condutor.cpf, condutor.nome, condutor.telefone, condutor.ativo, new Date(), id]);
     
 }
 

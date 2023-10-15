@@ -24,7 +24,7 @@
     },
     "bundle": {
       "active": true,
-      "category": "DeveloperTool",
+      "category": "Productivity",
       "copyright": "",
       "deb": {
         "depends": []
@@ -37,8 +37,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "estacionamento",
-      "longDescription": "",
+      "identifier": "com.tauri.cavalier",
+      "longDescription": "O App Cavalier é uma aplicação de gere estacionamentos e lida com certos pontos como: Administração de vagas, Backup de dados,  Exportação de documentos e gerenciamento de usuários",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -47,7 +47,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "",
+      "shortDescription": "Cavalier é um app de gerenciamento de vagas de estacionamento",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,

@@ -1,8 +1,7 @@
 {
   "auth": {
     "login": {
-      "slogan": "¡La mejor aplicación de estacionamiento jamás creada!",
-      "sub-slogan": "Con funciones de automatización de cuentas, informes de costos y beneficios, respaldo de datos en la nube, soporte multiplataforma para Windows, Linux, Mac OS, emisión de recibos y boletos para clientes, notificaciones por teléfono para los usuarios y muchas más funcionalidades.",
+      "slogan": "Su socio en control inteligente de estacionamiento.",
       "welcome": "¡La mejor aplicación de estacionamiento jamás creada!",
       "sub-welcome": "Inicie sesión con sus credenciales",
       "email": "Correo Electrónico",
@@ -25,7 +24,6 @@
       "table-name-header": "Nombre",
       "table-cpf-header": "CPF",
       "table-telephone-header": "Teléfono",
-      "table-time-spent-header": "Tiempo usado",
       "register-new": "Registrar nuevo conductor"
     },
     "add": {
@@ -41,7 +39,6 @@
       "driver-name": "Nombre completo",
       "driver-cpf": "CPF",
       "driver-telephone": "Teléfono",
-      "driver-time-spent": "Tiempo usado",
       "driver-active": "¿Activo?",
       "driver-created-at": "Registrado en: ",
       "driver-updated-at": "Editado en: "
@@ -66,7 +63,7 @@
       "backup-folder-path": "Haga clic para abrir la carpeta de almacenamiento de respaldo.",
       "update-backup-dialog-title": "Ubicación de almacenamiento del archivo de respaldo",
       "undefined-backup-folder": "Advertencia: ¡La carpeta del archivo de copia de seguridad no está definida! ¡Defina inmediatamente una carpeta en caso de que haya algún imprevisto o un informe y/o información importante esté dañada!",
-      "saved-backup-folder-path": "Local de armazenamento: ",
+      "saved-backup-folder-path": "Ubicación de la copia de seguridad: ",
       "save-changes": "Guardar cambios"
     }
   },
@@ -213,6 +210,7 @@
       "email": "Correo electrónico",
       "password": "Contraseña",
       "document": "Número del Documento",
+      "contact": "Contacto",
       "user-active": "¿Activo?",
       "user-created-at": "Registrado en: ",
       "user-updated-at": "Editado en: "

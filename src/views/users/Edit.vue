@@ -49,9 +49,10 @@ export default defineComponent({
             try {
                 event.preventDefault();
                 const data = await return_user(String(this.$route.params.user_id))
+                console.log(this.password)
                 await edit_user(String(this.$route.params.user_id), {
-                    ...data,
-                    nome: this.name,
+                    active: this.active,
+                    name: this.name,
                     email: this.email,
                     password: this.password,
                     role: this.role,
@@ -60,6 +61,7 @@ export default defineComponent({
                 });
                 this.$router.go(-1);
             } catch (err) {
+                console.log(err);
                 toast.error(
                     String(getLocalisedMessage(String(this.$i18n.locale), "error", "index", "edit-user")),
                     { id: "edit-user" }

@@ -22,10 +22,6 @@ const listHeaderTopics: any[] = [
     {
         label: "Created at",
         field: "users.list.table-created-at-header"
-    },
-    {
-        label: "",
-        field: ""
     }
 ]
 const data = ref<any[] | []>([]);
@@ -95,10 +91,6 @@ export default defineComponent({
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "users", "list", "table-created-at-header")),
                         field: "users.list.table-created-at-header"
-                    },
-                    {
-                        label: "",
-                        field: ""
                     }
                 ]
             }

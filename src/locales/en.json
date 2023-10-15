@@ -1,8 +1,7 @@
 {
   "auth": {
     "login": {
-      "slogan": "The best parking app ever made!",
-      "sub-slogan": "With account automation features, cost and profit reports, cloud data backup, cross-platform support for Windows, Linux, Mac OS, customer receipt and ticket issuance, phone notifications for users, and many more functionalities.",
+      "slogan": "Your Partner in Intelligent Parking Control.",
       "welcome": "The best parking app ever made!",
       "sub-welcome": "Log in with your credentials",
       "email": "Email",
@@ -25,7 +24,6 @@
       "table-name-header": "Name",
       "table-cpf-header": "CPF",
       "table-telephone-header": "Telephone",
-      "table-time-spent-header": "Time spent",
       "register-new": "Register new Driver"
     },
     "add": {
@@ -41,7 +39,6 @@
       "driver-name": "Full name",
       "driver-cpf": "CPF",
       "driver-telephone": "Telephone",
-      "driver-time-spent": "Telephone",
       "driver-active": "Active ?",
       "driver-created-at": "Registered at: ",
       "driver-updated-at": "Edited in: "
@@ -66,7 +63,7 @@
       "backup-folder-path": "Click to open the backup storage folder.",
       "update-backup-dialog-title": "Backup file storage location",
       "undefined-backup-folder": "Warning: Backup file folder not defined! Immediately define a folder in case there is something unforeseen or a report and/or important information is corrupted!",
-      "saved-backup-folder-path": "Local de armazenamento: ",
+      "saved-backup-folder-path": "Backup folder location: ",
       "save-changes": "Save changes"
     }
   },
@@ -212,6 +209,7 @@
       "email": "Email",
       "password": "Password",
       "document": "Document number",
+      "contact": "Contact",
       "user-active": "Active ?",
       "user-created-at": "Registered at: ",
       "user-updated-at": "Edited in: "

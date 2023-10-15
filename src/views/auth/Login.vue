@@ -26,6 +26,17 @@ export default defineComponent({
         }
     },
     methods: {
+        switchLocale() {
+            if (String(this.$i18n.locale) === "pt") {
+                this.$i18n.locale = "en"
+            } else if (String(this.$i18n.locale) === "en") {
+                this.$i18n.locale = "es"
+            } else if (String(this.$i18n.locale) === "es") {
+                this.$i18n.locale = "pt"
+            } else {
+                this.$i18n.locale = "en"
+            }
+        },
         async Login(ev: any) {
             this.loading = true;
             const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -82,17 +93,26 @@ export default defineComponent({
 </script>
 <template>
     <div :class="mode === 'login' ? 'login-helper-box' : 'login-helper-box closed'">
-        <div class="w-100" style="margin-bottom: 100px">
+        <div class="w-100 text-start" style="margin-bottom: 50px">
+            <!-- 
+            <p class="text-white text-start mooli subtitle">
+                {{ $t("auth.login.sub-slogan") }}
+            </p> -->
+            <p class="logo-title">
+                Cavalier
+            </p>
             <h2 class="mb-5 pacifico text-white text-start title">
                 {{ $t("auth.login.slogan") }}
             </h2>
-            <p class="text-white text-start mooli subtitle">
-                {{ $t("auth.login.sub-slogan") }}
-            </p>
         </div>
     </div>
     <div :class="mode === 'login' ? 'form-box' : 'form-box changed'">
-        <div class="w-100" style="margin-bottom: 100px">
+        <button class="btn mb-2 position-absolute language-btn" @click="switchLocale">
+            <img :src="`http://purecatamphetamine.github.io/country-flag-icons/3x2/${String($i18n.locale) === 'pt' ? 'BR'
+                : String($i18n.locale) === 'en' ? 'US' : String($i18n.locale) === 'es' ? 'ES' : 'BR'}.svg`" width="20"
+                height="20">
+        </button>
+        <div class="w-100" style="margin-bottom: 50px">
             <h2 class="mb-1 pacifico">
                 {{ $t("auth.login.welcome") }}
             </h2>
@@ -204,6 +224,16 @@ export default defineComponent({
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Mooli&family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Leckerli+One&display=swap');
+
+.logo-title {
+    text-transform: none;
+    font-family: 'Leckerli One', cursive;
+    font-size: 48px;
+    line-height: 2.5rem;
+    color: #FF8000;
+    text-shadow: 2px 2px #FB5607;
+}
 
 .title {
     font-size: 30px;
@@ -223,6 +253,11 @@ export default defineComponent({
 
 .text-white {
     color: white;
+}
+
+.language-btn {
+    top: 20px;
+    right: 20px;
 }
 
 .form-box {
@@ -307,5 +342,15 @@ export default defineComponent({
     display: block;
     opacity: 1;
     transition: 250ms ease-in-out;
+}
+
+@media (max-width: 1017px) {
+    .login-helper-box {
+        display: none !important
+    }
+
+    .register-box {
+        display: none !important
+    }
 }
 </style>

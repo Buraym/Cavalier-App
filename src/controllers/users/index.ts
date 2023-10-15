@@ -109,10 +109,9 @@ export async function edit_user(id: string, user: any) {
         UPDATE usuario
         SET name = ?1, active = ?2, updated_at = ?3,
         document = ?4, contact = ?5, role = ?6,
-        email = ?7, password = ?7,
+        email = ?7, password = ?8
         WHERE id = ?9;
     `, [user.name, user.active, new Date(), user.document, user.contact, user.role, user.email, user.password, id]);
-    
 }
 
 export async function switch_user_role(id: string, role: 'admin' | 'user') {

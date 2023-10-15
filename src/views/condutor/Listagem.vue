@@ -23,10 +23,6 @@ const listHeaderTopics: any[] = [
     {
         label: "Telefone",
         field: "driver.list.table-telephone-header"
-    },
-    {
-        label: "Tempo Gasto",
-        field: "driver.list.table-time-spent-header"
     }
 ]
 const data = ref<any[] | []>([]);
@@ -104,10 +100,6 @@ export default defineComponent({
                     {
                         label: String(getLocalisedMessage(String(this.$i18n.locale), "driver", "list", "table-telephone-header")),
                         field: "driver.list.table-telephone-header"
-                    },
-                    {
-                        label: String(getLocalisedMessage(String(this.$i18n.locale), "driver", "list", "table-time-spent-header")),
-                        field: "driver.list.table-time-spent-header"
                     }
                 ]
             }

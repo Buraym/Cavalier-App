@@ -1,8 +1,7 @@
 {
   "auth": {
     "login": {
-      "slogan": "O melhor app de estacionamento já feito !",
-      "sub-slogan": "Com funções de automatização de contas, relatórios de custos e lucros, backup dos dados na nuvem, portabilidade para Windows, Linux, Mac OS, emissão de via do cliente e ticket, notificações pelo telefone dousuario e muito mais funcionalidades.",
+      "slogan": "O Seu Parceiro no Controle Inteligente de Estacionamentos.",
       "welcome": "O melhor app de estacionamento já feito !",
       "sub-welcome": "entre com as suas credenciais",
       "email": "Email",
@@ -25,7 +24,6 @@
       "table-name-header": "Nome",
       "table-cpf-header": "CPF",
       "table-telephone-header": "Telefone",
-      "table-time-spent-header": "Tempo gasto",
       "register-new": "Cadastrar novo Condutor"
     },
     "add": {
@@ -41,7 +39,6 @@
       "driver-name": "Nome Completo",
       "driver-cpf": "CPF",
       "driver-telephone": "Telefone",
-      "driver-time-spent": "Tempo Gasto",
       "driver-active": "Ativo ?",
       "driver-created-at": "Cadastrado em: ",
       "driver-updated-at": "Editado em: "
@@ -66,7 +63,7 @@
       "backup-folder-path": "Clique para abrir na pasta de armazenamento de backup.",
       "update-backup-dialog-title": "Local de armazenamento de arquivos de backup",
       "undefined-backup-folder": "Aviso: Pasta de arquivos de backup não definida ! Defina imediatamente uma pasta para caso haja algum imprevisto ou corrompa algum relatório e/ou informação(ões) importantes !",
-      "saved-backup-folder-path": "Local de armazenamento: ",
+      "saved-backup-folder-path": "Local de armazenamento dos backups: ",
       "save-changes": "Salvar mudanças"
     }
   },
@@ -211,6 +208,7 @@
       "email": "Email",
       "password": "Senha",
       "document": "Numero de documento",
+      "contact": "Contato",
       "user-active": "Ativo ?",
       "user-created-at": "Cadastrado em: ",
       "user-updated-at": "Editado em: "
