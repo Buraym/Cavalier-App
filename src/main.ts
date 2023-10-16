@@ -11,7 +11,7 @@ import Toast, { POSITION, PluginOptions } from "vue-toastification"
 import "vue-toastification/dist/index.css";
 
 const i18n = createI18n({
-  locale: "en",
+  locale: "pt",
   fallbackLocale: "pt",
   messages: { pt, en, es },
 });
